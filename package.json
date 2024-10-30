@@ -1,0 +1,25 @@
+{
+  "name": "cs546-project",
+  "version": "0.0.1",
+  "description": "A web application designed for musicians to upload and view short audio samples of riffs and licks.",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rmickey42/cs546-project.git"
+  },
+  "keywords": [
+    "Music",
+    "JS",
+    "web",
+    "server"
+  ],
+  "contributors": ["Alan Atrach", "Evan Kupsch", "Anthony Rizzuto", "Ryan Mickey"],
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rmickey42/cs546-project/issues"
+  },
+  "homepage": "https://github.com/rmickey42/cs546-project#readme"
+}
