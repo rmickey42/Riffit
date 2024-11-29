@@ -39,18 +39,36 @@ const exportedMethods = {
         return await commentCollection.find({}).toArray();
     },
 
-    async getCommentsByPostId(postId) {
+    async getCommentsByPostId(postId, sorting='newest') {
         postId = validation.checkId(postId, 'Post ID');
 
         const commentCollection = await comments();
-        return await commentCollection.find({ postId: ObjectId(postId) }).toArray();
+
+        if (sorting === 'newest') {
+            return await commentCollection.find({ postId: ObjectId(postId) }).sort({ _id: -1 }).toArray();
+        }
+        else if (sorting === 'oldest') {
+            return await commentCollection.find({ postId: ObjectId(postId) }).sort({ _id: 1 }).toArray();
+        }
+        else {
+            throw 'Invalid sorting method';
+        }
     },
 
-    async getCommentsByUserId(userId) {
+    async getCommentsByUserId(userId, sorting='newest') {
         userId = validation.checkId(userId, 'User ID');
 
         const commentCollection = await comments();
-        return await commentCollection.find({ userId: ObjectId(userId) }).toArray();
+        
+        if (sorting === 'newest') {
+            return await commentCollection.find({ userId: ObjectId(userId) }).sort({ _id: -1 }).toArray();
+        }
+        else if (sorting === 'oldest') {
+            return await commentCollection.find({ userId: ObjectId(userId) }).sort({ _id: 1 }).toArray();
+        }
+        else {
+            throw 'Invalid sorting method';
+        }
     },
 
     async removeComment(id) {

@@ -18,11 +18,40 @@ const exportedMethods = {
     return post;
   },
 
-  async getPostsByTags(tags_lst) {
+  async getPostsByTags(tags_lst, sorting='newest') {
     tags_lst = validation.checkStringArray(tags_lst, 'Tags');
     
     const postCollection = await posts();
-    return await postCollection.find({tags: { $in: tags_lst }}).toArray();
+
+    if (sorting === 'newest') {
+      return await postCollection.find({tags: { $in: tags_lst }}).sort({ _id: -1 }).toArray();
+    } else if (sorting === 'oldest') {
+      return await postCollection.find({tags: { $in: tags_lst }}).sort({ _id: 1 }).toArray();
+    } else if (sorting === 'most_popular') {
+      return await postCollection.find({tags: { $in: tags_lst }}).sort({ rating: -1 }).toArray();
+    }
+    else if (sorting === 'least_popular') {
+      return await postCollection.find({tags: { $in: tags_lst }}).sort({ rating: 1 }).toArray();
+    } else {
+      throw 'Invalid sorting method';
+    }
+  },
+
+  async getPostsByUserId(userId, sorting='newest') {
+    userId = validation.checkId(userId, 'User ID');
+
+    const postCollection = await posts();
+    if (sorting === 'newest') {
+      return await postCollection.find({userId: userId}).sort({ _id: -1 }).toArray();
+    } else if (sorting === 'oldest') {
+      return await postCollection.find({userId: userId}).sort({ _id: 1 }).toArray();
+    } else if (sorting === 'most_popular') {
+      return await postCollection.find({userId: userId}).sort({ rating: -1 }).toArray();
+    } else if (sorting === 'least_popular') {
+      return await postCollection.find({userId: userId}).sort({ rating: 1 }).toArray();
+    } else {
+      throw 'Invalid sorting method';
+    }
   },
 
   async addPost(title, userId, content, notation, key, instrument, tags) {
@@ -47,9 +76,7 @@ const exportedMethods = {
       title: title,
       userId: userId,
       content: content,
-      likes: [],
-      dislikes: [],
-      comments: [],
+      rating: 0,
       notation: notation,
       key: key,
       instrument: instrument,
@@ -75,6 +102,16 @@ const exportedMethods = {
   },
 
   async updatePostPut(id, updatedPost) {
+    if (updatedPost.userId) {
+      throw 'Cannot update userId of post';
+    }
+    if (updatedPost.content) {
+      throw 'Cannot update content of post';
+    }
+    if (updatedPost.rating) {
+      throw 'Cannot directly update rating of post';
+    }
+
     id = validation.checkId(id, "Post ID");
 
     updatedPost.title = validation.checkString(updatedPost.title, 'title');
@@ -82,10 +119,6 @@ const exportedMethods = {
     updatedPost.notation = validation.checkString(updatedPost.notation, 'Notation');
     updatedPost.key = validation.checkString(updatedPost.key, 'Key');
     updatedPost.instrument = validation.checkString(updatedPost.instrument, 'Instrument');
-    
-    if (updatedPost.userId) {
-      delete updatedPost.userId;
-    }
 
     const postCollection = await posts();
     const updateInfo = await postCollection.findOneAndReplace(
@@ -106,6 +139,9 @@ const exportedMethods = {
     }
     if (updatedPost.content) {
       throw 'Cannot update content of post';
+    }
+    if (updatedPost.rating) {
+      throw 'Cannot directly update rating of post';
     }
 
     let tags = [];
@@ -154,7 +190,7 @@ const exportedMethods = {
 
     return newPost;
   },
-  
+
   async renameTag(oldTag, newTag) {
     oldTag = validation.checkString(oldTag, 'Old Tag');
     newTag = validation.checkString(newTag, 'New Tag');
