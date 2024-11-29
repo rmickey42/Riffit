@@ -9,7 +9,7 @@ const exportedMethods = {
   },
 
   checkId(id, idName) {
-    id = checkProperString(id, idName);
+    id = checkString(id, idName);
     if (!ObjectId.isValid(id)) throw `${idName} is not a valid ObjectId`;
     return id;
   },
@@ -25,12 +25,12 @@ const exportedMethods = {
     return num;
   },
 
-  checkTag(arr, tagName) {
+  checkStringArray(arr, valName) {
     if (!arr || !Array.isArray(arr))
-      throw `You must provide an array of ${tagName}`;
+      throw `You must provide an array of ${valName}`;
     for (let i in arr) {
       if (typeof arr[i] !== "string" || arr[i].trim().length === 0) {
-        throw `One or more elements in ${tagName} array is not a string or is an empty string`;
+        throw `One or more elements in ${valName} array is not a string or is an empty string`;
       }
       arr[i] = arr[i].trim();
     }

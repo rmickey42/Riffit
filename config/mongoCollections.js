@@ -13,7 +13,6 @@ const getCollectionFn = (collection) => {
   };
 };
 
-// Note: You will need to change the code below to have the collection required by the assignment!
 export const users = getCollectionFn('users');
 export const posts = getCollectionFn('posts');
 export const comments = getCollectionFn('comments');
