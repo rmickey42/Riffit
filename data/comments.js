@@ -55,22 +55,6 @@ const exportedMethods = {
         }
     },
 
-    async getCommentsByUserId(userId, sorting='newest') {
-        userId = validation.checkId(userId, 'User ID');
-
-        const commentCollection = await comments();
-        
-        if (sorting === 'newest') {
-            return await commentCollection.find({ userId: ObjectId(userId) }).sort({ _id: -1 }).toArray();
-        }
-        else if (sorting === 'oldest') {
-            return await commentCollection.find({ userId: ObjectId(userId) }).sort({ _id: 1 }).toArray();
-        }
-        else {
-            throw 'Invalid sorting method';
-        }
-    },
-
     async removeComment(id) {
         id = validation.checkId(id, 'Comment ID');
 
