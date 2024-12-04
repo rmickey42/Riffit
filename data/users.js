@@ -2,7 +2,7 @@ import { users } from "../config/mongoCollections.js";
 import { ObjectId } from "mongodb";
 import validation from "../validation.js";
 
-let exportedMethods = {
+const exportedMethods = {
   async getAllUsers() {
     const userCollection = await users();
     const userList = await userCollection.find({}).toArray();
@@ -48,6 +48,47 @@ let exportedMethods = {
     if (!deletionInfo) throw `Error: Could not delete user with id of ${id}`;
 
     return { ...deletionInfo, deleted: true };
+  },
+
+  async getCommentsByUserId(id) {
+    id = validation.checkId(id);
+    const user = await this.getUserById(id);
+    for (let i = 0; i < user.comments.length; i++) {
+      user.comments[i] = await this.getCommentById(user.comments[i]);
+    }
+    return user.comments;
+  },
+  async getLikedPostsByUserId(id) {
+    id = validation.checkId(id);
+    const user = await this.getUserById(id);
+    for (let i = 0; i < user.likedPosts.length; i++) {
+      user.likedPosts[i] = await this.getPostById(user.likedPosts[i]);
+    }
+    return user.likedPosts;
+  },
+  async getDislikedPostsByUserId(id) {
+    id = validation.checkId(id);
+    const user = await this.getUserById(id);
+    for (let i = 0; i < user.dislikedPosts.length; i++) {
+      user.dislikedPosts[i] = await this.getPostById(user.dislikedPosts[i]);
+    }
+    return user.dislikedPosts;
+  },
+  async getLearnedPostsByUserId(id) {
+    id = validation.checkId(id);
+    const user = await this.getUserById(id);
+    for (let i = 0; i < user.learnedPosts.length; i++) {
+      user.learnedPosts[i] = await this.getPostById(user.learnedPosts[i]);
+    }
+    return user.learnedPosts;
+  },
+  async getFavoritePostsByUserId(id) {
+    id = validation.checkId(id);
+    const user = await this.getUserById(id);
+    for (let i = 0; i < user.favoritePosts.length; i++) {
+      user.favoritePosts[i] = await this.getPostById(user.favoritePosts[i]);
+    }
+    return user.favoritePosts;
   },
  
   async updateUser(id, userInfo) {
