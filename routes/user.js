@@ -9,9 +9,15 @@ router
     .route('/:userId')
     .get(async (req, res) => {
         try{
-            // TODO: display page
             let id = req.params.userId;
             id = validation.checkId(id);
+        }
+        catch (e) {
+            return res.status(400).json({error: e});
+        }
+        
+        try{
+            // TODO: display page
             const user = await userData.getUserById(id);
             return res.json(user);
         } catch (e) {
