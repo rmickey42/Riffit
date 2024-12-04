@@ -16,8 +16,8 @@ let exportedMethods = {
     return user;
   },
   async addUser(username, password) {
-    username = validation.checkString(username, "First name");
-    password = validation.checkString(password, "Last name");
+    username = validation.checkString(username, "username");
+    password = validation.checkString(password, "password");
 
     let newUser = {
       username,
