@@ -81,4 +81,41 @@ router.route("/:id/edit").patch(async (req, res) => {
   }
 });
 
+router.route("/search").post(async (req, res) => {
+  //code here for POST this is where your form will be submitting searchByTitle and then call your data function passing in the searchByTitle and then rendering the search results of up to 50 Movies.
+
+  const post = req.body.postSearch; 
+
+  if (!post) {
+    return res.status(400).render("error", {
+      Title: "Error",
+      // Header: true
+    });
+  }
+
+  try {
+    const movieList = await getPostsByTags(post);
+    
+    const checkUndefined = movieList.every(element => element === undefined)
+
+    if (checkUndefined) { //if user enters a value with no results
+     return res.status(404).render("error", {
+        Title: "No Results",
+        // Header: true,
+        // noResultsError: true,
+        // searchByTitle: movieTitle
+      });
+    } else {
+      return res.render("searchResults", {
+        // movies: movieList,
+        // searchByTitle: movieTitle,
+        Title: "Posts Found",
+        // Header: true
+      });
+    }
+  } catch (e) {
+    res.status(500).json({ error: e });
+  }
+});
+
 export default router;

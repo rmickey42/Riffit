@@ -49,7 +49,6 @@ const exportedMethods = {
 
     return { ...deletionInfo, deleted: true };
   },
-
   async getCommentsByUserId(id) {
     id = validation.checkId(id);
     const user = await this.getUserById(id);
