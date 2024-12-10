@@ -34,7 +34,7 @@ const exportedMethods = {
     let userTrim = validation.checkUserName(username, "Username");
     let passTrim = validation.checkPassword(password, "Password");
   
-    let foundUsr = await getUserByUsername(userTrim)
+    let foundUsr = await this.getUserByUsername(userTrim)
     
   
     if(foundUsr){
@@ -51,8 +51,12 @@ const exportedMethods = {
     }
   },
   async addUser(username, password) {
-    username = validation.checkString(username, "username");
-    password = validation.checkString(password, "password");
+    username = validation.checkUserName(username, "username");
+
+    password = validation.checkPassword(password, "password");
+
+    let foundUsr = await this.getUserByUsername(username)
+    if (foundUsr) throw `User with name ${username} already exists`;
 
     let newUser = {
       username,
