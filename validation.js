@@ -9,7 +9,7 @@ const exportedMethods = {
   },
 
   checkId(id, idName) {
-    id = checkString(id, idName);
+    id = this.checkString(id, idName);
     if (!ObjectId.isValid(id)) throw `${idName} is not a valid ObjectId`;
     return id;
   },
