@@ -1,6 +1,9 @@
 import { users } from "../config/mongoCollections.js";
 import { ObjectId } from "mongodb";
+import bcrypt from "bcrypt";
 import validation from "../validation.js";
+
+const BCRYPT_SALT = 16
 
 const exportedMethods = {
   async getAllUsers() {
@@ -15,13 +18,45 @@ const exportedMethods = {
     if (!user) throw "Error: User not found";
     return user;
   },
+  async getUserByUsername(username) {
+    let userTrim = validation.checkUserName(username, "Username");
+    let col = await users();
+
+    let res = await col.findOne({"username" : userTrim,}, {collation: {locale: 'en', strength: 2}}); // case insensitive
+    if(!res) return false;
+
+    res["_id"] = res["_id"].toString();
+
+    return res
+
+  },
+  async signInUser(username, password) {
+    let userTrim = validation.checkUserName(username, "Username");
+    let passTrim = validation.checkPassword(password, "Password");
+  
+    let foundUsr = await getUserByUsername(userTrim)
+    
+  
+    if(foundUsr){
+      let pass_check = await bcrypt.compare(passTrim,foundUsr.password)
+  
+      if(pass_check){
+        delete(foundUsr._id)
+        delete(foundUsr.password)
+        return foundUsr
+      } else throw "Either the username or password are invalid"
+  
+    } else {
+      throw "Either the username or password are invalid"
+    }
+  },
   async addUser(username, password) {
     username = validation.checkString(username, "username");
     password = validation.checkString(password, "password");
 
     let newUser = {
       username,
-      password,
+      password: await bcrypt.hash(password, BCRYPT_SALT),
       bio: "",
       dailyStreak: 0,
       picture: "",
