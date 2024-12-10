@@ -1,12 +1,17 @@
 
 <main>
     <form action="/login" method="post" id="signin-form">
-        <label for="userId">Username:</label>
-        <input type="text" id="userId" name="userId">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username">
         <label for="password">Password:</label>
         <input type="password" id="password" name="password">
         <input type="submit" name="submit_button" id="submit_button">
     </form>
+
+    {{#if error}}
+    <p class="error">{{error}}</p>
+    {{/if}}
+
     <a href="/signup"><p>Click here to sign up!</p></a>
 </main>
 
