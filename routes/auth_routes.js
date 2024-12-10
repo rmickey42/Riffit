@@ -92,4 +92,12 @@ router.route('/login')
 
 
 router.route('/signout')
-    .get(async (req, res) => {})
+    .get(async (req, res) => {
+        req.session.destroy()
+        res.render("signedout",{
+            pageTitle: "Signed Out",
+            status: "Successfully signed out"
+          })
+    })
+
+export {router};
