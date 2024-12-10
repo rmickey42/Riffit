@@ -18,10 +18,21 @@
     "web",
     "server"
   ],
-  "contributors": ["Alan Atrach", "Evan Kupsch", "Anthony Rizzuto", "Ryan Mickey"],
+  "contributors": [
+    "Alan Atrach",
+    "Evan Kupsch",
+    "Anthony Rizzuto",
+    "Ryan Mickey"
+  ],
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/rmickey42/cs546-project/issues"
   },
-  "homepage": "https://github.com/rmickey42/cs546-project#readme"
+  "homepage": "https://github.com/rmickey42/cs546-project#readme",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "express": "^4.21.2",
+    "express-handlebars": "^8.0.1",
+    "mongodb": "^6.11.0"
+  }
 }
