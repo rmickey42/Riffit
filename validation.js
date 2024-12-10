@@ -53,6 +53,42 @@ const exportedMethods = {
       element = this.checkId(arr[i]);
     });
   },
+
+  checkUserName(str, refName) { // Usernames can only contain letters and numbers
+    let trimmed = this.checkString(str, refName)
+    for(let i in trimmed){
+      if(!alpha_numer.includes(trimmed[i].toLowerCase())) throw `${refName || str} contains invalid character ${trimmed[i]}`;
+    }
+    return trimmed
+  },
+
+  checkPassword(str, refName) {
+    let trimmed = this.checkString(str, refName)
+    if (trimmed.length < 5) throw `Passwords must be at least 5 chatacters`;
+    if (trimmed.length > 16) throw `Passwords cannot be longer than 16 characters.`
+    let capital_count = 0,
+        symbol_count = 0,
+        number_count = 0;
+    for(let i in trimmed){
+      let char = trimmed[i].toLowerCase();
+      if(char!=trimmed[i]) capital_count++;
+      else if(numbers.includes(char)) number_count++;
+      else if(good_symbols.includes(char)) symbol_count++;
+      else if(!alphabet.includes(char)) throw `Passwords cannot contain the symbol '${char}'`;
+    }
+
+    if(capital_count < 1) throw `Passwords must contain at least 1 capital letter`;
+    if(symbol_count < 1) throw `Passwords must contain at least 1 symbol`;
+    if(number_count < 1) throw `Passwords must contain at least 1 number`;
+
+    return trimmed;
+  },
 };
+
+let alphabet = "qwertyuiopasdfghjklzxcvbnm"
+let numbers ="1234567890"
+let alpha_numer = alphabet+numbers
+let good_symbols = "!@#$%^&*<>?/-_+=()[]{}:;";
+
 
 export default exportedMethods;
