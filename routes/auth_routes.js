@@ -1,8 +1,8 @@
 import express from "express";
 const router = express.Router();
 
-import * as validation from "../validation.js"
-import * as users from "../data/users.js"
+import validation from "../validation.js"
+import users from "../data/users.js"
 
 router.route('/signup')
     .get(async (req, res) => {
@@ -20,7 +20,7 @@ router.route('/signup')
         fields.forEach((field)=>{
             try {
                 clean_data[field] = validation.checkString(unclean_data[field])
-            } catch {
+            } catch (e) {
                 not_found.push(field)
             }
         })
@@ -33,7 +33,7 @@ router.route('/signup')
             if(clean_data.password != clean_data.confirmPassword) throw `Password and Password Confirmation must match`;
         } catch (e) {
             return res.status(400).render("signup", {
-                pageTitle: "Sign Up",
+                Title: "Sign Up",
                 error: `Bad Request - ${e}`
             })
         }
@@ -42,10 +42,11 @@ router.route('/signup')
         try {
             let db_result = await users.addUser(clean_data.username, clean_data.password)
             res.redirect("/login")
-        } catch {
+        } catch (e){
+            console.log(e)
             return res.status(500).render("signup", {
-                pageTitle: "Sign Up",
-                error: `Internal Server Error - Please Try Again`
+                Title: "Sign Up",
+                error: `Internal Server Error - ${e}`
             })
         }
     })
@@ -82,8 +83,8 @@ router.route('/login')
             return res.redirect("/user/me")
 
         } catch (e) {
-            return res.status(400).render("signup", {
-                pageTitle: "Sign Up",
+            return res.status(400).render("login", {
+                Title: "Login",
                 error: `Bad Request - ${e}`
             })
         }
@@ -95,7 +96,7 @@ router.route('/signout')
     .get(async (req, res) => {
         req.session.destroy()
         res.render("signedout",{
-            pageTitle: "Signed Out",
+            Title: "Signed Out",
             status: "Successfully signed out"
           })
     })
