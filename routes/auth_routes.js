@@ -58,7 +58,36 @@ router.route('/login')
         })
     })
     .post(async (req,res) => {
-        
+        let fields = ["username", "password"]
+        let unclean_data = req.body
+        let clean_data = {} // going to store the trimmed fields in here
+        let not_found = []  // if any fields are missing from the request, will put them here
+
+        // first, check that each field has been passed
+        fields.forEach((field)=>{
+            try {
+                clean_data[field] = validation.checkString(unclean_data[field])
+            } catch {
+                not_found.push(field)
+            }
+        });
+        try {
+            if(not_found.length) throw `Must supply additional fields [${not_found.join(", ")}]`;
+            validation.checkUserName(clean_data.username)
+            validation.checkPassword(clean_data.password)
+            let signInAttempt = await users.signInUser(clean_data.username, clean_data.password)
+
+            req.session.user = signInAttempt
+
+            return res.redirect("/user/me")
+
+        } catch (e) {
+            return res.status(400).render("signup", {
+                pageTitle: "Sign Up",
+                error: `Bad Request - ${e}`
+            })
+        }
+
     })
 
 
