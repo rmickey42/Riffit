@@ -80,7 +80,8 @@ const exportedMethods = {
       notation: notation,
       key: key,
       instrument: instrument,
-      tags: tags
+      tags: tags,
+      date: new Date()
     };
 
     const postCollection = await posts();

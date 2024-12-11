@@ -1,0 +1,11 @@
+<main>
+    <h1>{{user.username}}'s Dislikes</h1>
+    <ul>
+        {{#each user.dislikedPosts}}
+        <li>
+            <a href="/posts/{{this._id}}">View Post</a>
+        </li>
+        {{/each}}
+    </ul>
+    <a href="/">Return to the homepage</a>
+</main>

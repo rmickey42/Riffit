@@ -1,0 +1,30 @@
+<main>
+    <h1>{{user.username}}</h1>
+    <section class="profile">
+        <img src="{{user.picture}}" alt="{{user.username}}'s profile picture" class="profile-picture">
+        <p><strong>Bio:</strong> {{user.bio}}</p>
+        <p><strong>Daily Streak:</strong> {{user.dailyStreak}}</p>
+        <p><strong>Instruments:</strong> {{#each user.instruments}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}</p>
+        <p><strong>Genres:</strong> {{#each user.genres}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}</p>
+    </section>
+
+    <section class="user-actions"></section>
+        <a href="like-button">Liked Posts</button>
+        <a href="dislike-button">Disliked Posts</button>
+        <a href="comment-button">Comments</button>
+        <a href="favorite-button">Favorited Posts</button>
+    </section>
+
+    <section class="posts">
+        <h2>Posts</h2>
+        {{#if user.posts.length}}
+            <ul>
+                {{#each user.posts}}
+                    <li><a href="/posts/{{this}}">{{this}}</a></li>
+                {{/each}}
+            </ul>
+        {{else}}
+            <p>{{user.username}} hasn't made any posts.</p>
+        {{/if}}
+    </section>
+</main>

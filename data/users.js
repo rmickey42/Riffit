@@ -17,6 +17,7 @@ const exportedMethods = {
     let user = await userCollection.findOne({ _id: new ObjectId(id) });
     if (!user) throw "Error: User not found";
     if (!includePassword) delete user.password;
+    user._id = user._id.toString();
     return user;
   },
   async getUserByUsername(username, includePassword = false) {
@@ -188,6 +189,8 @@ const exportedMethods = {
       throw `Error: Update failed, could not find a user with id of ${id}`;
 
     delete updateInfo.password;
+
+    updateInfo._id = updateInfo._id.toString();
     return updateInfo;
   },
 };

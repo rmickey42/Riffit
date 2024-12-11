@@ -1,0 +1,11 @@
+<main>
+    <h1>{{user.username}}'s Favorites</h1>
+    <ul>
+        {{#each user.favoritePosts}}
+        <li>
+            <a href="/posts/{{this._id}}">View Post</a>
+        </li>
+        {{/each}}
+    </ul>
+    <a href="/">Return to the homepage</a>
+</main>

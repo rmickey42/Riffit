@@ -10,7 +10,8 @@ const exportedMethods = {
         postId = validation.checkId(postId, 'Post ID');
 
         const comment = {
-            content,
+            content: content,
+            date: new Date(),
             userId: ObjectId(userId),
             postId: ObjectId(postId)
         };
