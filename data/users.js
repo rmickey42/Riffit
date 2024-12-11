@@ -11,14 +11,15 @@ const exportedMethods = {
     const userList = await userCollection.find({}).toArray();
     return userList;
   },
-  async getUserById(id) {
+  async getUserById(id, includePassword = false) {
     id = validation.checkId(id);
     const userCollection = await users();
-    const user = await userCollection.findOne({ _id: new ObjectId(id) });
+    let user = await userCollection.findOne({ _id: new ObjectId(id) });
     if (!user) throw "Error: User not found";
+    if (!includePassword) delete user.password;
     return user;
   },
-  async getUserByUsername(username) {
+  async getUserByUsername(username, includePassword = false) {
     let userTrim = validation.checkUserName(username, "Username");
     let col = await users();
 
@@ -27,6 +28,8 @@ const exportedMethods = {
 
     res["_id"] = res["_id"].toString();
 
+    if (!includePassword) delete res.password;
+
     return res
 
   },
@@ -34,8 +37,7 @@ const exportedMethods = {
     let userTrim = validation.checkUserName(username, "Username");
     let passTrim = validation.checkPassword(password, "Password");
   
-    let foundUsr = await this.getUserByUsername(userTrim)
-    
+    let foundUsr = await this.getUserByUsername(userTrim, true)
   
     if(foundUsr){
       let pass_check = await bcrypt.compare(passTrim,foundUsr.password)
@@ -185,6 +187,7 @@ const exportedMethods = {
     if (!updateInfo)
       throw `Error: Update failed, could not find a user with id of ${id}`;
 
+    delete updateInfo.password;
     return updateInfo;
   },
 };
