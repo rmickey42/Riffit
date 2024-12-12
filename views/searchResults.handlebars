@@ -1,10 +1,9 @@
 <main>
-        
+
         <ul>
             {{#each posts}}
-            <li class = "post-items">
-                
-
+            <li class = "post-item">
+                {{> post post=this}}
             </li>
             {{/each}}
         </ul>

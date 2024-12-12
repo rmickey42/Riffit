@@ -7,7 +7,8 @@ const constructorMethod = (app) => {
         // setup handlebars
     const handlebars = exphbs.create({
         defaultLayout: "main",
-        layoutsDir: "./views/layouts"
+        layoutsDir: "./views/layouts",
+        partialsDir: "./views/partials",
     });
     app.engine("handlebars", handlebars.engine);
     app.set("view engine", "handlebars");

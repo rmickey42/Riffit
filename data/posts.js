@@ -75,6 +75,7 @@ const exportedMethods = {
     const newPost = {
       title: title,
       userId: userId,
+      username: user.username,
       content: content,
       rating: 0,
       notation: notation,
