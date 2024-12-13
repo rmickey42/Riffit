@@ -1,14 +1,30 @@
-
 <main>
-  <p>Search for Post</p>
-  <form action="/search" method="POST" class="new-post-search">
+  <p>Search</p>
+  <form action="/search" id="search-form" method="POST" class="new-post-search">
+    <input type="submit" id="search-button" value="Search">
 
-    <label for="postSearch" id = "postSearch">
-      Search Post by Tags:
-      <input type="text" name="postSearch" placeholder="Search By Tag" id="postSearch">
-    </label>
-    
-    <input type="submit" id = "search-button" value="Search">
+    <label for="tag-input-1">Tag 1:</label>
+    <input type="text" name="tag-input-1" placeholder="Tag" id="tag-input-1">
+
+    <button id="add-tag-button" type="button">Add Tag</button>
+    <button id="remove-tag-button" type="button">Remove Tag</button>
+
+    <input type="number" name="tagCount" id="tagCount" value="1" hidden>
   </form>
 
+  {{#if error}}
+  <div class="error-message">
+    <p><strong>Error: </strong>{{error}}</p>
+  </div>
+  {{/if}}
+
+  {{#if posts}}
+  <ul>
+    {{#each posts}}
+    <li class = "post-item">
+      {{> post post=this}}
+    </li>
+    {{/each}}
+  </ul>
+  {{/if}}
 </main>

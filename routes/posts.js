@@ -6,21 +6,22 @@ import validation from "../validation.js";
 router
   .route("/:id")
   .get(async (req, res) => {
-    //check inputs that produce 400 status
+    //check inputs
     try {
       req.params.id = validation.checkId(req.params.id, "Id URL Param");
     } catch (e) {
-      return res.status(400).json({ error: e });
+      return res.status(404).render("404", { linkRoute: "/posts/search", linkDesc: "Return to search page" });
     }
     //try getting the post by ID
     try {
       const post = await postData.getPostById(req.params.id);
-      return res.json(post);
+      return res.render("post", { post: post });
     } catch (e) {
-      return res.status(404).json({ error: e });
+      return res.status(404).render("404", { linkRoute: "/posts/search", linkDesc: "Return to search page" });
     }
   })
   .delete(async (req, res) => {
+    // TODO: auth, views
     //check the id
     try {
       req.params.id = validation.checkId(req.params.id, "Id URL Param");
@@ -37,6 +38,7 @@ router
   });
 
 router.route("/:id/edit").patch(async (req, res) => {
+  // TODO: auth, views
   const requestBody = req.body;
   //check to make sure there is something in req.body
   if (!requestBody || Object.keys(requestBody).length === 0) {
@@ -67,7 +69,7 @@ router.route("/:id/edit").patch(async (req, res) => {
     if (requestBody.tags)
       requestBody.tags = validation.checkStringArray(requestBody.tags, "Tags");
   } catch (e) {
-    return res.status(400).json({ error: e });
+    return res.status(400).render("post_edit", { error: e });
   }
   //try to perform update
   try {
@@ -77,45 +79,45 @@ router.route("/:id/edit").patch(async (req, res) => {
     );
     return res.json(updatedPost);
   } catch (e) {
-    return res.status(404).json({ error: e });
+    return res.status(400).render("post_edit", { error: "Internal Server Error" });
   }
 });
 
-router.route("/search").post(async (req, res) => {
-  //code here for POST this is where your form will be submitting searchByTitle and then call your data function passing in the searchByTitle and then rendering the search results of up to 50 Movies.
-
-  const post = req.body.postSearch; 
-
-  if (!post) {
-    return res.status(400).render("error", {
-      Title: "Error",
-      // Header: true
-    });
-  }
-
-  try {
-    const movieList = await getPostsByTags(post);
+router
+  .route("/search")
+  .get(async (req, res) => {
     
-    const checkUndefined = movieList.every(element => element === undefined)
-
-    if (checkUndefined) { //if user enters a value with no results
-     return res.status(404).render("error", {
-        Title: "No Results",
-        // Header: true,
-        // noResultsError: true,
-        // searchByTitle: movieTitle
-      });
-    } else {
-      return res.render("searchResults", {
-        // movies: movieList,
-        // searchByTitle: movieTitle,
-        Title: "Posts Found",
-        // Header: true
-      });
+  }).post(async (req, res) => {
+    let tags = [];
+    const tagCount = parseInt(req.body.tagCount);
+    for (let i = 0; i < req.body.tagCount; i++) {
+      tags.push(req.body["tag-input-" + (i + 1)]);
     }
-  } catch (e) {
-    res.status(500).json({ error: e });
-  }
-});
+
+    let sorting = req.body.sorting;
+
+    if (!sorting) {
+      sorting = "newest";
+    }
+
+    if (!Array.isArray(tags)) {
+      return res.status(400).render("search", { error: "Tags must be an array" });
+    }
+
+    if (tags.length === 0) {
+      return res.status(400).render("search", { error: "Tags must not be empty" });
+    }
+
+    try {
+      const posts = await postData.getPostsByTags(tags);
+      if (posts.length === 0) {
+        return res.status(404).render("search", { error: "No Results" });
+      } else {
+        return res.render("search", { posts: posts });
+      }
+    } catch (e) {
+      res.status(500).render("search", { error: "Internal Server Error" });
+    }
+  });
 
 export default router;
