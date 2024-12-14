@@ -34,8 +34,7 @@ router.route('/signup')
         } catch (e) {
             
             return res.status(400).render("signup", {
-                Title: "Sign Up",
-                error: `Bad Request - ${e}`
+                Title: "Sign Up"
             })
         }
 
@@ -85,8 +84,7 @@ router.route('/login')
 
         } catch (e) {
             return res.status(400).render("login", {
-                Title: "Login",
-                error: `Bad Request - ${e}`
+                Title: "Login"
             })
         }
 

@@ -16,9 +16,11 @@
     </form>
 
     <div class="error-message"></div>
+
+    {{!-- Keep this to handle internal server errors! --}}
     {{#if error}}
     
-    <p class="error">{{error}}</p>
+    <p class="error">{{error}}</p>  
     
     {{/if}}
 
