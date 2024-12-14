@@ -32,6 +32,7 @@ router.route('/signup')
             validation.checkPassword(clean_data.password)
             if(clean_data.password != clean_data.confirmPassword) throw `Password and Password Confirmation must match`;
         } catch (e) {
+            
             return res.status(400).render("signup", {
                 Title: "Sign Up",
                 error: `Bad Request - ${e}`
