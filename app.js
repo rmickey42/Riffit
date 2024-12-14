@@ -7,6 +7,6 @@ const app = express();
 configMiddleware(app);
 configRoutes(app);
 
-app.listen(80, ()=>{
-    console.log(`Server listening on http://localhost/`)
+app.listen(3000, ()=>{
+    console.log('Your routes will be running on http://localhost:3000');
 });

@@ -15,8 +15,11 @@
         <input type="submit" name="submit_button" id="submit_button">
     </form>
 
+    
     {{#if error}}
+    <div class="error-message">
     <p class="error">{{error}}</p>
+    </div>
     {{/if}}
 
     <a href="/login"><p>Already have an account? Click here to sign in</p></a>

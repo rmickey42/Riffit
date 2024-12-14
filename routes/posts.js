@@ -86,7 +86,12 @@ router.route("/:id/edit").patch(async (req, res) => {
 router
   .route("/search")
   .get(async (req, res) => {
-    
+    try {
+      res.render("search", { Title: "Search" });
+    } catch (e) {
+      res.status(500).json({ error: e });
+    }
+
   }).post(async (req, res) => {
     let tags = [];
     const tagCount = parseInt(req.body.tagCount);
