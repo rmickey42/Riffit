@@ -50,7 +50,8 @@ router.route("/:userId/comments").get(async (req, res) => {
     return res.status(404).render("404", {
       linkRoute: "/",
       linkDesc: "Return to the homepage",
-      Title: "404 Not Found",
+      errorName: "404 Not Found",
+      errorDesc: "This page doesn't exist!"
     });
   }
 });
@@ -70,6 +71,8 @@ router
       return res.status(404).render("404", {
         linkRoute: "/",
         linkDesc: "Return to the homepage",
+        errorName: "404 Not Found",
+        errorDesc: "This page doesn't exist!",
         Title: "404 Not Found",
       });
     }
@@ -90,6 +93,8 @@ router
       return res.status(404).render("404", {
         linkRoute: "/",
         linkDesc: "Return to the homepage",
+        errorName: "404 Not Found",
+        errorDesc: "This page doesn't exist!",
         Title: "404 Not Found",
       });
     }
@@ -110,22 +115,35 @@ router
       return res.status(404).render("404", {
         linkRoute: "/",
         linkDesc: "Return to the homepage",
+        errorName: "404 Not Found",
+        errorDesc: "This page doesn't exist!",
         Title: "404 Not Found",
       });
     }
   });
 
-// authenticated in middleware
+// authenticated in middleware. TODO: profile picture image upload
 router
-  .route("/:userId/edit") //working
+  .route("/:userId/edit") //working - changed slightly for 404 and 400 errors
   .get(async (req, res) => {
     let id = req.params.userId;
     const user = await userData.getUserById(id);
     return res.render("user_edit", { user: user, Title: "Edit Profile" });
   })
   .post(async (req, res) => {
+    let id = req.params.userId;
     try {
-      let id = validation.checkId(req.params.userId);
+      id = validation.checkId(id);
+    } catch (e) {
+      return res.status(404).render("error", {
+        linkRoute: "/",
+        linkDesc: "Return to the homepage",
+        errorName: "404 Not Found",
+        errorDesc: "This page doesn't exist!",
+        Title: "404 Not Found",
+      });
+    }
+    try {
       let { bio, instruments, genres } = req.body;
 
       if (typeof bio !== "string") throw "Bio must be a string.";
@@ -144,7 +162,7 @@ router
       // TODO: possibly redirect with an alert message?
       return res.redirect(`/users/${id}`);  
     } catch (e) {
-      return res.status(400).render("error", { error: e, Title: "400 Bad Request" });
+      return res.status(400).render("user_edit", {error: e, Title: "Edit Profile"});
     }
   });
 

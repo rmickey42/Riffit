@@ -7,17 +7,9 @@
         
 
         <input type="submit" name="submit_button" id="submit_button" value = "Sign In">
-    </form>
-
-
-    <div class="error-message"></div>
+    </form>    
     
-     
-    {{#if error}}
-    
-    <p class="error">{{error}}</p>  
-    
-    {{/if}}
+    {{> error_msg error=error}}
 
     <a href="/signup">
         <p>Click here to sign up!</p>

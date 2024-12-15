@@ -1,5 +1,8 @@
 <main>
     <h1>Edit Your Profile</h1>
+
+    {{> error_msg error=error}}
+
     <section class="profile">
         <form action="/users/{{user._id}}/edit" method="POST" id="edit-profile-form">
             <img src="{{user.picture}}" alt="Your profile picture" class="profile-picture">

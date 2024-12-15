@@ -4,22 +4,24 @@
     <input type="submit" id="search-button" value="Search">
 
     <label for="tag-input-1">Tag 1:</label>
-    <input type="text" name="tag-input-1" placeholder="Tag" id="tag-input-1">
+    <input type="text" name="tag-input-1" placeholder="Tag" id="tag-input-1" required>
 
     <button id="add-tag-button" type="button">Add Tag</button>
     <button id="remove-tag-button" type="button">Remove Tag</button>
 
+    <label for="sort-type">Sort by:</label>
+    <select id="sort-type" name="sort-type">
+      <option value="newest" selected>Newest</option>
+      <option value="oldest">Oldest</option>
+      <option value="most_popular">Most Popular</option>
+      <option value="least_popular">Least Popular</option>
+    </select>
+
     <input type="number" name="tagCount" id="tagCount" value="1" hidden>
   </form>
 
-   
-
-  {{#if error}}
+  {{> error_msg error=error}}
   
-    <p><strong>Error: </strong>{{error}}</p>
- 
-  {{/if}}
-
   {{#if posts}}
   <ul>
     {{#each posts}}

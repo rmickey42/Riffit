@@ -36,7 +36,7 @@ try {
     let update =  {
         tags: ["Hard Rock"],
         title: "Second Post Now",
-        fortnite: "LOL youre gay"
+        fortnite: "LOL"
     }
     const updatedpost = await posts.updatePost(post._id, update)
     console.log(updatedpost)
