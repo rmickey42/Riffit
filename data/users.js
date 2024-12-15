@@ -39,17 +39,13 @@ const exportedMethods = {
   async signInUser(username, password) {
     let userTrim = validation.checkString(username, "Username");
     let passTrim = validation.checkString(password, "Password");
-  
-    let foundUsr = await this.getUserByUsername(userTrim, true)
-  
-    if(foundUsr){
-      let pass_check = await bcrypt.compare(passTrim,foundUsr.password)
-  
-      if(pass_check){
-        delete(foundUsr.password)
-        return foundUsr
-      } else throw "Either the username or password is invalid"
-  
+    let foundUsr = await this.getUserByUsername(userTrim, true);
+    if (foundUsr) {
+      let pass_check = await bcrypt.compare(passTrim, foundUsr.password);
+      if (pass_check) {
+        delete foundUsr.password;
+        return foundUsr;
+      } else throw "Either the username or password is invalid";
     } else {
       throw "Either the username or password is invalid";
     }
@@ -201,7 +197,7 @@ const exportedMethods = {
     ];
     let updateKeys = Object.keys(userInfo);
     updateKeys.forEach((element) => {
-      if (!userParam.includes(element))  {
+      if (!userParam.includes(element)) {
         throw `${element} is not a valid parameter in updateUser`;
       }
     });
@@ -216,7 +212,6 @@ const exportedMethods = {
       throw `Error: Update failed, could not find a user with id of ${id}`;
 
     delete updateInfo.password;
-
     updateInfo._id = updateInfo._id.toString();
     return updateInfo;
   },

@@ -25,17 +25,13 @@ router
 
       const user = await userData.getUserById(id);
 
-      const currentUser = req.session.user && req.session.user._id === id;
+      const profileOwner = req.session.user && req.session.user._id === id;
 
-      if (currentUser) {
-        return res.render("user", {
-          user: req.session.user,
-          Title: req.session.user.username,
-          profileOwner: true
-        });
-      } else {
-        return res.render("user", { user: user, Title: user.username });
-      }
+      return res.render("user", {
+        user: user,
+        Title: user.username,
+        profileOwner: profileOwner
+      });
     } catch (e) {
       return res.status(404).json({ error: e });
     }
@@ -46,11 +42,16 @@ router.route("/:userId/comments").get(async (req, res) => {
     let id = req.params.userId;
     id = validation.checkId(id);
     const user = await userData.getUserById(id);
-    return res.render("user_comments", { user: user, Title: `${user.username}'s Comments` });
+    return res.render("user_comments", {
+      user: user,
+      Title: `${user.username}'s Comments`,
+    });
   } catch (e) {
-    return res
-      .status(404)
-      .render("404", { linkRoute: "/", linkDesc: "Return to the homepage", Title: "404 Not Found"});
+    return res.status(404).render("404", {
+      linkRoute: "/",
+      linkDesc: "Return to the homepage",
+      Title: "404 Not Found",
+    });
   }
 });
 
@@ -61,11 +62,16 @@ router
       let id = req.params.userId;
       id = validation.checkId(id);
       const user = await userData.getUserById(id);
-      return res.render("user_liked", { user: user, Title: `${user.username}'s Likes` });
+      return res.render("user_liked", {
+        user: user,
+        Title: `${user.username}'s Likes`,
+      });
     } catch (e) {
-      return res
-        .status(404)
-        .render("404", { linkRoute: "/", linkDesc: "Return to the homepage", Title: "404 Not Found" });
+      return res.status(404).render("404", {
+        linkRoute: "/",
+        linkDesc: "Return to the homepage",
+        Title: "404 Not Found",
+      });
     }
   });
 
@@ -76,11 +82,16 @@ router
       let id = req.params.userId;
       id = validation.checkId(id);
       const user = await userData.getUserById(id);
-      return res.render("user_disliked", { user: user, Title: `${user.username}'s Dislikes` });
+      return res.render("user_disliked", {
+        user: user,
+        Title: `${user.username}'s Dislikes`,
+      });
     } catch (e) {
-      return res
-        .status(404)
-        .render("404", { linkRoute: "/", linkDesc: "Return to the homepage", Title: "404 Not Found" });
+      return res.status(404).render("404", {
+        linkRoute: "/",
+        linkDesc: "Return to the homepage",
+        Title: "404 Not Found",
+      });
     }
   });
 
@@ -91,17 +102,22 @@ router
       let id = req.params.userId;
       id = validation.checkId(id);
       const user = await userData.getUserById(id);
-      return res.render("user_favorites", { user: user, Title: `${user.username}'s Favorites` });
+      return res.render("user_favorites", {
+        user: user,
+        Title: `${user.username}'s Favorites`,
+      });
     } catch (e) {
-      return res
-        .status(404)
-        .render("404", { linkRoute: "/", linkDesc: "Return to the homepage", Title: "404 Not Found" });
+      return res.status(404).render("404", {
+        linkRoute: "/",
+        linkDesc: "Return to the homepage",
+        Title: "404 Not Found",
+      });
     }
   });
 
 // authenticated in middleware
 router
-  .route("/:userId/edit") //working, nothing in userId/edit
+  .route("/:userId/edit") //working
   .get(async (req, res) => {
     let id = req.params.userId;
     const user = await userData.getUserById(id);
@@ -111,10 +127,6 @@ router
     try {
       let id = validation.checkId(req.params.userId);
       let { bio, instruments, genres } = req.body;
-
-      console.log("BIO: " + bio);
-      console.log("Ins: " + instruments);
-      console.log("GENRES: " + genres);
 
       if (typeof bio !== "string") throw "Bio must be a string.";
 
@@ -126,13 +138,13 @@ router
 
       let userInfo = { bio, instruments, genres };
 
-      let user = await userData.updateUser(id, userInfo);
-      req.session.user = user;
+      let updatedUser = await userData.updateUser(id, userInfo);
+      req.session.user = updatedUser;
 
       // TODO: possibly redirect with an alert message?
-      return res.redirect(`/users/${id}`);
+      return res.redirect(`/users/${id}`);  
     } catch (e) {
-      return res.status(400).render("user_edit", { error: e });
+      return res.status(400).render("error", { error: e, Title: "400 Bad Request" });
     }
   });
 
