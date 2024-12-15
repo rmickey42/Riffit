@@ -3,7 +3,7 @@ import { ObjectId } from "mongodb";
 import bcrypt from "bcrypt";
 import validation from "../validation.js";
 
-const BCRYPT_SALT = 11
+const BCRYPT_SALT = 11;
 
 const exportedMethods = {
   async getAllUsers() {
@@ -24,15 +24,17 @@ const exportedMethods = {
     let userTrim = validation.checkUserName(username, "Username");
     let col = await users();
 
-    let res = await col.findOne({"username" : userTrim,}, {collation: {locale: 'en', strength: 2}}); // case insensitive
-    if(!res) return false;
+    let res = await col.findOne(
+      { username: userTrim },
+      { collation: { locale: "en", strength: 2 } }
+    ); // case insensitive
+    if (!res) return false;
 
     res["_id"] = res["_id"].toString();
 
     if (!includePassword) delete res.password;
 
-    return res
-
+    return res;
   },
   async signInUser(username, password) {
     let userTrim = validation.checkString(username, "Username");
@@ -49,7 +51,7 @@ const exportedMethods = {
       } else throw "Either the username or password is invalid"
   
     } else {
-      throw "Either the username or password is invalid"
+      throw "Either the username or password is invalid";
     }
   },
   async addUser(username, password) {
@@ -79,7 +81,7 @@ const exportedMethods = {
       learnedPosts: [],
       favoritePosts: [],
     };
-    
+
     const newInsertInformation = await userCollection.insertOne(newUser);
     if (!newInsertInformation.insertedId) throw "Insert failed!";
     return await this.getUserById(newInsertInformation.insertedId.toString());
@@ -134,7 +136,7 @@ const exportedMethods = {
     }
     return user.favoritePosts;
   },
- 
+
   async updateUser(id, userInfo) {
     id = validation.checkId(id);
     if (userInfo.username)
@@ -142,7 +144,7 @@ const exportedMethods = {
     if (userInfo.password)
       userInfo.password = validation.checkString(userInfo.password, "password");
     if (userInfo.bio)
-      userInfo.bio = validation.checkString(userInfo.password, "bio");
+      userInfo.bio = validation.checkString(userInfo.bio, "bio");
     if (userInfo.dailyStreak)
       userInfo.dailyStreak = validation.checkNum(
         userInfo.dailyStreak,
@@ -181,6 +183,28 @@ const exportedMethods = {
         userInfo.favoritePosts,
         "favorite posts"
       );
+
+    let userParam = [
+      "username",
+      "password",
+      "bio",
+      "dailyStreak",
+      "picture",
+      "instruments",
+      "genres",
+      "comments",
+      "posts",
+      "likedPosts",
+      "dislikedPosts",
+      "learnedPosts",
+      "favoritePosts",
+    ];
+    let updateKeys = Object.keys(userInfo);
+    updateKeys.forEach((element) => {
+      if (!userParam.includes(element))  {
+        throw `${element} is not a valid parameter in updateUser`;
+      }
+    });
 
     const userCollection = await users();
     const updateInfo = await userCollection.findOneAndUpdate(

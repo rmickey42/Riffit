@@ -1,7 +1,7 @@
-import {posts} from '../config/mongoCollections.js';
-import userData from './users.js';
-import {ObjectId} from 'mongodb';
-import validation from '../validation.js';
+import { posts } from "../config/mongoCollections.js";
+import userData from "./users.js";
+import { ObjectId } from "mongodb";
+import validation from "../validation.js";
 
 const exportedMethods = {
   async getAllPosts() {
@@ -12,65 +12,88 @@ const exportedMethods = {
   async getPostById(id) {
     id = validation.checkId(id, "Post ID");
     const postCollection = await posts();
-    const post = await postCollection.findOne({_id: new ObjectId(id)});
-    if (!post) throw 'Error: Post not found';
+    const post = await postCollection.findOne({ _id: new ObjectId(id) });
+    if (!post) throw "Error: Post not found";
 
     return post;
   },
 
-  async getPostsByTags(tags_lst, sorting='newest') {
-    tags_lst = validation.checkStringArray(tags_lst, 'Tags');
-    
+  async getPostsByTags(tags_lst, sorting = "newest") {
+    tags_lst = validation.checkStringArray(tags_lst, "Tags");
+
     const postCollection = await posts();
 
-    if (sorting === 'newest') {
-      return await postCollection.find({tags: { $in: tags_lst }}).sort({ _id: -1 }).toArray();
-    } else if (sorting === 'oldest') {
-      return await postCollection.find({tags: { $in: tags_lst }}).sort({ _id: 1 }).toArray();
-    } else if (sorting === 'most_popular') {
-      return await postCollection.find({tags: { $in: tags_lst }}).sort({ rating: -1 }).toArray();
-    }
-    else if (sorting === 'least_popular') {
-      return await postCollection.find({tags: { $in: tags_lst }}).sort({ rating: 1 }).toArray();
+    if (sorting === "newest") {
+      return await postCollection
+        .find({ tags: { $in: tags_lst } })
+        .sort({ _id: -1 })
+        .toArray();
+    } else if (sorting === "oldest") {
+      return await postCollection
+        .find({ tags: { $in: tags_lst } })
+        .sort({ _id: 1 })
+        .toArray();
+    } else if (sorting === "most_popular") {
+      return await postCollection
+        .find({ tags: { $in: tags_lst } })
+        .sort({ rating: -1 })
+        .toArray();
+    } else if (sorting === "least_popular") {
+      return await postCollection
+        .find({ tags: { $in: tags_lst } })
+        .sort({ rating: 1 })
+        .toArray();
     } else {
-      throw 'Invalid sorting method';
+      throw "Invalid sorting method";
     }
   },
 
-  async getPostsByUserId(userId, sorting='newest') {
-    userId = validation.checkId(userId, 'User ID');
+  async getPostsByUserId(userId, sorting = "newest") {
+    userId = validation.checkId(userId, "User ID");
 
     const postCollection = await posts();
-    if (sorting === 'newest') {
-      return await postCollection.find({userId: userId}).sort({ _id: -1 }).toArray();
-    } else if (sorting === 'oldest') {
-      return await postCollection.find({userId: userId}).sort({ _id: 1 }).toArray();
-    } else if (sorting === 'most_popular') {
-      return await postCollection.find({userId: userId}).sort({ rating: -1 }).toArray();
-    } else if (sorting === 'least_popular') {
-      return await postCollection.find({userId: userId}).sort({ rating: 1 }).toArray();
+    if (sorting === "newest") {
+      return await postCollection
+        .find({ userId: userId })
+        .sort({ _id: -1 })
+        .toArray();
+    } else if (sorting === "oldest") {
+      return await postCollection
+        .find({ userId: userId })
+        .sort({ _id: 1 })
+        .toArray();
+    } else if (sorting === "most_popular") {
+      return await postCollection
+        .find({ userId: userId })
+        .sort({ rating: -1 })
+        .toArray();
+    } else if (sorting === "least_popular") {
+      return await postCollection
+        .find({ userId: userId })
+        .sort({ rating: 1 })
+        .toArray();
     } else {
-      throw 'Invalid sorting method';
+      throw "Invalid sorting method";
     }
   },
 
   async addPost(title, userId, content, notation, key, instrument, tags) {
-    title = validation.checkString(title, 'Title');
-    content = validation.checkString(content, 'Content');
-    userId = validation.checkId(posterId, 'Poster ID');
+    title = validation.checkString(title, "Title");
+    content = validation.checkString(content, "Content");
+    userId = validation.checkId(posterId, "Poster ID");
 
-    notation = validation.checkString(notation, 'Notation');
-    key = validation.checkString(key, 'Key');
-    instrument = validation.checkString(instrument, 'Instrument');
+    notation = validation.checkString(notation, "Notation");
+    key = validation.checkString(key, "Key");
+    instrument = validation.checkString(instrument, "Instrument");
 
-    if (typeof tags === 'undefined' || tags === null) {
+    if (typeof tags === "undefined" || tags === null) {
       tags = [];
     } else {
-      tags = validation.checkStringArray(tags, 'Tags');
+      tags = validation.checkStringArray(tags, "Tags");
     }
 
     const user = await userData.getUserById(userId);
-    if (!user) throw 'User for post not found';
+    if (!user) throw "User for post not found";
 
     const newPost = {
       title: title,
@@ -82,7 +105,7 @@ const exportedMethods = {
       key: key,
       instrument: instrument,
       tags: tags,
-      date: new Date()
+      date: new Date(),
     };
 
     const postCollection = await posts();
@@ -96,96 +119,61 @@ const exportedMethods = {
 
     const postCollection = await posts();
     const deletionInfo = await postCollection.findOneAndDelete({
-      _id: new ObjectId(id)
+      _id: new ObjectId(id),
     });
 
     if (!deletionInfo) throw `Could not delete post with id of ${id}`;
-    return {...deletionInfo, deleted: true};
+    return { ...deletionInfo, deleted: true };
   },
 
-  async updatePostPut(id, updatedPost) {
-    if (updatedPost.userId) {
-      throw 'Cannot update userId of post';
-    }
-    if (updatedPost.content) {
-      throw 'Cannot update content of post';
-    }
-    if (updatedPost.rating) {
-      throw 'Cannot directly update rating of post';
-    }
 
-    id = validation.checkId(id, "Post ID");
-
-    updatedPost.title = validation.checkString(updatedPost.title, 'title');
-    updatedPost.tags = validation.checkStringArray(updatedPost.tags, 'Tags');
-    updatedPost.notation = validation.checkString(updatedPost.notation, 'Notation');
-    updatedPost.key = validation.checkString(updatedPost.key, 'Key');
-    updatedPost.instrument = validation.checkString(updatedPost.instrument, 'Instrument');
-
-    const postCollection = await posts();
-    const updateInfo = await postCollection.findOneAndReplace(
-      {_id: new ObjectId(id)},
-      updatedPostData,
-      {returnDocument: 'after'}
-    );
-
-    if (!updateInfo)
-      throw `Error: Update failed! Could not update post with id ${id}`;
-    return updateInfo;
-  },
-
-  async updatePostPatch(id, updatedPost) {
+  async updatePost(id, updatedPost) {
     const updatedPostData = {};
     if (updatedPost.userId) {
-      throw 'Cannot update userId of post';
+      throw "Cannot update userId of post";
     }
     if (updatedPost.content) {
-      throw 'Cannot update content of post';
+      throw "Cannot update content of post";
     }
     if (updatedPost.rating) {
-      throw 'Cannot directly update rating of post';
+      throw "Cannot directly update rating of post";
     }
 
     let tags = [];
     if (updatedPost.tags) {
-      tags = validation.checkStringArray(
-        updatedPost.tags,
-        'Tags'
-      );
+      tags = validation.checkStringArray(updatedPost.tags, "Tags");
     }
 
     if (updatedPost.title) {
       updatedPostData.title = validation.checkString(
         updatedPost.title,
-        'Title'
+        "Title"
       );
     }
 
     if (updatedPost.notation) {
       updatedPostData.notation = validation.checkString(
         updatedPost.notation,
-        'Notation'
+        "Notation"
       );
     }
 
     if (updatedPost.key) {
-      updatedPostData.key = validation.checkString(
-        updatedPost.key, 
-        'Key');
+      updatedPostData.key = validation.checkString(updatedPost.key, "Key");
     }
 
     if (updatedPost.instrument) {
       updatedPostData.instrument = validation.checkString(
         updatedPost.instrument,
-        'Instrument'
+        "Instrument"
       );
     }
 
     const postCollection = await posts();
     let newPost = await postCollection.findOneAndUpdate(
-      {_id: new ObjectId(id)},
-      {$set: updatedPostData, $addToSet: {tags: {$each: tags}}},
-      {returnDocument: 'after'}
+      { _id: new ObjectId(id) },
+      { $set: updatedPostData, $addToSet: { tags: { $each: tags } } },
+      { returnDocument: "after" }
     );
 
     if (!newPost) throw `Could not update the post with id ${id}`;
@@ -194,20 +182,20 @@ const exportedMethods = {
   },
 
   async renameTag(oldTag, newTag) {
-    oldTag = validation.checkString(oldTag, 'Old Tag');
-    newTag = validation.checkString(newTag, 'New Tag');
-    if (oldTag === newTag) throw 'tags are the same';
+    oldTag = validation.checkString(oldTag, "Old Tag");
+    newTag = validation.checkString(newTag, "New Tag");
+    if (oldTag === newTag) throw "tags are the same";
 
     let findDocuments = {
-      tags: oldTag
+      tags: oldTag,
     };
 
     let firstUpdate = {
-      $addToSet: {tags: newTag}
+      $addToSet: { tags: newTag },
     };
 
     let secondUpdate = {
-      $pull: {tags: oldTag}
+      $pull: { tags: oldTag },
     };
     const postCollection = await posts();
     let updateOne = await postCollection.updateMany(findDocuments, firstUpdate);
@@ -217,9 +205,9 @@ const exportedMethods = {
       findDocuments,
       secondUpdate
     );
-    if (updateTwo.modifiedCount === 0) throw [500, 'Could not update tags'];
+    if (updateTwo.modifiedCount === 0) throw [500, "Could not update tags"];
     return await this.getPostsByTag(newTag);
-  }
+  },
 };
 
 export default exportedMethods;
