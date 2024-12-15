@@ -135,77 +135,56 @@ const exportedMethods = {
 
   async updateUser(id, userInfo) {
     id = validation.checkId(id);
+    const updatedUserData = {};
     if (userInfo.username)
-      userInfo.username = validation.checkString(userInfo.username, "username");
+      updatedUserData.username = validation.checkString(userInfo.username, "username");
     if (userInfo.password)
-      userInfo.password = validation.checkString(userInfo.password, "password");
+      updatedUserData.password = validation.checkString(userInfo.password, "password");
     if (userInfo.bio)
-      userInfo.bio = validation.checkString(userInfo.bio, "bio");
+      updatedUserData.bio = validation.checkString(userInfo.bio, "bio");
     if (userInfo.dailyStreak)
-      userInfo.dailyStreak = validation.checkNum(
+      updatedUserData.dailyStreak = validation.checkNum(
         userInfo.dailyStreak,
         "daily streak"
       );
     if (userInfo.picture)
-      userInfo.picture = validation.checkString(userInfo.picture, "picture");
+      updatedUserData.picture = validation.checkString(userInfo.picture, "picture");
     if (userInfo.instruments)
-      userInfo.instruments = validation.checkStringArray(
+      updatedUserData.instruments = validation.checkStringArray(
         userInfo.instruments,
         "instruments"
       );
     if (userInfo.genres)
-      userInfo.genres = validation.checkStringArray(userInfo.genres, "genres");
+      updatedUserData.genres = validation.checkStringArray(userInfo.genres, "genres");
     if (userInfo.comments)
-      userInfo.comments = validation.checkRefId(userInfo.comments, "comments");
+      updatedUserData.comments = validation.checkRefId(userInfo.comments, "comments");
     if (userInfo.posts)
-      userInfo.posts = validation.checkRefId(userInfo.posts, "posts");
+      updatedUserData.posts = validation.checkRefId(userInfo.posts, "posts");
     if (userInfo.likedPosts)
-      userInfo.likedPosts = validation.checkRefId(
+      updatedUserData.likedPosts = validation.checkRefId(
         userInfo.likedPosts,
         "liked posts"
       );
     if (userInfo.dislikedPosts)
-      userInfo.dislikedPosts = validation.checkRefId(
+      updatedUserData.dislikedPosts = validation.checkRefId(
         userInfo.dislikedPosts,
         "disliked posts"
       );
     if (userInfo.learnedPosts)
-      userInfo.learnedPosts = validation.checkRefId(
+      updatedUserData.learnedPosts = validation.checkRefId(
         userInfo.learnedPosts,
         "learned posts"
       );
     if (userInfo.favoritePosts)
-      userInfo.favoritePosts = validation.checkRefId(
+      updatedUserData.favoritePosts = validation.checkRefId(
         userInfo.favoritePosts,
         "favorite posts"
       );
 
-    let userParam = [
-      "username",
-      "password",
-      "bio",
-      "dailyStreak",
-      "picture",
-      "instruments",
-      "genres",
-      "comments",
-      "posts",
-      "likedPosts",
-      "dislikedPosts",
-      "learnedPosts",
-      "favoritePosts",
-    ];
-    let updateKeys = Object.keys(userInfo);
-    updateKeys.forEach((element) => {
-      if (!userParam.includes(element)) {
-        throw `${element} is not a valid parameter in updateUser`;
-      }
-    });
-
     const userCollection = await users();
     const updateInfo = await userCollection.findOneAndUpdate(
       { _id: new ObjectId(id) },
-      { $set: userInfo },
+      { $set: updatedUserData },
       { returnDocument: "after" }
     );
     if (!updateInfo)

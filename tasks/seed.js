@@ -10,7 +10,6 @@ let u = "username";
 let p = "Pa$$w0rd";
 
 const valid = await users.addUser(u, p);
-console.log(valid);
 
 try {
   let update = {
@@ -23,5 +22,29 @@ try {
 } catch (error) {
   console.log(error);
 }
+
+const post = await posts.addPost(
+  "First Post",
+  valid._id,
+  "somethingsomething",
+  "somethingsomething",
+  "G major",
+  "guitar"
+);
+
+try {
+    let update =  {
+        tags: ["Hard Rock"],
+        title: "Second Post Now",
+        fortnite: "LOL youre gay"
+    }
+    const updatedpost = await posts.updatePost(post._id, update)
+    console.log(updatedpost)
+} catch (error) {
+    console.log(error)
+}
+
+
+
 
 await closeConnection();
