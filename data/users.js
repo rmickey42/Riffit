@@ -44,7 +44,6 @@ const exportedMethods = {
       let pass_check = await bcrypt.compare(passTrim,foundUsr.password)
   
       if(pass_check){
-        delete(foundUsr._id)
         delete(foundUsr.password)
         return foundUsr
       } else throw "Either the username or password is invalid"
