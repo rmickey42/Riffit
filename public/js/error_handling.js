@@ -1,4 +1,6 @@
-//AJAX form with error handling (client-side)
+//Client side validation
+
+//So far: Client Side Login and Signup completed.
 
 (function ($) {
   let errorMessage = $(".error-message");
@@ -14,100 +16,103 @@
   let tagInput = $("#tag-input-1");
 
   signInForm.submit(function (event) {
-    event.preventDefault();
+    
     let username, password;
 
     try {
-      username = checkString(usernameInput.val(), "Username");
-      password = checkString(passwordInput.val(), "Password");
+      username = validation.checkString(usernameInput.val(), "Username");
+      password = validation.checkString(passwordInput.val(), "Password");
     } catch (e) {
       errorMessage.text(e).show();
+      event.preventDefault();
       return;
     }
 
-    if (username && password) {
-      $.ajax({
-        method: "POST",
-        url: "/login",
-        data: { username: username, password: password },
-        success: function (response) {
-          errorMessage.hide().text("");
-          window.location.href = "/user/me";
-        },
-        error: function (xhr) {
-          errorMessage.text(xhr.responseText).show();
-        },
-      });
-    }
+    errorMessage.hide().text("");
+
+    // if (username && password) {
+    //   $.ajax({
+    //     method: "POST",
+    //     url: "/login",
+    //     data: { username: username, password: password },
+    //     success: function (response) {
+    //       errorMessage.hide().text("");
+    //       window.location.href = "/users/me";
+    //     },
+    //     error: function () {
+    //       errorMessage.text("Either Username or Password is Invalid.").show();
+        
+    //     },
+    //   });
+    // }
   });
 
   signUpForm.submit(function (event) {
-    event.preventDefault();
+    
     let username, password, confirmPassword;
 
     try {
-      username = checkString(usernameInput.val(), "Username");
-      password = checkString(passwordInput.val(), "Password");
-      confirmPassword = checkString(
-        confirmPasswordInput.val(),
-        "Confirmed Password"
-      );
+      username = validation.checkUsername(usernameInput.val(), "Username");
+      password = validation.checkPassword(passwordInput.val(), "Password");
+      confirmPassword = confirmPasswordInput.val()
+      if (password !== confirmPassword){
+        throw "Passwords must match!"
+      }
     } catch (e) {
       errorMessage.text(e).show();
+      event.preventDefault();
       return;
     }
 
-    if (username && password && confirmPassword) {
-      $.ajax({
-        method: "POST",
-        url: "/signup",
-        data: {
-          username: username,
-          password: password,
-          confirmPassword: confirmPassword,
-        },
-        success: function (response) {
-          errorMessage.hide().text("");
-          window.location.href = "/login";
-        },
-        error: function (xhr) {
-          errorMessage.text(xhr.responseText).show();
-        },
-      });
-    }
+    errorMessage.hide().text("");
+
+    // if (username && password && confirmPassword) {
+      // $.ajax({
+      //   method: "POST",
+      //   url: "/signup",
+      //   data: {
+      //     username: username,
+      //     password: password,
+      //     confirmPassword: confirmPassword,
+      //   },
+      //   success: function (response) {
+      //     errorMessage.hide().text("");
+      //     window.location.href = "/login";
+      //   },
+      //   error: function (xhr) {
+      //     errorMessage.text(xhr.responseText).show();
+      //   },
+      // });
+    // }
   });
 
-  searchForm.submit(function (event) {
-    event.preventDefault();
+  // searchForm.submit(function (event) {
+  //   event.preventDefault();
+  //   let tag;
 
-    try {
-      let tag = checkString(tagInput.val());
-    } catch (e) {
-      errorMessage.text(e).show();
-      return;
-    }
+  //   try {
+  //     tag = checkString(tagInput.val());
+  //   } catch (e) {
+  //     errorMessage.text(e).show();
+  //     return;
+  //   }
 
-    if (tag) {
-      $.ajax({
-        method: "POST",
-        url: "/search",
-        data: {
-          tag: tag,
-        },
-        success: function (response) {
-          errorMessage.hide().text("");
-        //   window.location.href = "/searchResults"; //Search Results page!
-        },
-        error: function (xhr) {
-          errorMessage.text(xhr.responseText).show();
-        },
-      });
-    }
-  });
+  //   if (tag) {
+  //     $.ajax({
+  //       method: "POST",
+  //       url: "/search",
+  //       data: {
+  //         tag: tag,
+  //       },
+  //       success: function (response) {
+  //         errorMessage.hide().text("");
+  //       //   window.location.href = "/searchResults"; //Search Results page!
+  //       },
+  //       error: function (xhr) {
+  //         errorMessage.text(xhr.responseText).show();
+  //       },
+  //     });
+  //   }
+  // });
 
-  const checkString = (str, value) => {
-    if (typeof str !== "string") throw `${value} must be a string!`;
-    if (str.trim().length === 0 || !str) throw `You must provide a ${value}!`;
-    return str.trim();
-  };
 })(window.jQuery);

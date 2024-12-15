@@ -87,9 +87,10 @@ router
   .route("/search")
   .get(async (req, res) => {
     try {
-      res.render("search", { Title: "Search" });
+      console.log("Search Page")
+      return res.render("search", { Title: "Search" });
     } catch (e) {
-      res.status(500).json({ error: e });
+      return res.status(500).json({ error: e });
     }
 
   }).post(async (req, res) => {
@@ -121,7 +122,7 @@ router
         return res.render("search", { posts: posts });
       }
     } catch (e) {
-      res.status(500).render("search", { error: "Internal Server Error" });
+      return res.status(500).render("search", { error: "Internal Server Error" });
     }
   });
 

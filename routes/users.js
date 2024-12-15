@@ -12,8 +12,10 @@ router
             let id = req.params.userId;
             id = validation.checkId(id);
 
+            
             if (req.session.user) {
                 if (req.session.user._id === id) {
+                    console.log("User_me page!")
                     return res.render("user_me", {user: req.session.user});
                 }
             } else {
@@ -21,6 +23,8 @@ router
                 return res.render("user", {user: user});
             }
         } catch (e) {
+            console.log("User_me page! error")
+
             return res.status(404).json({error: e});
         }
     });
@@ -82,7 +86,7 @@ router
     .route('/:userId/edit')
     .get(async (req, res) => {
         let id = req.params.userId;
-        res.render("user_edit", {user: req.session.user});
+        return res.render("user_edit", {user: req.session.user});
     })
     .post(async (req, res) => {
         try {
@@ -93,7 +97,7 @@ router
             req.session.user = user;
 
             // TODO: possibly redirect with an alert message?
-            res.redirect(`/users/${id}`);
+            return res.redirect(`/users/${id}`);
         } catch (e) {
             return res.status(400).render("user_edit", {error: e});
         }
@@ -104,6 +108,7 @@ router
     .get(async (req, res) => {
         if (req.session.user) {
             let id = req.session.user._id;
+            console.log(id)
             return res.redirect(`/users/${id}`);
         } else {
             return res.redirect("/login");

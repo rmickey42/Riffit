@@ -28,7 +28,7 @@ const constructorMethod = (app) => {
   app.use("/public", express.static("public"));
 
   // Middleware: records timestamp of every request - shows if user is authenticated or not
-  app.use("/", (req, res, next) => {
+  app.use((req, res, next) => {
     let authenticationStatus;
 
     if (req.session.user) authenticationStatus = "Authenticated";
@@ -51,42 +51,42 @@ const constructorMethod = (app) => {
     if (req.path === "/") {
       if (req.authenticationStatus === "Authenticated") {
         // redirect to search. Homepage?
-        res.redirect("/search");
-      } else res.redirect("/login");
+        return res.redirect("/users/me");
+      } else {
+        return res.redirect("/login");
+      }
     }
-    next()
+    next();
   });
 
-    app.use("/:userId/edit", (req, res, next) => {
-      try {
-        let id = validation.checkId(req.params.userId);
-        if (req.session.user) {
-          if (req.session.user._id === id) {
-            next();
-          } else {
-            return res.status(401).render("401", {
-              linkRoute: "/user/me",
-              linkDesc: "Return to your profile",
-            });
-          }
-
+  app.use("/:userId/edit", (req, res, next) => {
+    try {
+      let id = validation.checkId(req.params.userId);
+      if (req.session.user) {
+        if (req.session.user._id === id) {
+          next();
+        } else {
           return res.status(401).render("401", {
             linkRoute: "/user/me",
             linkDesc: "Return to your profile",
           });
-        } else {
-          return res
-            .status(401)
-            .render("401", { linkRoute: "/login", linkDesc: "Login" });
         }
-        
-      } catch (e) {
-        return res
-          .status(404)
-          .render("404", { linkRoute: "/", linkDesc: "Return to the homepage" });
-      }
 
-    });
+        return res.status(401).render("401", {
+          linkRoute: "/user/me",
+          linkDesc: "Return to your profile",
+        });
+      } else {
+        return res
+          .status(401)
+          .render("401", { linkRoute: "/login", linkDesc: "Login" });
+      }
+    } catch (e) {
+      return res
+        .status(404)
+        .render("404", { linkRoute: "/", linkDesc: "Return to the homepage" });
+    }
+  });
 };
 
 export default constructorMethod;

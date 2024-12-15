@@ -3,7 +3,7 @@ import { ObjectId } from "mongodb";
 import bcrypt from "bcrypt";
 import validation from "../validation.js";
 
-const BCRYPT_SALT = 16
+const BCRYPT_SALT = 11
 
 const exportedMethods = {
   async getAllUsers() {
@@ -35,8 +35,8 @@ const exportedMethods = {
 
   },
   async signInUser(username, password) {
-    let userTrim = validation.checkUserName(username, "Username");
-    let passTrim = validation.checkPassword(password, "Password");
+    let userTrim = validation.checkString(username, "Username");
+    let passTrim = validation.checkString(password, "Password");
   
     let foundUsr = await this.getUserByUsername(userTrim, true)
   
@@ -47,10 +47,10 @@ const exportedMethods = {
         delete(foundUsr._id)
         delete(foundUsr.password)
         return foundUsr
-      } else throw "Either the username or password are invalid"
+      } else throw "Either the username or password is invalid"
   
     } else {
-      throw "Either the username or password are invalid"
+      throw "Either the username or password is invalid"
     }
   },
   async addUser(username, password) {
@@ -58,7 +58,11 @@ const exportedMethods = {
 
     password = validation.checkPassword(password, "password");
 
-    let foundUsr = await this.getUserByUsername(username)
+    const userCollection = await users();
+
+    let foundUsr = await userCollection.findOne({
+      username: username,
+    });
     if (foundUsr) throw `User with name ${username} already exists`;
 
     let newUser = {
@@ -76,7 +80,7 @@ const exportedMethods = {
       learnedPosts: [],
       favoritePosts: [],
     };
-    const userCollection = await users();
+    
     const newInsertInformation = await userCollection.insertOne(newUser);
     if (!newInsertInformation.insertedId) throw "Insert failed!";
     return await this.getUserById(newInsertInformation.insertedId.toString());
