@@ -1,0 +1,42 @@
+<main>
+    <h1>Edit Your Profile</h1>
+    <section class="profile">
+        <form action="/users/{{user._id}}/edit" method="POST" id="edit-profile-form">
+            <img src="{{user.picture}}" alt="Your profile picture" class="profile-picture">
+
+            <label for="bio">Bio:
+                <textarea id="bio" name="bio">{{user.bio}}</textarea>
+            </label>
+
+            <label for="instruments">Instruments:
+                <input type="text" id="instruments" name="instruments"
+                    value="{{#each user.instruments}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}">
+            </label>
+            <label for="genres">Genres:
+                <input type="text" id="genres" name="genres"
+                    value="{{#each user.genres}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}">
+            </label>
+
+            <input type="submit" value="Save Changes" id="edit_profile_button">
+        </form>
+
+        <p><strong>Daily Streak:</strong> {{user.dailyStreak}}</p>
+        <p><strong>Instruments:</strong> {{#each user.instruments}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}</p>
+        <p><strong>Genres:</strong> {{#each user.genres}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}</p>
+    </section>
+
+    <section class="posts">
+        <h2>Posts</h2>
+        {{#if user.posts.length}}
+        <ul>
+            {{#each user.posts}}
+            <li>
+                {{> post post=this}}
+            </li>
+            {{/each}}
+        </ul>
+        {{else}}
+        <p>You haven't made any posts.</p>
+        {{/if}}
+    </section>
+</main>

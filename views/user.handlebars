@@ -9,24 +9,28 @@
     </section>
 
     <section class="user-actions"></section>
-        <a href="like-button">Liked Posts</button>
-        <a href="dislike-button">Disliked Posts</button>
-        <a href="comment-button">Comments</button>
-        <a href="favorite-button">Favorited Posts</button>
+    <a href="/users/{{user._id}}/likes">Liked Posts</a>
+    <a href="/users/{{user._id}}/dislikes">Disliked Posts</a>
+    <a href="/users/{{user._id}}/comments">Comments</a>
+    <a href="/users/{{user._id}}/favorites">Favorited Posts</a> 
+
+    {{#if profileOwner}}
+    <a href="/users/{{user._id}}/edit">Edit Profile</a>
+    {{/if}}
     </section>
 
     <section class="posts">
         <h2>Posts</h2>
         {{#if user.posts.length}}
-            <ul>
-                {{#each user.posts}}
-                    <li>
-                        {{> post post=this}}
-                    </li>
-                {{/each}}
-            </ul>
+        <ul>
+            {{#each user.posts}}
+            <li>
+                {{> post post=this}}
+            </li>
+            {{/each}}
+        </ul>
         {{else}}
-            <p>{{user.username}} hasn't made any posts.</p>
+        <p>{{user.username}} hasn't made any posts.</p>
         {{/if}}
     </section>
 </main>

@@ -66,25 +66,39 @@ const constructorMethod = (app) => {
         if (req.session.user._id === id) {
           next();
         } else {
-          return res.status(401).render("401", {
+          return res.status(401).render("error", {
             linkRoute: "/user/me",
             linkDesc: "Return to your profile",
+            errorName: "Unauthorized Access",
+            errorDesc: "You do not have permission to view this page.",
           });
         }
 
-        return res.status(401).render("401", {
+        return res.status(401).render("error", {
           linkRoute: "/user/me",
           linkDesc: "Return to your profile",
+          errorName: "Unauthorized Access",
+          errorDesc: "You do not have permission to view this page.",
         });
       } else {
         return res
           .status(401)
-          .render("401", { linkRoute: "/login", linkDesc: "Login" });
+          .render("error", {
+            linkRoute: "/login",
+            linkDesc: "Login",
+            errorName: "Unauthorized Access",
+            errorDesc: "You do not have permission to view this page.",
+          });
       }
     } catch (e) {
       return res
         .status(404)
-        .render("404", { linkRoute: "/", linkDesc: "Return to the homepage" });
+        .render("error", {
+          linkRoute: "/",
+          linkDesc: "Return to the homepage",
+          errorName: "Page Doesn't Exist",
+          errorDesc: "This page doesn't exist!"
+        });
     }
   });
 };
