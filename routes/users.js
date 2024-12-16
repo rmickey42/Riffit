@@ -146,12 +146,8 @@ router
       });
     }
     try {
-      let bio = req.body.bio;
-      let instruments = req.body.instruments;
-      let genres = req.body.genres;
-
+      let { bio, instruments, genres } = req.body;
       bio = validation.checkString(bio, "Bio");
-
       instruments = validation.checkStringArray(
         instruments.split(","),
         "Instruments"
@@ -167,9 +163,11 @@ router
       let updatedUser = await userData.updateUser(id, userInfo);
       req.session.user = updatedUser;
 
-      return res.redirect(`/users/${id}`);  
+      return res.redirect(`/users/${id}`);
     } catch (e) {
-      return res.status(400).render("user_edit", {error: e, Title: "Edit Profile"});
+      return res
+        .status(400)
+        .render("user_edit", { error: e, Title: "Edit Profile" });
     }
   });
 

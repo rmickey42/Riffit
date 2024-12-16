@@ -13,7 +13,7 @@ const authUserMiddleware = (req, res, next) => {
     if (req.session.user) {
       if (req.session.user._id === id) {
         next();
-      } else {
+      } else if (req.session.user) {
         return res.status(401).render("error", {
           linkRoute: "/user/me",
           linkDesc: "Return to your profile",
@@ -22,12 +22,6 @@ const authUserMiddleware = (req, res, next) => {
         });
       }
 
-      return res.status(401).render("error", {
-        linkRoute: "/user/me",
-        linkDesc: "Return to your profile",
-        errorName: "Unauthorized Access",
-        errorDesc: "You do not have permission to view this page.",
-      });
     } else {
       return res
         .status(401)

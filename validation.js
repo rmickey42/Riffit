@@ -1,6 +1,11 @@
 import { ObjectId } from "mongodb";
+import path from "path";
+import fs from "fs";
+import { fileURLToPath } from "url";
 
 const MAX_PFP_SIZE = 1000000; // 1 MB
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const exportedMethods = {
   checkString(str, valName) {
@@ -102,7 +107,7 @@ const exportedMethods = {
     if (file.mimetype !== "image/jpeg") {
       throw "Image must be a JPEG file";
     }
-    if (file.size > MAX_AUDIO_BYTES) {
+    if (file.size > MAX_PFP_SIZE) {
       throw "Image too large";
     }
 
