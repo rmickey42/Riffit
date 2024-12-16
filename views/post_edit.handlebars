@@ -27,7 +27,7 @@
         
         <button type="submit">Edit Post</button>
 
-        <input type="number" name="tagCount" id="tagCount" value="1" hidden>
+        <input type="number" name="tagCount" id="tagCount" value="{{post.tags.length}}" hidden>
     </form> 
     
     {{#if error}}
