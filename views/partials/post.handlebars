@@ -19,6 +19,7 @@
         {{#inList value=post._id list=session.dislikedPosts}}class="clicked"{{/inList}} />
     <img src="/public/img/favorite.png" alt="Favorite" id="favorite_button" onclick="favoritePost('{{post._id}}')" 
         {{#inList value=post._id list=session.favoritePosts}}class="clicked"{{/inList}} />
+    <img src="public/img/comment.png" alt="Comment" id="comment_button" onclick="commentPost('{{post._id}}')" />
 {{/if}}
 {{#if profileOwner}}
     <form action="/posts/{{post._id}}?_method=DELETE" method="POST">
