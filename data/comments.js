@@ -2,6 +2,7 @@ import { comments } from "../config/mongoCollections.js";
 import userData from "./users.js";
 import { ObjectId } from "mongodb";
 import validation from "../validation.js";
+import  postData from "./posts.js";
 
 const exportedMethods = {
   async addComment(content, userId, postId) {
@@ -20,6 +21,8 @@ const exportedMethods = {
 
     const newInsertInformation = await commentCollection.insertOne(comment);
     if (!newInsertInformation.insertedId) throw "Could not add comment";
+    await userData.userArrayAlter(userId, newInsertInformation.insertedId, "comments")
+    await postData.postComment(postId, newInsertInformation.insertedId)
     return await this.getCommentById(
       newInsertInformation.insertedId.toString()
     );
@@ -78,6 +81,8 @@ const exportedMethods = {
     });
 
     if (!deletionInfo) throw `Could not delete comment with id of ${id}`;
+    await userData.userArrayAlter(userId, newInsertInformation.insertedId, "comments", false)
+    await postData.postComment(postId, newInsertInformation.insertedId, false)
     return { ...deletionInfo, deleted: true };
   },
 

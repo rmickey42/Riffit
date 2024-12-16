@@ -121,12 +121,18 @@ const exportedMethods = {
       key: key,
       instrument: instrument,
       tags: tags,
+      comments: [],
       date: new Date(),
     };
 
     const postCollection = await posts();
     const newInsertInformation = await postCollection.insertOne(newPost);
     if (!newInsertInformation.insertedId) throw "Could not add post";
+    await userData.userArrayAlter(
+      userId,
+      newInsertInformation.insertedId.toString(),
+      "posts"
+    );
     return await this.getPostById(newInsertInformation.insertedId.toString());
   },
 
@@ -134,7 +140,7 @@ const exportedMethods = {
     id = validation.checkId(id, "Post ID");
 
     const post = await this.getPostById(id);
-    await audioData.removeAudio(post.content);
+    // await audioData.removeAudio(post.content);
 
     const postCollection = await posts();
     const deletionInfo = await postCollection.findOneAndDelete({
@@ -142,6 +148,7 @@ const exportedMethods = {
     });
 
     if (!deletionInfo) throw `Could not delete post with id of ${id}`;
+    await userData.userArrayAlter(deletionInfo.userId, id, "posts", false);
     return { ...deletionInfo, deleted: true };
   },
 
@@ -198,6 +205,64 @@ const exportedMethods = {
     );
 
     if (!updatePost) throw `Could not update the post with id ${id}`;
+    updatePost._id = updatePost._id.toString();
+    return updatePost;
+  },
+
+
+  //DO NOT USE IMMEDIATELY, USE ADD COMMENT INSTEAD
+  async postComment(id, arrayId, add=true) {
+    id = validation.checkId(id, "Post Id");
+    arrayId = validation.checkId(arrayId, "User Id");
+
+    const postCollection = await posts();
+    if(add){
+      const updatePost = await postCollection.findOneAndUpdate(
+        { _id: new ObjectId(id) },
+        { $addToSet: { comments: arrayId } },
+        { returnDocument: "after" }
+      );
+    }else{
+      const updatePost = await postCollection.findOneAndUpdate(
+        { _id: new ObjectId(id) },
+        { $pull: { comments: arrayId } },
+        { returnDocument: "after" }
+      );
+    }
+    
+
+    if (!updatePost)
+      throw `Error: Update failed, could not find a comment with an id of ${id}`;
+
+    updatePost._id = updatePost._id.toString();
+    return updatePost;
+  },
+
+  async postRating(id, userId, like = true) {
+    id = validation.checkId(id, "Post Id");
+    userId = validation.checkId(userId, "User Id");
+    let updatePost;
+    const postCollection = await posts();
+    if (like) {
+      updatePost = await postCollection.findOneAndUpdate(
+        { _id: new ObjectId(id) },
+        { $inc: { rating: 1 } },
+        { returnDocument: "after" }
+      );
+      if (!updatePost)
+        throw `Error: Update failed, could not find a comment with an id of ${id}`;
+      await userData.userArrayAlter(userId, id, "likedPosts");
+    } else {
+      updatePost = await postCollection.findOneAndUpdate(
+        { _id: new ObjectId(id) },
+        { $inc: { rating: -1 } },
+        { returnDocument: "after" }
+      );
+      if (!updatePost)
+        throw `Error: Update failed, could not find a comment with an id of ${id}`;
+      await userData.userArrayAlter(userId, id, "likedPosts", false);
+    }
+
     updatePost._id = updatePost._id.toString();
     return updatePost;
   },

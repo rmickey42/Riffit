@@ -156,7 +156,9 @@ const exportedMethods = {
         "daily streak"
       );
     if (userInfo.picture)
-      updatedUserData.picture = validation.checkProfilePicture(userInfo.picture);
+      updatedUserData.picture = validation.checkProfilePicture(
+        userInfo.picture
+      );
     if (userInfo.instruments)
       updatedUserData.instruments = validation.checkStringArray(
         userInfo.instruments,
@@ -196,18 +198,63 @@ const exportedMethods = {
       );
 
     const userCollection = await users();
-    const updateInfo = await userCollection.findOneAndUpdate(
+    const updateUser = await userCollection.findOneAndUpdate(
       { _id: new ObjectId(id) },
       { $set: updatedUserData },
       { returnDocument: "after" }
     );
-    if (!updateInfo)
+    if (!updateUser)
       throw `Error: Update failed, could not find a user with id of ${id}`;
 
-    delete updateInfo.password;
-    updateInfo._id = updateInfo._id.toString();
-    return updateInfo;
+    delete updateUser.password;
+    updateUser._id = updateUser._id.toString();
+    return updateUser;
   },
+
+  //given a user id, the id that will be added/removed to the array, and the location of the altering
+  //DO NOT USER IMMEDIATELY FOR COMMENTS, LIKES, AND DISLIKES. USE THE POSTRATING AND ADDCOMMENT METHODS INSTEAD
+  async userArrayAlter(id, arrayId, param, add = true) {
+    id = validation.checkId(id, "User Id");
+    arrayId = validation.checkId(arrayId, "User Id");
+    param = validation.checkString(param, "Type");
+    const type = [
+      "comments",
+      "posts",
+      "likedPosts",
+      "dislikedPosts",
+      "learnedPosts",
+      "favoritePosts",
+    ];
+    if (!type.includes(param)) {
+      throw `${param} is not a valid array reference for user`;
+    }
+
+    const userCollection = await users();
+    let updateUser;
+    if (add) {
+      updateUser = await userCollection.findOneAndUpdate(
+        { _id: new ObjectId(id) },
+        { $addToSet: { [param]: arrayId } },
+        { returnDocument: "after" }
+      );
+    }
+    else {
+      updateUser = await userCollection.findOneAndUpdate(
+        { _id: new ObjectId(id) },
+        { $pull: { [param]: arrayId } },
+        { returnDocument: "after" }
+      );
+    }
+
+    if (!updateUser)
+      throw `Error: Update failed, could not find a ${type} with an id of ${id}`;
+
+    delete updateUser.password;
+    updateUser._id = updateUser._id.toString();
+    return updateUser;
+  },
+
+  
 };
 
 export default exportedMethods;
