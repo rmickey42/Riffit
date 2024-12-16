@@ -137,7 +137,7 @@ router
     try {
       let id = validation.checkId(req.params.userId, "User Id");
       const user = await userData.getUserById(id);
-      const defaultPic = "/public/imgs/defaultPfp.jpeg";
+      const defaultPic = "/public/img/defaultPfp.jpeg";
       return res.render("user_edit", {
         user: user,
         Title: "Edit Profile",
@@ -199,8 +199,8 @@ router.route("/:userId/picture").get(async (req, res) => {
     let id = validation.checkId(req.params.userId, "User Id");
     let user = await userData.getUserById(id);
 
-    if (user.picture === "/public/imgs/defaultPfp.jpeg") {
-      let picturePath = "public/imgs/defaultPfp.jpeg";
+    if (user.picture === "/public/img/defaultPfp.jpeg") {
+      let picturePath = "public/img/defaultPfp.jpeg";
       return res.sendFile(picturePath, { root: "." });
     } else {
       return res.contentType("image/jpeg").send(user.picture.buffer);

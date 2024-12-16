@@ -5,7 +5,7 @@ import validation from "../validation.js";
 
 const BCRYPT_SALT = 11;
 
-const DEFAULT_PFP = "/public/imgs/defaultPfp.jpeg";
+const DEFAULT_PFP = "/public/img/defaultPfp.jpeg";
 
 const exportedMethods = {
   async getAllUsers() {
