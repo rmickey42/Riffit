@@ -217,6 +217,7 @@ const exportedMethods = {
       );
     }
 
+    console.log(updatedPostData);
     const postCollection = await posts();
     const updatePost = await postCollection.findOneAndUpdate(
       { _id: new ObjectId(id) },
