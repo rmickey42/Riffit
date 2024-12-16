@@ -2,6 +2,7 @@ import { posts } from "../config/mongoCollections.js";
 import userData from "./users.js";
 import { ObjectId } from "mongodb";
 import validation from "../validation.js";
+import commentData from "./comments.js";
 import audioData from "./audio.js";
 
 const exportedMethods = {
@@ -94,6 +95,20 @@ const exportedMethods = {
     return postList;
   },
 
+  async getPostsByPostId(postList) {
+    postList = validation.checkRefId(postList, "List of Posts")
+    let posts = [];
+
+
+    postList.forEach((post) => {
+      
+      post._id = post._id.toString();
+    });
+    return postList;
+  },
+
+
+
   async addPost(title, userId, content, notation, key, instrument, tags) {
     title = validation.checkString(title, "Title");
     content = validation.checkString(content, "Content");
@@ -149,6 +164,10 @@ const exportedMethods = {
 
     if (!deletionInfo) throw `Could not delete post with id of ${id}`;
     await userData.userArrayAlter(deletionInfo.userId, id, "posts", false);
+    deletionInfo.comments.forEach((element) => {
+      commentData.removeComment(element);
+    });
+    await commentData.removeComment;
     return { ...deletionInfo, deleted: true };
   },
 
@@ -209,27 +228,25 @@ const exportedMethods = {
     return updatePost;
   },
 
-
   //DO NOT USE IMMEDIATELY, USE ADD COMMENT INSTEAD
-  async postComment(id, arrayId, add=true) {
+  async postComment(id, arrayId, add = true) {
     id = validation.checkId(id, "Post Id");
     arrayId = validation.checkId(arrayId, "User Id");
 
     const postCollection = await posts();
-    if(add){
+    if (add) {
       const updatePost = await postCollection.findOneAndUpdate(
         { _id: new ObjectId(id) },
         { $addToSet: { comments: arrayId } },
         { returnDocument: "after" }
       );
-    }else{
+    } else {
       const updatePost = await postCollection.findOneAndUpdate(
         { _id: new ObjectId(id) },
         { $pull: { comments: arrayId } },
         { returnDocument: "after" }
       );
     }
-    
 
     if (!updatePost)
       throw `Error: Update failed, could not find a comment with an id of ${id}`;
@@ -238,7 +255,40 @@ const exportedMethods = {
     return updatePost;
   },
 
-  async postRating(id, userId, like = true) {
+  async postLike(id, userId, like = true) {
+    id = validation.checkId(id, "Post Id");
+    userId = validation.checkId(userId, "User Id");
+    let updatePost;
+    const postCollection = await posts();
+    if (like) {
+      updatePost = await postCollection.findOneAndUpdate(
+        { _id: new ObjectId(id) },
+        { $inc: { rating: 1 } },
+        { returnDocument: "after" }
+      );
+      if (!updatePost)
+        throw `Error: Update failed, could not find a comment with an id of ${id}`;
+      await userData.userArrayAlter(userId, id, "likedPosts");
+    } else {
+      likedList = await userData.getUserById(userId);
+      likedList = likedList.likedPosts
+      if (likedList.includes(id)) {
+        updatePost = await postCollection.findOneAndUpdate(
+          { _id: new ObjectId(id) },
+          { $inc: { rating: -1 } },
+          { returnDocument: "after" }
+        );
+        if (!updatePost)
+          throw `Error: Update failed, could not find a comment with an id of ${id}`;
+        await userData.userArrayAlter(userId, id, "likedPosts", false);
+      }else{ throw ``}
+    }
+
+    updatePost._id = updatePost._id.toString();
+    return updatePost;
+  },
+
+  async postDislike(id, userId, like = true) {
     id = validation.checkId(id, "Post Id");
     userId = validation.checkId(userId, "User Id");
     let updatePost;

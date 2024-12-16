@@ -34,7 +34,7 @@ try {
     title: "Second Post Now",
   };
   const updatedpost1 = await posts.updatePost(post1._id, updatePost1);
-  console.log(updatedpost1);
+//   console.log(updatedpost1);
 } catch (error) {
   console.log(error);
 }
@@ -44,7 +44,7 @@ try {
 // console.log(updatething)
 
 
-const user1a = await users.getUserById(user1._id)
+// const user1a = await users.getUserById(user1._id)
 const post1a = await posts.postRating(post1._id, user1._id)
 // console.log(await users.getUserById(user1._id))
 // console.log(post1a)
@@ -53,6 +53,39 @@ const post1b = await posts.postRating(post1._id, user1._id, false)
 // console.log(await users.getUserById(user1._id))
 // console.log(post1b)
 
-const post1c = await posts.removePost(post1._id)
+// const post1c = await posts.removePost(post1._id)
 // console.log(await users.getUserById(user1._id))
+
+
+const user2 = await users.addUser("anotherGuy", "Pa$$w0rd");
+const updateUser2 = {
+  bio: "damn im really bad at making bios",
+  instruments: ["Guitar"],
+  genres: ["Jazz", "Funk"],
+};
+await users.updateUser(user2._id, updateUser2);
+// console.log(name);
+
+const user3 = await users.addUser("OneMore", "samePa$$w0rd");
+const updateUser3 = {
+  bio: "again",
+  instruments: ["Bass"],
+  genres: ["Metal"],
+};
+await users.updateUser(user3._id, updateUser3);
+
+const user4 = await users.addUser("ILied", "samePa$$w0rd");
+const updateUser4 = {
+  bio: "so many users",
+  instruments: ["Ukelele", "12-String guitar"],
+  genres: ["Country"],
+};
+await users.updateUser(user4._id, updateUser4);
+
+// console.log(await users.getAllUsers())
+
+console.log(await users.getUserByUsername("oneMORE"))
+await users.removeUser(user4._id)
+console.log(await users.getAllUsers())
+
 await closeConnection();

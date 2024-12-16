@@ -2,6 +2,7 @@ import { users } from "../config/mongoCollections.js";
 import { ObjectId } from "mongodb";
 import bcrypt from "bcrypt";
 import validation from "../validation.js";
+import  postData from "./posts.js";
 
 const BCRYPT_SALT = 11;
 
@@ -40,11 +41,11 @@ const exportedMethods = {
     return res;
   },
   async signInUser(username, password) {
-    let userTrim = validation.checkString(username, "Username");
-    let passTrim = validation.checkString(password, "Password");
-    let foundUsr = await this.getUserByUsername(userTrim, true);
+    username = validation.checkString(username, "Username");
+    password = validation.checkString(password, "Password");
+    let foundUsr = await this.getUserByUsername(username, true);
     if (foundUsr) {
-      let pass_check = await bcrypt.compare(passTrim, foundUsr.password);
+      let pass_check = await bcrypt.compare(password, foundUsr.password);
       if (pass_check) {
         delete foundUsr.password;
         return foundUsr;
@@ -91,7 +92,9 @@ const exportedMethods = {
       _id: new ObjectId(id),
     });
     if (!deletionInfo) throw `Error: Could not delete user with id of ${id}`;
-
+    deletionInfo.posts.forEach(element => {
+      postData.removePost(element)
+    });
     return { ...deletionInfo, deleted: true };
   },
   async getCommentsByUserId(id) {
