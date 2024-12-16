@@ -180,10 +180,31 @@ router
       let updatedUser = await userData.updateUser(id, userInfo);
       req.session.user = updatedUser;
 
-      return res.redirect(`/users/${id}`);  
+      return res.redirect(`/users/${id}`);
     } catch (e) {
-      return res.status(400).render("user_edit", {error: e, Title: "Edit Profile"});
+      return res
+        .status(400)
+        .render("user_edit", { error: e, Title: "Edit Profile" });
     }
+  });
+
+router
+  .route("/:userId/picture")
+  .get(async (req, res) => {
+    let id = req.params.userId;
+    try {
+      id = validation.checkId(id);
+    } catch (e) {
+      return res.status(404).json("404 Not Found");
+    }
+    let user = null;
+    try {
+      user = await userData.getUserById(id);
+    } catch (e) {
+      return res.status(404).json("404 Not Found");
+    }
+
+    return res.contentType("image/jpeg").send(user.picture.buffer);
   });
 
 router

@@ -15,10 +15,15 @@
                 <input type="text" id="instruments" name="instruments"
                     value="{{#each user.instruments}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}" multiple>
             </label>
+
             <label for="genres">Genres (comma separated):
                 <input type="text" id="genres" name="genres"
                     value="{{#each user.genres}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}" multiple>
             </label>
+
+            <label for="profilePicture">Profile Picture:
+                <input type="file" id="profilePicture" name="profilePicture">
+             </label>
             </label for="profilePicture">Profile Picture:
                 <input type="file" id="profilePicture" name="profilePicture">
             </label>
