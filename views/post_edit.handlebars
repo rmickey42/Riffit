@@ -1,0 +1,39 @@
+
+<main>
+    <h1>Edit Post</h1>
+    <form action="/posts/{{post._id}}/edit" method="post" id="post-edit-form">
+        <label for="title">Title:</label>
+        <input type="text" id="title" name="title" value="{{post.title}}" required>
+        
+        <label for="notation">Tab/Chords/Notation:</label>
+        <textarea id="notation" name="notation" rows="7" cols="100">{{post.notation}}</textarea>
+        
+        <label for="key">Key:</label>
+        <input type="text" id="key" name="key" value="{{post.key}}" required>
+        
+        <label for="instrument">Instrument:</label>
+        <input type="text" id="instrument" name="instrument" value="{{post.instrument}}" required>
+
+        {{#each post.tags}}
+        <label for="tag-input-{{@index}}">Tag {{@index}}:</label>
+        <input type="text" name="tags[]" placeholder="Tag" id="tag-input-{{@index}}" value="{{this}}" required>
+        {{else}}
+        <label for="tag-input-0">Tag 0:</label>
+        <input type="text" name="tags[]" placeholder="Tag" id="tag-input-0" required>
+        {{/each}}
+
+        <button id="add-tag-button" type="button">Add Tag</button>
+        <button id="remove-tag-button" type="button">Remove Tag</button>
+        
+        <button type="submit">Edit Post</button>
+
+        <input type="number" name="tagCount" id="tagCount" value="1" hidden>
+    </form> 
+    
+    {{#if error}}
+    
+    <p class="error">{{error}}</p>  
+    
+    {{/if}}
+</main>
+

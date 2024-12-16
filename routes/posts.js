@@ -9,11 +9,7 @@ router
   .get(async (req, res) => {
     return res.render("search", { session: req.session.user, Title: "Search" });
   }).post(async (req, res) => {
-    let tags = [];
-    const tagCount = parseInt(req.body.tagCount);
-    for (let i = 0; i < req.body.tagCount; i++) {
-      tags.push(req.body["tag-input-" + (i + 1)]);
-    }
+    let tags = validation.checkTags(req.body.tags);
 
     let sorting = req.body.sorting;
 
@@ -21,16 +17,8 @@ router
       sorting = "newest";
     }
 
-    if (!Array.isArray(tags)) {
-      return res.status(400).render("search", { session: req.session.user,  Title: "Search", error: "Tags must be an array" });
-    }
-
-    if (tags.length === 0) {
-      return res.status(400).render("search", { session: req.session.user,  Title: "Search", error: "Tags must not be empty" });
-    }
-
     try {
-      const posts = await postData.getPostsByTags(tags);
+      const posts = await postData.getPostsByTags(tags, sorting);
       if (posts.length === 0) {
         return res.status(404).render("search", { session: req.session.user,  Title: "Search", error: "No Results" });
       } else {
@@ -72,12 +60,9 @@ router.route("/new").get(async (req, res) => {
       );
     }
     
-    requestBody.tags = [];
-    const tagCount = parseInt(req.body.tagCount);
-    for (let i = 0; i < req.body.tagCount; i++) {
-      requestBody.tags.push(validation.checkTag(requestBody["tag-input-" + (i + 1)], i+1));
+    if (requestBody.tags) {
+      requestBody.tags = validation.checkTags(requestBody.tags, "Tags");
     }
-    requestBody.tags = validation.checkStringArray(requestBody.tags, "Tags");
   } catch (e) {
     return res.status(400).render("post_new", { session: req.session.user, Title: "New Post", error: e });
   }
@@ -217,37 +202,39 @@ router.route("/:id/edit")
       return res.status(400).render("post_edit", { session: req.session.user, Title: "Edit Post", post: post, error: "No Data Provided" });
     }
 
+    let updatedData = {};
     //check the inputs that will return 400 is fail
     try {
       req.params.id = validation.checkId(req.params.id, "Post ID");
       if (requestBody.title)
-        requestBody.title = validation.checkString(requestBody.title, "Title");
-      if (updatedData.notation) {
+        updatedData.title = validation.checkString(requestBody.title, "Title");
+      if (requestBody.notation) {
         updatedData.notation = validation.checkString(
-          updatedData.notation,
+          requestBody.notation,
           "Notation"
         );
       }
-      if (updatedData.key) {
-        updatedData.key = validation.checkString(updatedData.key, "Key");
+      if (requestBody.key) {
+        updatedData.key = validation.checkString(requestBody.key, "Key");
       }
-      if (updatedData.instrument) {
+      if (requestBody.instrument) {
         updatedData.instrument = validation.checkString(
-          updatedData.instrument,
+          requestBody.instrument,
           "Instrument"
         );
       }
-      if (requestBody.tags)
-        requestBody.tags = validation.checkStringArray(requestBody.tags, "Tags");
+      if (requestBody.tags) {
+        updatedData.tags = validation.checkTags(requestBody.tags);
+      }
     } catch (e) {
       return res.status(400).render("post_edit", { session: req.session.user, Title: "Edit Post", post: post, error: e });
     }
 
     //try to perform update
     try {
-      const updatedPost = await postData.updatePostPatch(
+      const updatedPost = await postData.updatePost(
         req.params.id,
-        requestBody
+        updatedData
       );
       return res.redirect(`/posts/${updatedPost._id}`);
     } catch (e) {

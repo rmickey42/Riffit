@@ -16,11 +16,15 @@ const exportedMethods = {
     return str.trim();
   },
 
-  checkTag(tag, tagNum) {
-    tag = this.checkString(tag, `Tag ${tagNum}`);
-    if (tag.length > 15) throw `Tag ${tagNum} is too long`;
-    if (tag.length < 2) throw `Tag ${tagNum} is too short`;
-    return tag;
+  checkTags(tags) {
+    tags = this.checkStringArray(tags, "tags");
+    tags.forEach((tag, i) => {
+      tag = this.checkString(tag, `Tag ${i}`);
+      if (tag.length > 15) throw `Tag ${i} is too long`;
+      if (tag.length < 2) throw `Tag ${i} is too short`;
+      tags[i] = tag;
+    });
+    return tags;
   },
 
   checkId(id, idName) {

@@ -2,6 +2,7 @@ import express from "express";
 import exphbs from "express-handlebars";
 import session from "express-session";
 import validation from "./validation.js";
+import methodOverride from "method-override";
 
 import postsData from "./data/posts.js";
 
@@ -120,6 +121,8 @@ const constructorMethod = (app) => {
   );
 
   app.use("/public", express.static("public"));
+
+  app.use(methodOverride("_method"));
 
   // Middleware: records timestamp of every request - shows if user is authenticated or not
   app.use((req, res, next) => {

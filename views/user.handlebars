@@ -25,7 +25,7 @@
         <ul>
             {{#each posts}}
             <li>
-                {{> post post=this session=session user=user}}
+                {{> post post=this session=../session profileOwner=../profileOwner}}
             </li>
             {{/each}}
         </ul>
