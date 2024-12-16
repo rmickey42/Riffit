@@ -21,7 +21,7 @@ router
   .route("/:userId") //working
   .get(async (req, res) => {
     try {
-      let id = validation.checkId(req.params.userId);
+      let id = validation.checkId(req.params.userId, "User Id");
 
       const user = await userData.getUserById(id);
 
@@ -46,7 +46,7 @@ router
 router.route("/:userId/comments").get(async (req, res) => {
   try {
     let id = req.params.userId;
-    id = validation.checkId(id);
+    id = validation.checkId(id, "User Id");
     const user = await userData.getUserById(id);
     return res.render("user_comments", {
       user: user,
@@ -68,7 +68,7 @@ router
   .get(async (req, res) => {
     try {
       let id = req.params.userId;
-      id = validation.checkId(id);
+      id = validation.checkId(id, "User Id");
       const user = await userData.getUserById(id);
       return res.render("user_liked", {
         user: user,
@@ -90,7 +90,7 @@ router
   .get(async (req, res) => {
     try {
       let id = req.params.userId;
-      id = validation.checkId(id);
+      id = validation.checkId(id, "User Id");
       const user = await userData.getUserById(id);
       return res.render("user_disliked", {
         user: user,
@@ -112,7 +112,7 @@ router
   .get(async (req, res) => {
     try {
       let id = req.params.userId;
-      id = validation.checkId(id);
+      id = validation.checkId(id, "User Id");
       const user = await userData.getUserById(id);
       return res.render("user_favorites", {
         user: user,
@@ -135,7 +135,7 @@ router
   .route("/:userId/edit")
   .get(async (req, res) => {
     try {
-      let id = validation.checkId(req.params.userId);
+      let id = validation.checkId(req.params.userId, "User Id");
       const user = await userData.getUserById(id);
       const defaultPic = "/public/imgs/defaultPfp.jpeg";
       return res.render("user_edit", {
@@ -155,7 +155,7 @@ router
   })
   .post(upload.any(), async (req, res) => {
     try {
-      let id = validation.checkId(req.params.userId);
+      let id = validation.checkId(req.params.userId, "User Id");
 
       let { bio, instruments, genres } = req.body;
 
@@ -196,7 +196,7 @@ router
 
 router.route("/:userId/picture").get(async (req, res) => {
   try {
-    let id = validation.checkId(req.params.userId);
+    let id = validation.checkId(req.params.userId, "User Id");
     let user = await userData.getUserById(id);
 
     if (user.picture === "/public/imgs/defaultPfp.jpeg") {
