@@ -27,7 +27,7 @@
         <ul>
             {{#each user.posts}}
             <li>
-                {{> post post=this}}
+                {{> post post=this session=session user=user}}
             </li>
             {{/each}}
         </ul>

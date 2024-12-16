@@ -88,6 +88,13 @@ const constructorMethod = (app) => {
     defaultLayout: "main",
     layoutsDir: "./views/layouts",
     partialsDir: "./views/partials",
+    helpers: {
+      inList (options) { 
+        const { list, value } = options.hash;
+        if(list.includes(value)) return options.fn(this);
+        else return "";
+      }
+    }
   });
   app.engine(
     "handlebars",
