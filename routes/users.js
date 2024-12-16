@@ -34,7 +34,13 @@ router
         profileOwner: profileOwner
       });
     } catch (e) {
-      return res.status(404).json({ error: e });
+      return res.status(404).render("error", {
+        linkRoute: "/",
+        linkDesc: "Return to the homepage",
+        errorName: "404 Not Found",
+        errorDesc: "This page doesn't exist!",
+        Title: "404 Not Found"
+      });
     }
   });
 
@@ -48,11 +54,12 @@ router.route("/:userId/comments").get(async (req, res) => {
       Title: `${user.username}'s Comments`,
     });
   } catch (e) {
-    return res.status(404).render("404", {
+    return res.status(404).render("error", {
       linkRoute: "/",
       linkDesc: "Return to the homepage",
       errorName: "404 Not Found",
-      errorDesc: "This page doesn't exist!"
+      errorDesc: "This page doesn't exist!",
+      Title: "404 Not Found"
     });
   }
 });
@@ -69,12 +76,12 @@ router
         Title: `${user.username}'s Likes`,
       });
     } catch (e) {
-      return res.status(404).render("404", {
+      return res.status(404).render("error", {
         linkRoute: "/",
         linkDesc: "Return to the homepage",
         errorName: "404 Not Found",
         errorDesc: "This page doesn't exist!",
-        Title: "404 Not Found",
+        Title: "404 Not Found"
       });
     }
   });
@@ -91,7 +98,7 @@ router
         Title: `${user.username}'s Dislikes`,
       });
     } catch (e) {
-      return res.status(404).render("404", {
+      return res.status(404).render("error", {
         linkRoute: "/",
         linkDesc: "Return to the homepage",
         errorName: "404 Not Found",
@@ -113,7 +120,7 @@ router
         Title: `${user.username}'s Favorites`,
       });
     } catch (e) {
-      return res.status(404).render("404", {
+      return res.status(404).render("error", {
         linkRoute: "/",
         linkDesc: "Return to the homepage",
         errorName: "404 Not Found",
@@ -149,20 +156,26 @@ router
       let bio = req.body.bio;
       let instruments = req.body.instruments;
       let genres = req.body.genres;
+      let picture = req.files[0];
 
-      bio = validation.checkString(bio, "Bio");
-
-      instruments = validation.checkStringArray(
-        instruments.split(","),
-        "Instruments"
-      );
-      genres = validation.checkStringArray(genres.split(","), "Genres");
-      let picture = req.files.profilePicture;
-
-      let userInfo = { bio, instruments, genres, picture };
+      let userInfo = { picture };
 
       if (!picture) delete userInfo.picture;
+      if (picture.fieldname != 'profilePicture') throw "Invalid file submitted";
       else if (picture.mimetype !== 'image/jpeg') throw "Invalid image type for profile picture: " + picture.mimetype;
+
+      if(bio){
+        bio = validation.checkString(bio, "Bio");
+        userInfo.bio = bio;
+      }
+      if(instruments){
+        instruments = validation.checkStringArray(instruments.split(","), "Instruments");
+        userInfo.instruments = instruments;
+      }
+      if(genres){
+        genres = validation.checkStringArray(genres.split(","), "Genres");
+        userInfo.genres = genres;
+      }
 
       let updatedUser = await userData.updateUser(id, userInfo);
       req.session.user = updatedUser;
@@ -171,6 +184,25 @@ router
     } catch (e) {
       return res.status(400).render("user_edit", {error: e, Title: "Edit Profile"});
     }
+  });
+
+router
+  .route("/:userId/picture")
+  .get(async (req, res) => {
+    let id = req.params.userId;
+    try {
+      id = validation.checkId(id);
+    } catch (e) {
+      return res.status(404).json("404 Not Found");
+    }
+    let user = null;
+    try {
+      user = await userData.getUserById(id);
+    } catch (e) {
+      return res.status(404).json("404 Not Found");
+    }
+
+    return res.contentType("image/jpeg").send(user.picture.buffer);
   });
 
 export default router;

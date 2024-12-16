@@ -21,13 +21,6 @@ const authUserMiddleware = (req, res, next) => {
           errorDesc: "You do not have permission to view this page.",
         });
       }
-
-      return res.status(401).render("error", {
-        linkRoute: "/user/me",
-        linkDesc: "Return to your profile",
-        errorName: "Unauthorized Access",
-        errorDesc: "You do not have permission to view this page.",
-      });
     } else {
       return res
         .status(401)
@@ -65,13 +58,6 @@ const authPostMiddleware = (req, res, next) => {
           errorDesc: "You do not have permission to view this page.",
         });
       }
-
-      return res.status(401).render("error", {
-        linkRoute: "/user/me",
-        linkDesc: "Return to your profile",
-        errorName: "Unauthorized Access",
-        errorDesc: "You do not have permission to view this page.",
-      });
     } else {
       return res
         .status(401)

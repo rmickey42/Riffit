@@ -11,7 +11,7 @@ const exportedMethods = {
         const audioData = await audioCollection.findOne({ _id: new ObjectId(id) });
         if (!audioData) throw "Error: Audio not found";
 
-        return audioData.content;
+        return audioData.content.buffer;
     },
 
     async addAudio(file) {

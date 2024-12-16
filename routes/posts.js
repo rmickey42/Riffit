@@ -137,7 +137,7 @@ router.route("/:id/edit")
 
     //try to perform update
     try {
-      const updatedPost = await postData.updatePostPatch(
+      const updatedPost = await postData.updatePost(
         req.params.id,
         requestBody
       );
