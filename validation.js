@@ -102,7 +102,7 @@ const exportedMethods = {
     if (file.mimetype !== "image/jpeg") {
       throw "Image must be a JPEG file";
     }
-    if (file.size > MAX_AUDIO_BYTES) {
+    if (file.size > MAX_PFP_SIZE) {
       throw "Image too large";
     }
 
