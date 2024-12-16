@@ -10,6 +10,7 @@ const __dirname = path.dirname(__filename);
 const exportedMethods = {
   checkString(str, valName) {
     if (!str) throw `No input for ${valName}`;
+    if (!valName) throw `No name for ${str}`
     if (typeof str !== "string") throw `${valName} is not a string`;
     if (str.trim().length === 0) throw `${valName} is empty`;
     return str.trim();
@@ -23,6 +24,7 @@ const exportedMethods = {
 
   checkNum(num, valName) {
     if (!num) throw `No input for ${valName}`;
+    if (!valName) throw `No name for ${num}`
     if (num === undefined) throw `${valName} is undefined`;
     if (typeof num !== "number") throw `${valName} is not a number`;
     if (isNaN(num)) throw `${valName} is NaN`;
@@ -35,11 +37,9 @@ const exportedMethods = {
   checkStringArray(arr, valName) {
     if (!arr || !Array.isArray(arr))
       throw `You must provide an array of ${valName}`;
-    for (let i in arr) {
-      if (typeof arr[i] !== "string" || arr[i].trim().length === 0) {
-        throw `One or more elements in ${valName} array is not a string or is an empty string`;
-      }
-      arr[i] = arr[i].trim();
+    if (!valName) throw `No name for string array`
+    for (let i = 0; i < arr.length; i++) {
+      arr[i] = this.checkString(arr[i], `${valName} element`); 
     }
     return arr;
   },
@@ -47,57 +47,45 @@ const exportedMethods = {
   checkRefId(arr, refName) {
     if (!arr || !Array.isArray(arr))
       throw `You must provide an array of ${refName}`;
-    // for (let i in arr) {
-    //   // if (typeof arr[i] !== 'string' || arr[i].trim().length === 0) {
-    //   //   throw `One or more elements in ${refName} array is not a string or is an empty string`;
-    //   // }
-    //   // arr[i] = arr[i].trim();
-
-    // }
-    // arr[i] = this.checkId(arr[i])
-    // return arr;
+    if (!valName) throw `No name for Id array`
     arr.forEach((element) => {
       element = this.checkId(arr[i]);
     });
   },
 
-  checkUserName(str, refName) {
+  checkUsername(str, refName) {
     // Usernames can only contain letters and numbers
-    let trimmed = this.checkString(str, refName);
-    if (/[^a-zA-Z\d]/.test(trimmed))
+    str = this.checkString(str, refName);
+    if (!refName) throw `No name for ${str}`
+    if (/[^a-zA-Z\d]/.test(str))
       throw `${refName} must only contain letters and numbers`;
-    if (trimmed.length < 4 && trimmed.length > 15)
+    if (str.length < 4 && str.length > 15)
       throw `${refName} must be between 4 and 15 characters`;
-
-    // for(let i in trimmed){
-    //   if(!alpha_numer.includes(trimmed[i].toLowerCase())) throw `${refName || str} contains invalid character ${trimmed[i]}`;
-    // }
-    return trimmed.toLocaleLowerCase();
+    return str.toLocaleLowerCase();
   },
 
   checkPassword(str, refName) {
-    let trimmed = this.checkString(str, refName);
-    if (trimmed.length < 5) throw `Passwords must be at least 5 chatacters`;
-    if (trimmed.length > 16)
+    str = this.checkString(str, refName);
+    if (str.length < 5) throw `Passwords must be at least 5 chatacters`;
+    if (str.length > 16)
       throw `Passwords cannot be longer than 16 characters.`;
     let capital_count = 0,
       symbol_count = 0,
       number_count = 0;
-    for (let i in trimmed) {
-      let char = trimmed[i].toLowerCase();
-      if (char != trimmed[i]) capital_count++;
+    for (let i in str) {
+      let char = str[i].toLowerCase();
+      if (char != str[i]) capital_count++;
       else if (numbers.includes(char)) number_count++;
       else if (good_symbols.includes(char)) symbol_count++;
       else if (!alphabet.includes(char))
         throw `Passwords cannot contain the symbol '${char}'`;
     }
-
     if (capital_count < 1)
       throw `Passwords must contain at least 1 capital letter`;
     if (symbol_count < 1) throw `Passwords must contain at least 1 symbol`;
     if (number_count < 1) throw `Passwords must contain at least 1 number`;
 
-    return trimmed;
+    return str;
   },
 
   checkProfilePicture(file) {

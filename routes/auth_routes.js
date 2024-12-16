@@ -20,7 +20,7 @@ router
     // first, check that each field has been passed
     fields.forEach((field) => {
       try {
-        clean_data[field] = validation.checkString(unclean_data[field]);
+        clean_data[field] = validation.checkString(unclean_data[field], field);
       } catch (e) {
         not_found.push(field);
       }
@@ -30,8 +30,8 @@ router
     try {
       if (not_found.length)
         throw `Must supply additional fields [${not_found.join(", ")}]`;
-      validation.checkUserName(clean_data.username);
-      validation.checkPassword(clean_data.password);
+      validation.checkUsername(clean_data.username, "Username");
+      validation.checkPassword(clean_data.password, "Password");
       if (clean_data.password !== clean_data.confirmPassword)
         throw `Password and Password Confirmation must match`;
     } catch (e) {
@@ -73,7 +73,7 @@ router
     // first, check that each field has been passed
     fields.forEach((field) => {
       try {
-        clean_data[field] = validation.checkString(unclean_data[field]);
+        clean_data[field] = validation.checkString(unclean_data[field], field);
       } catch {
         not_found.push(field);
       }
@@ -81,8 +81,8 @@ router
     try {
       if (not_found.length)
         throw `Must supply additional fields [${not_found.join(", ")}]`;
-      // validation.checkUserName(clean_data.username);
-      // validation.checkPassword(clean_data.password);
+      // validation.checkUsername(clean_data.username, "username");
+      // validation.checkPassword(clean_data.password, "password");
       let signInAttempt = await users.signInUser(
         clean_data.username,
         clean_data.password

@@ -9,23 +9,27 @@ const exportedMethods = {
   async getAllUsers() {
     const userCollection = await users();
     const userList = await userCollection.find({}).toArray();
+    userList.forEach((user) => {
+      user._id = user._id.toString();
+    });
+
     return userList;
   },
   async getUserById(id, includePassword = false) {
-    id = validation.checkId(id);
+    id = validation.checkId(id, "User Id");
     const userCollection = await users();
-    let user = await userCollection.findOne({ _id: new ObjectId(id) });
+    const user = await userCollection.findOne({ _id: new ObjectId(id) });
     if (!user) throw "Error: User not found";
     if (!includePassword) delete user.password;
     user._id = user._id.toString();
     return user;
   },
   async getUserByUsername(username, includePassword = false) {
-    let userTrim = validation.checkUserName(username, "Username");
+    username = validation.checkUsername(username, "Username");
     let col = await users();
 
     let res = await col.findOne(
-      { username: userTrim },
+      { username: username },
       { collation: { locale: "en", strength: 2 } }
     ); // case insensitive
     if (!res) return false;
@@ -33,7 +37,6 @@ const exportedMethods = {
     res["_id"] = res["_id"].toString();
 
     if (!includePassword) delete res.password;
-
     return res;
   },
   async signInUser(username, password) {
@@ -51,8 +54,7 @@ const exportedMethods = {
     }
   },
   async addUser(username, password) {
-    username = validation.checkUserName(username, "username");
-
+    username = validation.checkUsername(username, "username");
     password = validation.checkPassword(password, "password");
 
     const userCollection = await users();
@@ -79,11 +81,11 @@ const exportedMethods = {
     };
 
     const newInsertInformation = await userCollection.insertOne(newUser);
-    if (!newInsertInformation.insertedId) throw "Insert failed!";
+    if (!newInsertInformation.insertedId) throw "User could not be added";
     return await this.getUserById(newInsertInformation.insertedId.toString());
   },
   async removeUser(id) {
-    id = validation.checkId(id);
+    id = validation.checkId(id, "User Id");
     const userCollection = await users();
     const deletionInfo = await userCollection.findOneAndDelete({
       _id: new ObjectId(id),
@@ -93,7 +95,7 @@ const exportedMethods = {
     return { ...deletionInfo, deleted: true };
   },
   async getCommentsByUserId(id) {
-    id = validation.checkId(id);
+    id = validation.checkId(id, "User Id");
     const user = await this.getUserById(id);
     for (let i = 0; i < user.comments.length; i++) {
       user.comments[i] = await this.getCommentById(user.comments[i]);
@@ -101,7 +103,7 @@ const exportedMethods = {
     return user.comments;
   },
   async getLikedPostsByUserId(id) {
-    id = validation.checkId(id);
+    id = validation.checkId(id, "User Id");
     const user = await this.getUserById(id);
     for (let i = 0; i < user.likedPosts.length; i++) {
       user.likedPosts[i] = await this.getPostById(user.likedPosts[i]);
@@ -109,7 +111,7 @@ const exportedMethods = {
     return user.likedPosts;
   },
   async getDislikedPostsByUserId(id) {
-    id = validation.checkId(id);
+    id = validation.checkId(id, "User Id");
     const user = await this.getUserById(id);
     for (let i = 0; i < user.dislikedPosts.length; i++) {
       user.dislikedPosts[i] = await this.getPostById(user.dislikedPosts[i]);
@@ -117,7 +119,7 @@ const exportedMethods = {
     return user.dislikedPosts;
   },
   async getLearnedPostsByUserId(id) {
-    id = validation.checkId(id);
+    id = validation.checkId(id, "User Id");
     const user = await this.getUserById(id);
     for (let i = 0; i < user.learnedPosts.length; i++) {
       user.learnedPosts[i] = await this.getPostById(user.learnedPosts[i]);
@@ -125,7 +127,7 @@ const exportedMethods = {
     return user.learnedPosts;
   },
   async getFavoritePostsByUserId(id) {
-    id = validation.checkId(id);
+    id = validation.checkId(id, "User Id");
     const user = await this.getUserById(id);
     for (let i = 0; i < user.favoritePosts.length; i++) {
       user.favoritePosts[i] = await this.getPostById(user.favoritePosts[i]);
@@ -134,12 +136,18 @@ const exportedMethods = {
   },
 
   async updateUser(id, userInfo) {
-    id = validation.checkId(id);
+    id = validation.checkId(id, "User Id");
     const updatedUserData = {};
     if (userInfo.username)
-      updatedUserData.username = validation.checkString(userInfo.username, "username");
+      updatedUserData.username = validation.checkString(
+        userInfo.username,
+        "username"
+      );
     if (userInfo.password)
-      updatedUserData.password = validation.checkString(userInfo.password, "password");
+      updatedUserData.password = validation.checkString(
+        userInfo.password,
+        "password"
+      );
     if (userInfo.bio)
       updatedUserData.bio = validation.checkString(userInfo.bio, "bio");
     if (userInfo.dailyStreak)
@@ -155,9 +163,15 @@ const exportedMethods = {
         "instruments"
       );
     if (userInfo.genres)
-      updatedUserData.genres = validation.checkStringArray(userInfo.genres, "genres");
+      updatedUserData.genres = validation.checkStringArray(
+        userInfo.genres,
+        "genres"
+      );
     if (userInfo.comments)
-      updatedUserData.comments = validation.checkRefId(userInfo.comments, "comments");
+      updatedUserData.comments = validation.checkRefId(
+        userInfo.comments,
+        "comments"
+      );
     if (userInfo.posts)
       updatedUserData.posts = validation.checkRefId(userInfo.posts, "posts");
     if (userInfo.likedPosts)

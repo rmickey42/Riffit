@@ -7,7 +7,13 @@ import audioData from "./audio.js";
 const exportedMethods = {
   async getAllPosts() {
     const postCollection = await posts();
-    return await postCollection.find({}).toArray();
+    const postList = await postCollection.find({}).toArray();
+
+    postList.forEach((post) => {
+      post._id = post._id.toString();
+    });
+
+    return postList;
   },
 
   async getPostById(id) {
@@ -15,7 +21,7 @@ const exportedMethods = {
     const postCollection = await posts();
     const post = await postCollection.findOne({ _id: new ObjectId(id) });
     if (!post) throw "Error: Post not found";
-
+    post._id = post._id.toString();
     return post;
   },
 
@@ -23,59 +29,69 @@ const exportedMethods = {
     tags_lst = validation.checkStringArray(tags_lst, "Tags");
 
     const postCollection = await posts();
-
+    let postList = [];
     if (sorting === "newest") {
-      return await postCollection
+      postlist = await postCollection
         .find({ tags: { $in: tags_lst } })
         .sort({ _id: -1 })
         .toArray();
     } else if (sorting === "oldest") {
-      return await postCollection
+      postList = await postCollection
         .find({ tags: { $in: tags_lst } })
         .sort({ _id: 1 })
         .toArray();
     } else if (sorting === "most_popular") {
-      return await postCollection
+      postList = await postCollection
         .find({ tags: { $in: tags_lst } })
         .sort({ rating: -1 })
         .toArray();
     } else if (sorting === "least_popular") {
-      return await postCollection
+      postList = await postCollection
         .find({ tags: { $in: tags_lst } })
         .sort({ rating: 1 })
         .toArray();
     } else {
       throw "Invalid sorting method";
     }
+
+    postList.forEach((post) => {
+      post._id = post._id.toString();
+    });
+    return postList;
   },
 
   async getPostsByUserId(userId, sorting = "newest") {
     userId = validation.checkId(userId, "User ID");
-
+    let postList = [];
     const postCollection = await posts();
     if (sorting === "newest") {
-      return await postCollection
+      postList = await postCollection
         .find({ userId: userId })
         .sort({ _id: -1 })
         .toArray();
     } else if (sorting === "oldest") {
-      return await postCollection
+      postList = await postCollection
         .find({ userId: userId })
         .sort({ _id: 1 })
         .toArray();
     } else if (sorting === "most_popular") {
-      return await postCollection
+      postList = await postCollection
         .find({ userId: userId })
         .sort({ rating: -1 })
         .toArray();
     } else if (sorting === "least_popular") {
-      return await postCollection
+      postList = await postCollection
         .find({ userId: userId })
         .sort({ rating: 1 })
         .toArray();
     } else {
       throw "Invalid sorting method";
     }
+
+    postList.forEach((post) => {
+      post._id = post._id.toString();
+    });
+    return postList;
   },
 
   async addPost(title, userId, content, notation, key, instrument, tags) {
@@ -110,8 +126,8 @@ const exportedMethods = {
 
     const postCollection = await posts();
     const newInsertInformation = await postCollection.insertOne(newPost);
-    const newId = newInsertInformation.insertedId;
-    return await this.getPostById(newId.toString());
+    if (!newInsertInformation.insertedId) throw "Could not add post";
+    return await this.getPostById(newInsertInformation.insertedId.toString());
   },
 
   async removePost(id) {
@@ -130,7 +146,7 @@ const exportedMethods = {
   },
 
   async updatePost(id, updatedPost) {
-    id = validation.checkId(id);
+    id = validation.checkId(id, "User Id");
     const updatedPostData = {};
     if (updatedPost.userId) {
       throw "Cannot update userId of post";
@@ -142,9 +158,11 @@ const exportedMethods = {
       throw "Cannot directly update rating of post";
     }
 
-    let tags = [];
     if (updatedPost.tags) {
-      tags = validation.checkStringArray(updatedPost.tags, "Tags");
+      updatedPostData.tags = validation.checkStringArray(
+        updatedPost.tags,
+        "Tags"
+      );
     }
 
     if (updatedPost.title) {
@@ -173,43 +191,15 @@ const exportedMethods = {
     }
 
     const postCollection = await posts();
-    let newPost = await postCollection.findOneAndUpdate(
+    const updatePost = await postCollection.findOneAndUpdate(
       { _id: new ObjectId(id) },
-      { $set: updatedPostData, $addToSet: { tags: { $each: tags } } },
+      { $set: updatedPostData },
       { returnDocument: "after" }
     );
 
-    if (!newPost) throw `Could not update the post with id ${id}`;
-
-    return newPost;
-  },
-
-  async renameTag(oldTag, newTag) {
-    oldTag = validation.checkString(oldTag, "Old Tag");
-    newTag = validation.checkString(newTag, "New Tag");
-    if (oldTag === newTag) throw "tags are the same";
-
-    let findDocuments = {
-      tags: oldTag,
-    };
-
-    let firstUpdate = {
-      $addToSet: { tags: newTag },
-    };
-
-    let secondUpdate = {
-      $pull: { tags: oldTag },
-    };
-    const postCollection = await posts();
-    let updateOne = await postCollection.updateMany(findDocuments, firstUpdate);
-    if (updateOne.matchedCount === 0)
-      throw `Could not find any posts with old tag: ${oldTag}`;
-    let updateTwo = await postCollection.updateMany(
-      findDocuments,
-      secondUpdate
-    );
-    if (updateTwo.modifiedCount === 0) throw [500, "Could not update tags"];
-    return await this.getPostsByTag(newTag);
+    if (!updatePost) throw `Could not update the post with id ${id}`;
+    updatePost._id = updatePost._id.toString();
+    return updatePost;
   },
 };
 

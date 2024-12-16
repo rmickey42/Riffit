@@ -22,7 +22,7 @@ router
   .get(async (req, res) => {
     try {
       let id = req.params.userId;
-      id = validation.checkId(id);
+      id = validation.checkId(id, "user Id");
 
       const user = await userData.getUserById(id);
 
@@ -31,7 +31,7 @@ router
       return res.render("user", {
         user: user,
         Title: user.username,
-        profileOwner: profileOwner
+        profileOwner: profileOwner,
       });
     } catch (e) {
       return res.status(404).json({ error: e });
@@ -41,7 +41,7 @@ router
 router.route("/:userId/comments").get(async (req, res) => {
   try {
     let id = req.params.userId;
-    id = validation.checkId(id);
+    id = validation.checkId(id, "user Id");
     const user = await userData.getUserById(id);
     return res.render("user_comments", {
       user: user,
@@ -52,7 +52,7 @@ router.route("/:userId/comments").get(async (req, res) => {
       linkRoute: "/",
       linkDesc: "Return to the homepage",
       errorName: "404 Not Found",
-      errorDesc: "This page doesn't exist!"
+      errorDesc: "This page doesn't exist!",
     });
   }
 });
@@ -62,7 +62,7 @@ router
   .get(async (req, res) => {
     try {
       let id = req.params.userId;
-      id = validation.checkId(id);
+      id = validation.checkId(id, "user Id");
       const user = await userData.getUserById(id);
       return res.render("user_liked", {
         user: user,
@@ -84,7 +84,7 @@ router
   .get(async (req, res) => {
     try {
       let id = req.params.userId;
-      id = validation.checkId(id);
+      id = validation.checkId(id, "user Id");
       const user = await userData.getUserById(id);
       return res.render("user_disliked", {
         user: user,
@@ -106,7 +106,7 @@ router
   .get(async (req, res) => {
     try {
       let id = req.params.userId;
-      id = validation.checkId(id);
+      id = validation.checkId(id, "user Id");
       const user = await userData.getUserById(id);
       return res.render("user_favorites", {
         user: user,
@@ -135,17 +135,7 @@ router
   .post(upload.any(), async (req, res) => {
     let id = req.params.userId;
     try {
-      id = validation.checkId(id);
-    } catch (e) {
-      return res.status(404).render("error", {
-        linkRoute: "/",
-        linkDesc: "Return to the homepage",
-        errorName: "404 Not Found",
-        errorDesc: "This page doesn't exist!",
-        Title: "404 Not Found",
-      });
-    }
-    try {
+      id = validation.checkId(req.params.userId, "user Id");
       let { bio, instruments, genres } = req.body;
       bio = validation.checkString(bio, "Bio");
       instruments = validation.checkStringArray(
@@ -158,16 +148,21 @@ router
       let userInfo = { bio, instruments, genres, picture };
 
       if (!picture) delete userInfo.picture;
-      else if (picture.mimetype !== 'image/jpeg') throw "Invalid image type for profile picture: " + picture.mimetype;
+      else if (picture.mimetype !== "image/jpeg")
+        throw "Invalid image type for profile picture: " + picture.mimetype;
 
       let updatedUser = await userData.updateUser(id, userInfo);
       req.session.user = updatedUser;
 
       return res.redirect(`/users/${id}`);
     } catch (e) {
-      return res
-        .status(400)
-        .render("user_edit", { error: e, Title: "Edit Profile" });
+      return res.status(404).render("error", {
+        linkRoute: "/",
+        linkDesc: "Return to the homepage",
+        errorName: "404 Not Found",
+        errorDesc: "This page doesn't exist!",
+        Title: "404 Not Found",
+      });
     }
   });
 
