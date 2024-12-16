@@ -100,7 +100,9 @@ const exportedMethods = {
     }
 
     return file.buffer;
-  }
+  },
+
+  MAX_PFP_SIZE: MAX_PFP_SIZE,
 };
 
 let alphabet = "qwertyuiopasdfghjklzxcvbnm";

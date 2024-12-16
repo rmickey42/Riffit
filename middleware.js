@@ -7,25 +7,24 @@ import postsData from "./data/posts.js";
 
 const AUTH_SECRET = "AuThSeCrEt12345";
 
-const authUserMiddleware = (req, res, next) => {
+const authUserMiddleware = async (req, res, next) => {
   try {
-    let id = validation.checkId(req.params.userId);
+    let id = validation.checkId(req.params.userId, "User ID");
     if (req.session.user) {
       if (req.session.user._id === id) {
         next();
       } else if (req.session.user) {
-        return res.status(401).render("error", {
+        return res.status(401).render("error", { session: req.session.user,
           linkRoute: "/user/me",
           linkDesc: "Return to your profile",
           errorName: "Unauthorized Access",
           errorDesc: "You do not have permission to view this page.",
         });
       }
-
     } else {
       return res
         .status(401)
-        .render("error", {
+        .render("error", { session: req.session.user,
           linkRoute: "/login",
           linkDesc: "Login",
           errorName: "Unauthorized Access",
@@ -35,7 +34,7 @@ const authUserMiddleware = (req, res, next) => {
   } catch (e) {
     return res
       .status(404)
-      .render("error", {
+      .render("error", { session: req.session.user,
         linkRoute: "/",
         linkDesc: "Return to the homepage",
         errorName: "Page Doesn't Exist",
@@ -44,32 +43,26 @@ const authUserMiddleware = (req, res, next) => {
   }
 };
 
-const authPostMiddleware = (req, res, next) => {
+const authPostMiddleware = async (req, res, next) => {
   try {
-    let post = postsData.getPostById(req.params.id);
-    let id = validation.checkId(post.userId);
+    let postId = validation.checkId(req.params.id, "Post ID");
+    let post = await postsData.getPostById(postId);
+    let id = post.userId;
     if (req.session.user) {
       if (req.session.user._id === id) {
         next();
       } else {
-        return res.status(401).render("error", {
+        return res.status(401).render("error", { session: req.session.user,
           linkRoute: "/user/me",
           linkDesc: "Return to your profile",
           errorName: "Unauthorized Access",
           errorDesc: "You do not have permission to view this page.",
         });
       }
-
-      return res.status(401).render("error", {
-        linkRoute: "/user/me",
-        linkDesc: "Return to your profile",
-        errorName: "Unauthorized Access",
-        errorDesc: "You do not have permission to view this page.",
-      });
     } else {
       return res
         .status(401)
-        .render("error", {
+        .render("error", { session: req.session.user,
           linkRoute: "/login",
           linkDesc: "Login",
           errorName: "Unauthorized Access",
@@ -79,7 +72,7 @@ const authPostMiddleware = (req, res, next) => {
   } catch (e) {
     return res
       .status(404)
-      .render("error", {
+      .render("error", { session: req.session.user,
         linkRoute: "/",
         linkDesc: "Return to the homepage",
         errorName: "Page Doesn't Exist",

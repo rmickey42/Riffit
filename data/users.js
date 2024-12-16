@@ -23,6 +23,7 @@ const exportedMethods = {
     if (!user) throw "Error: User not found";
     if (!includePassword) delete user.password;
     user._id = user._id.toString();
+    user.picture = user.picture.buffer;
     return user;
   },
   async getUserByUsername(username, includePassword = false) {
