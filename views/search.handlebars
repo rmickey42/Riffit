@@ -17,6 +17,11 @@
       <option value="least_popular">Least Popular</option>
     </select>
 
+    {{#if posts}}
+    <label for="page">Page</label>
+    <input type="number" name="page" id="page" value="1" min="1">
+    {{/if}}
+
     <input type="number" name="tagCount" id="tagCount" value="1" hidden>
   </form>
 
