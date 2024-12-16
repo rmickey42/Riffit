@@ -2,6 +2,7 @@ import { posts } from "../config/mongoCollections.js";
 import userData from "./users.js";
 import { ObjectId } from "mongodb";
 import validation from "../validation.js";
+import audioData from "./audio.js";
 
 const exportedMethods = {
   async getAllPosts() {
@@ -115,6 +116,9 @@ const exportedMethods = {
 
   async removePost(id) {
     id = validation.checkId(id, "Post ID");
+
+    const post = await this.getPostById(id);
+    await audioData.removeAudio(post.content);
 
     const postCollection = await posts();
     const deletionInfo = await postCollection.findOneAndDelete({

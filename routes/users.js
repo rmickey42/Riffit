@@ -4,6 +4,7 @@ const router = Router();
 import { commentData, userData, postData } from "../data/index.js";
 import { ObjectId } from "mongodb";
 import validation from "../validation.js";
+import multer from "multer";
 
 router
   .route("/me") //working
@@ -122,15 +123,16 @@ router
     }
   });
 
-// authenticated in middleware. TODO: profile picture image upload
+const upload = multer();
+
 router
-  .route("/:userId/edit") //working - changed slightly for 404 and 400 errors
+  .route("/:userId/edit") // test profile pic
   .get(async (req, res) => {
     let id = req.params.userId;
     const user = await userData.getUserById(id);
     return res.render("user_edit", { user: user, Title: "Edit Profile" });
   })
-  .post(async (req, res) => {
+  .post(upload.any(), async (req, res) => {
     let id = req.params.userId;
     try {
       id = validation.checkId(id);
@@ -144,22 +146,27 @@ router
       });
     }
     try {
-      let { bio, instruments, genres } = req.body;
+      let bio = req.body.bio;
+      let instruments = req.body.instruments;
+      let genres = req.body.genres;
 
-      if (typeof bio !== "string") throw "Bio must be a string.";
+      bio = validation.checkString(bio, "Bio");
 
       instruments = validation.checkStringArray(
         instruments.split(","),
         "Instruments"
       );
       genres = validation.checkStringArray(genres.split(","), "Genres");
+      let picture = req.files.profilePicture;
 
-      let userInfo = { bio, instruments, genres };
+      let userInfo = { bio, instruments, genres, picture };
+
+      if (!picture) delete userInfo.picture;
+      else if (picture.mimetype !== 'image/jpeg') throw "Invalid image type for profile picture: " + picture.mimetype;
 
       let updatedUser = await userData.updateUser(id, userInfo);
       req.session.user = updatedUser;
 
-      // TODO: possibly redirect with an alert message?
       return res.redirect(`/users/${id}`);  
     } catch (e) {
       return res.status(400).render("user_edit", {error: e, Title: "Edit Profile"});

@@ -4,21 +4,24 @@
     {{> error_msg error=error}}
 
     <section class="profile">
-        <form action="/users/{{user._id}}/edit" method="POST" id="edit-profile-form">
+        <form action="/users/{{user._id}}/edit" method="POST" id="edit-profile-form" enctype="multipart/form-data">
             <img src="{{user.picture}}" alt="Your profile picture" class="profile-picture">
 
             <label for="bio">Bio:
                 <textarea id="bio" name="bio">{{user.bio}}</textarea>
             </label>
 
-            <label for="instruments">Instruments:
+            <label for="instruments">Instruments (comma separated):
                 <input type="text" id="instruments" name="instruments"
-                    value="{{#each user.instruments}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}">
+                    value="{{#each user.instruments}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}" multiple>
             </label>
-            <label for="genres">Genres:
+            <label for="genres">Genres (comma separated):
                 <input type="text" id="genres" name="genres"
-                    value="{{#each user.genres}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}">
+                    value="{{#each user.genres}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}" multiple>
             </label>
+            </label for="profilePicture">Profile Picture:
+                <input type="file" id="profilePicture" name="profilePicture"
+
 
             <input type="submit" value="Save Changes" id="edit_profile_button">
         </form>

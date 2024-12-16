@@ -148,7 +148,7 @@ const exportedMethods = {
         "daily streak"
       );
     if (userInfo.picture)
-      updatedUserData.picture = validation.checkString(userInfo.picture, "picture");
+      updatedUserData.picture = validation.checkProfilePicture(userInfo.picture);
     if (userInfo.instruments)
       updatedUserData.instruments = validation.checkStringArray(
         userInfo.instruments,

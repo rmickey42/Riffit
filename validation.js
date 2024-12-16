@@ -1,5 +1,7 @@
 import { ObjectId } from "mongodb";
 
+const MAX_PFP_SIZE = 1000000; // 1 MB
+
 const exportedMethods = {
   checkString(str, valName) {
     if (!str) throw `No input for ${valName}`;
@@ -92,6 +94,20 @@ const exportedMethods = {
 
     return trimmed;
   },
+
+  checkProfilePicture(file) {
+    if (!file) {
+      throw "No image file provided";
+    }
+    if (file.mimetype !== "image/jpeg") {
+      throw "Image must be a JPEG file";
+    }
+    if (file.size > MAX_AUDIO_BYTES) {
+      throw "Image too large";
+    }
+
+    return file.buffer;
+  }
 };
 
 let alphabet = "qwertyuiopasdfghjklzxcvbnm";

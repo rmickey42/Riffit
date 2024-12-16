@@ -34,6 +34,7 @@ router
     }
   })
   .delete(async (req, res) => { // auth completed; not tested
+    // validation
     try {
       req.params.id = validation.checkId(req.params.id, "Id URL Param");
     } catch (e) {
@@ -45,10 +46,54 @@ router
         Title: "400 Bad Request",
       });
     }
+
     //try to delete post
     try {
       let deletedPost = await postData.removePost(req.params.id);
-      return res.json(deletedPost);
+      return res.redirect("/users/me")
+    } catch (e) {
+      return res.status(500).render("error", {
+        linkRoute: "/users/me",
+        linkDesc: "Return to your profile",
+        errorName: "500 Internal Server Error",
+        errorDesc: "Unable to delete post",
+        Title: "500 Internal Server Error",
+      });
+    }
+  });
+
+// auth in middleware
+router.route("/:id/edit")
+  .get(async (req, res) => {
+    try {
+      req.params.id = validation.checkId(req.params.id, "Post ID");
+    } catch (e) {
+      return res.status(400).render("error", {
+        linkRoute: "/",
+        linkDesc: "Return to the homepage",
+        errorName: "400 Bad Request",
+        errorDesc: "Invalid ID!",
+        Title: "400 Bad Request",
+      });
+    }
+    try {
+      const post = await postData.getPostById(req.params.id);
+      return res.render("post_edit", { post: post, Title: "Edit Post" });
+    } catch (e) {
+      return res.status(404).render("error", {
+        linkRoute: "/",
+        linkDesc: "Return to the homepage",
+        errorName: "404 Not Found",
+        errorDesc: "This page doesn't exist!",
+        Title: "404 Not Found",
+      });
+    }
+  })
+  .post(async (req, res) => {
+    const requestBody = req.body;
+    let post = null;
+    try {
+      post = await postData.getPostById(req.params.id);
     } catch (e) {
       return res.status(404).render("error", {
         linkRoute: "/users/me",
@@ -58,92 +103,49 @@ router
         Title: "404 Not Found",
       });
     }
+
+    //check to make sure there is something in req.body
+    if (!requestBody || Object.keys(requestBody).length === 0) {
+      return res.status(400).render("post_edit", { Title: "Edit Post", post: post, error: "No Data Provided" });
+    }
+
+    //check the inputs that will return 400 is fail
+    try {
+      req.params.id = validation.checkId(req.params.id, "Post ID");
+      if (requestBody.title)
+        requestBody.title = validation.checkString(requestBody.title, "Title");
+      if (updatedData.notation) {
+        updatedData.notation = validation.checkString(
+          updatedData.notation,
+          "Notation"
+        );
+      }
+      if (updatedData.key) {
+        updatedData.key = validation.checkString(updatedData.key, "Key");
+      }
+      if (updatedData.instrument) {
+        updatedData.instrument = validation.checkString(
+          updatedData.instrument,
+          "Instrument"
+        );
+      }
+      if (requestBody.tags)
+        requestBody.tags = validation.checkStringArray(requestBody.tags, "Tags");
+    } catch (e) {
+      return res.status(400).render("post_edit", { Title: "Edit Post", post: post, error: e });
+    }
+
+    //try to perform update
+    try {
+      const updatedPost = await postData.updatePostPatch(
+        req.params.id,
+        requestBody
+      );
+      return res.redirect(`/posts/${updatedPost._id}`);
+    } catch (e) {
+      return res.status(500).render("post_edit", { Title: "Edit Post", post: post, error: "Internal Server Error" });
+    }
   });
-
-// auth in middleware
-router.route("/:id/edit")
-.get(async (req, res) => {
-  try {
-    req.params.id = validation.checkId(req.params.id, "Post ID");
-  } catch (e) {
-    return res.status(400).render("error", {
-      linkRoute: "/",
-      linkDesc: "Return to the homepage",
-      errorName: "400 Bad Request",
-      errorDesc: "Invalid ID!",
-      Title: "400 Bad Request",
-    });
-  }
-  try {
-    const post = await postData.getPostById(req.params.id);
-    return res.render("post_edit", { post: post, Title: "Edit Post" });
-  } catch (e) {
-    return res.status(404).render("error", {
-      linkRoute: "/",
-      linkDesc: "Return to the homepage",
-      errorName: "404 Not Found",
-      errorDesc: "This page doesn't exist!",
-      Title: "404 Not Found",
-    });
-  }
-})
-.patch(async (req, res) => {
-  const requestBody = req.body;
-  let post = null;
-  try {
-    post = await postData.getPostById(req.params.id);
-  } catch (e) {
-    return res.status(404).render("error", {
-      linkRoute: "/users/me",
-      linkDesc: "Return to your profile",
-      errorName: "404 Not Found",
-      errorDesc: "This page doesn't exist!",
-      Title: "404 Not Found",
-    });
-  }
-
-  //check to make sure there is something in req.body
-  if (!requestBody || Object.keys(requestBody).length === 0) {
-    return res.status(400).render("post_edit", { Title: "Edit Post", post: post, error: "No Data Provided" });
-  }
-
-  //check the inputs that will return 400 is fail
-  try {
-    req.params.id = validation.checkId(req.params.id, "Post ID");
-    if (requestBody.title)
-      requestBody.title = validation.checkString(requestBody.title, "Title");
-    if (updatedData.notation) {
-      updatedData.notation = validation.checkString(
-        updatedData.notation,
-        "Notation"
-      );
-    }
-    if (updatedData.key) {
-      updatedData.key = validation.checkString(updatedData.key, "Key");
-    }
-    if (updatedData.instrument) {
-      updatedData.instrument = validation.checkString(
-        updatedData.instrument,
-        "Instrument"
-      );
-    }
-    if (requestBody.tags)
-      requestBody.tags = validation.checkStringArray(requestBody.tags, "Tags");
-  } catch (e) {
-    return res.status(400).render("post_edit", { Title: "Edit Post", post: post, error: e });
-  }
-
-  //try to perform update
-  try {
-    const updatedPost = await postData.updatePostPatch(
-      req.params.id,
-      requestBody
-    );
-    return res.redirect(`/posts/${updatedPost._id}`);
-  } catch (e) {
-    return res.status(500).render("post_edit", { Title: "Edit Post", post: post, error: "Internal Server Error" });
-  }
-});
 
 router
   .route("/search")
@@ -196,8 +198,7 @@ router.route("/new").get(upload.single("audio"), async (req, res) => {
 
   //check the inputs that will return 400 is fail
   try {
-    if (requestBody.title)
-      requestBody.title = validation.checkString(requestBody.title, "Title");
+    requestBody.title = validation.checkString(requestBody.title, "Title");
     if (requestBody.notation) {
       requestBody.notation = validation.checkString(
         requestBody.notation,
@@ -223,7 +224,7 @@ router.route("/new").get(upload.single("audio"), async (req, res) => {
   let audioId = null;
   try {
     audioId = await audioData.addAudio(req.file);
-  } catch(e) {
+  } catch (e) {
     if (e === 500) {
       return res.status(500).render("post_new", { Title: "New Post", error: "Internal Server Error: Audio could not be uploaded" });
     } else {
@@ -236,7 +237,7 @@ router.route("/new").get(upload.single("audio"), async (req, res) => {
     const newPost = await postData.addPost(
       requestBody.title,
       req.session.user._id,
-      `audio/${audioId}.mp3`,
+      `${audioId}`,
       requestBody.notation,
       requestBody.key,
       requestBody.instrument,
@@ -246,6 +247,6 @@ router.route("/new").get(upload.single("audio"), async (req, res) => {
   } catch (e) {
     return res.status(500).render("post_new", { Title: "New Post", error: "Internal Server Error: Post could not be created" });
   }
-}
+});
 
 export default router;
