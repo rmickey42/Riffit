@@ -5,6 +5,8 @@ import validation from "../validation.js";
 
 const BCRYPT_SALT = 11;
 
+const DEFAULT_PFP = "/public/imgs/defaultPfp.jpeg";
+
 const exportedMethods = {
   async getAllUsers() {
     const userCollection = await users();
@@ -52,7 +54,6 @@ const exportedMethods = {
   },
   async addUser(username, password) {
     username = validation.checkUserName(username, "username");
-
     password = validation.checkPassword(password, "password");
 
     const userCollection = await users();
@@ -67,7 +68,7 @@ const exportedMethods = {
       password: await bcrypt.hash(password, BCRYPT_SALT),
       bio: "",
       dailyStreak: 0,
-      picture: "",
+      picture: DEFAULT_PFP,
       instruments: [],
       genres: [],
       comments: [],
@@ -137,9 +138,15 @@ const exportedMethods = {
     id = validation.checkId(id);
     const updatedUserData = {};
     if (userInfo.username)
-      updatedUserData.username = validation.checkString(userInfo.username, "username");
+      updatedUserData.username = validation.checkString(
+        userInfo.username,
+        "username"
+      );
     if (userInfo.password)
-      updatedUserData.password = validation.checkString(userInfo.password, "password");
+      updatedUserData.password = validation.checkString(
+        userInfo.password,
+        "password"
+      );
     if (userInfo.bio)
       updatedUserData.bio = validation.checkString(userInfo.bio, "bio");
     if (userInfo.dailyStreak)
@@ -147,17 +154,30 @@ const exportedMethods = {
         userInfo.dailyStreak,
         "daily streak"
       );
-    if (userInfo.picture)
-      updatedUserData.picture = validation.checkProfilePicture(userInfo.picture);
+    if (userInfo.picture) {
+      if (userInfo.picture === "DELETE") {
+        updatedUserData.picture = DEFAULT_PFP;
+      } else {
+        updatedUserData.picture = validation.checkProfilePicture(
+          userInfo.picture
+        );
+      }
+    }
     if (userInfo.instruments)
       updatedUserData.instruments = validation.checkStringArray(
         userInfo.instruments,
         "instruments"
       );
     if (userInfo.genres)
-      updatedUserData.genres = validation.checkStringArray(userInfo.genres, "genres");
+      updatedUserData.genres = validation.checkStringArray(
+        userInfo.genres,
+        "genres"
+      );
     if (userInfo.comments)
-      updatedUserData.comments = validation.checkRefId(userInfo.comments, "comments");
+      updatedUserData.comments = validation.checkRefId(
+        userInfo.comments,
+        "comments"
+      );
     if (userInfo.posts)
       updatedUserData.posts = validation.checkRefId(userInfo.posts, "posts");
     if (userInfo.likedPosts)
@@ -190,6 +210,21 @@ const exportedMethods = {
     if (!updateInfo)
       throw `Error: Update failed, could not find a user with id of ${id}`;
 
+    delete updateInfo.password;
+    updateInfo._id = updateInfo._id.toString();
+    return updateInfo;
+  },
+
+  async deleteUserProfilePicture(id) {
+    id = validation.checkId(id);
+    const userCollection = await users();
+    const updateInfo = await userCollection.findOneAndUpdate(
+      { _id: new ObjectId(id) },
+      { $set: { picture: DEFAULT_PFP } },
+      { returnDocument: "after" }
+    );
+    if (!updateInfo)
+      throw `Error: Update failed, could not find a user with id of ${id}`;
     delete updateInfo.password;
     updateInfo._id = updateInfo._id.toString();
     return updateInfo;

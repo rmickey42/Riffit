@@ -23,8 +23,13 @@
 
             <label for="profilePicture">Profile Picture:
                 <input type="file" id="profilePicture" name="profilePicture">
-             </label>
+            </label>
 
+            {{#unless (equals user.picture defaultPic)}}
+            <label for="deletePicture">Delete Profile Picture
+                <input type="checkbox" name="deletePicture" id="deletePicture" value="true">
+            </label>
+            {{/unless}}
 
             <input type="submit" value="Save Changes" id="edit_profile_button">
         </form>

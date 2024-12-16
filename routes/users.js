@@ -21,8 +21,7 @@ router
   .route("/:userId") //working
   .get(async (req, res) => {
     try {
-      let id = req.params.userId;
-      id = validation.checkId(id);
+      let id = validation.checkId(req.params.userId);
 
       const user = await userData.getUserById(id);
 
@@ -31,7 +30,7 @@ router
       return res.render("user", {
         user: user,
         Title: user.username,
-        profileOwner: profileOwner
+        profileOwner: profileOwner,
       });
     } catch (e) {
       return res.status(404).render("error", {
@@ -39,7 +38,7 @@ router
         linkDesc: "Return to the homepage",
         errorName: "404 Not Found",
         errorDesc: "This page doesn't exist!",
-        Title: "404 Not Found"
+        Title: "404 Not Found",
       });
     }
   });
@@ -59,7 +58,7 @@ router.route("/:userId/comments").get(async (req, res) => {
       linkDesc: "Return to the homepage",
       errorName: "404 Not Found",
       errorDesc: "This page doesn't exist!",
-      Title: "404 Not Found"
+      Title: "404 Not Found",
     });
   }
 });
@@ -81,7 +80,7 @@ router
         linkDesc: "Return to the homepage",
         errorName: "404 Not Found",
         errorDesc: "This page doesn't exist!",
-        Title: "404 Not Found"
+        Title: "404 Not Found",
       });
     }
   });
@@ -133,16 +132,17 @@ router
 const upload = multer();
 
 router
-  .route("/:userId/edit") // test profile pic
+  .route("/:userId/edit")
   .get(async (req, res) => {
-    let id = req.params.userId;
-    const user = await userData.getUserById(id);
-    return res.render("user_edit", { user: user, Title: "Edit Profile" });
-  })
-  .post(upload.any(), async (req, res) => {
-    let id = req.params.userId;
     try {
-      id = validation.checkId(id);
+      let id = validation.checkId(req.params.userId);
+      const user = await userData.getUserById(id);
+      const defaultPic = "/public/imgs/defaultPfp.jpeg";
+      return res.render("user_edit", {
+        user: user,
+        Title: "Edit Profile",
+        defaultPic: defaultPic,
+      });
     } catch (e) {
       return res.status(404).render("error", {
         linkRoute: "/",
@@ -152,27 +152,33 @@ router
         Title: "404 Not Found",
       });
     }
+  })
+  .post(upload.any(), async (req, res) => {
     try {
-      let bio = req.body.bio;
-      let instruments = req.body.instruments;
-      let genres = req.body.genres;
-      let picture = req.files[0];
+      let id = validation.checkId(req.params.userId);
 
-      let userInfo = { picture };
+      let { bio, instruments, genres } = req.body;
 
-      if (!picture) delete userInfo.picture;
-      if (picture.fieldname != 'profilePicture') throw "Invalid file submitted";
-      else if (picture.mimetype !== 'image/jpeg') throw "Invalid image type for profile picture: " + picture.mimetype;
+      let userInfo = { bio, instruments, genres };
 
-      if(bio){
+      if (req.body.deletePicture === "true") {
+        userInfo.picture = "DELETE";
+      } else if (req.files && req.files.length > 0) {
+        userInfo.picture = req.files[0];
+      }
+
+      if (bio) {
         bio = validation.checkString(bio, "Bio");
         userInfo.bio = bio;
       }
-      if(instruments){
-        instruments = validation.checkStringArray(instruments.split(","), "Instruments");
+      if (instruments) {
+        instruments = validation.checkStringArray(
+          instruments.split(","),
+          "Instruments"
+        );
         userInfo.instruments = instruments;
       }
-      if(genres){
+      if (genres) {
         genres = validation.checkStringArray(genres.split(","), "Genres");
         userInfo.genres = genres;
       }
@@ -188,42 +194,20 @@ router
     }
   });
 
-router
-  .route("/:userId/picture")
-  .get(async (req, res) => {
-    let id = req.params.userId;
-    try {
-      id = validation.checkId(id);
-    } catch (e) {
-      return res.status(404).json("404 Not Found");
-    }
-    let user = null;
-    try {
-      user = await userData.getUserById(id);
-    } catch (e) {
-      return res.status(404).json("404 Not Found");
-    }
+router.route("/:userId/picture").get(async (req, res) => {
+  try {
+    let id = validation.checkId(req.params.userId);
+    let user = await userData.getUserById(id);
 
-    return res.contentType("image/jpeg").send(user.picture.buffer);
-  });
-
-router
-  .route("/:userId/picture")
-  .get(async (req, res) => {
-    let id = req.params.userId;
-    try {
-      id = validation.checkId(id);
-    } catch (e) {
-      return res.status(404).json("404 Not Found");
+    if (user.picture === "/public/imgs/defaultPfp.jpeg") {
+      let picturePath = "public/imgs/defaultPfp.jpeg";
+      return res.sendFile(picturePath, { root: "." });
+    } else {
+      return res.contentType("image/jpeg").send(user.picture.buffer);
     }
-    let user = null;
-    try {
-      user = await userData.getUserById(id);
-    } catch (e) {
-      return res.status(404).json("404 Not Found");
-    }
-
-    return res.contentType("image/jpeg").send(user.picture.buffer);
-  });
+  } catch (e) {
+    return res.status(404).json("404 Not Found");
+  }
+});
 
 export default router;
