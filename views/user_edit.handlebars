@@ -5,7 +5,9 @@
 
     <section class="profile">
         <form action="/users/{{user._id}}/edit" method="POST" id="edit-profile-form" enctype="multipart/form-data">
-            <img src="/users/{{user._id}}/picture" alt="Your profile picture" class="profile-picture">
+            <img src="/users/{{user._id}}/picture" 
+            alt="{{#if (equals user.picture "/public/imgs/defaultPfp.jpeg")}}No profile picture{{else}}{{user.username}}'s profile picture{{/if}}"
+            class="profile-picture">
 
             <label for="bio">Bio:
                 <textarea id="bio" name="bio">{{user.bio}}</textarea>

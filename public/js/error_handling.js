@@ -11,12 +11,14 @@
 
   let signInForm = $("#signin-form");
   let signUpForm = $("#signup-form");
+  let editProfileForm = $("#edit-profile-form");
+
+  let profilePictureInput = document.getElementById("profilePicture");
 
   let searchForm = $("#search-form");
   let tagInput = $("#tag-input-1");
 
   signInForm.submit(function (event) {
-    
     let username, password;
 
     try {
@@ -41,22 +43,21 @@
     //     },
     //     error: function () {
     //       errorMessage.text("Either Username or Password is Invalid.").show();
-        
+
     //     },
     //   });
     // }
   });
 
   signUpForm.submit(function (event) {
-    
     let username, password, confirmPassword;
 
     try {
       username = validation.checkUsername(usernameInput.val(), "Username");
       password = validation.checkPassword(passwordInput.val(), "Password");
-      confirmPassword = confirmPasswordInput.val()
-      if (password !== confirmPassword){
-        throw "Passwords must match!"
+      confirmPassword = confirmPasswordInput.val();
+      if (password !== confirmPassword) {
+        throw "Passwords must match!";
       }
     } catch (e) {
       errorMessage.text(e).show();
@@ -67,23 +68,31 @@
     errorMessage.hide().text("");
 
     // if (username && password && confirmPassword) {
-      // $.ajax({
-      //   method: "POST",
-      //   url: "/signup",
-      //   data: {
-      //     username: username,
-      //     password: password,
-      //     confirmPassword: confirmPassword,
-      //   },
-      //   success: function (response) {
-      //     errorMessage.hide().text("");
-      //     window.location.href = "/login";
-      //   },
-      //   error: function (xhr) {
-      //     errorMessage.text(xhr.responseText).show();
-      //   },
-      // });
+    // $.ajax({
+    //   method: "POST",
+    //   url: "/signup",
+    //   data: {
+    //     username: username,
+    //     password: password,
+    //     confirmPassword: confirmPassword,
+    //   },
+    //   success: function (response) {
+    //     errorMessage.hide().text("");
+    //     window.location.href = "/login";
+    //   },
+    //   error: function (xhr) {
+    //     errorMessage.text(xhr.responseText).show();
+    //   },
+    // });
     // }
+  });
+
+  editProfileForm.submit(function (event) {
+    let file = profilePictureInput.files[0];
+    if (file && file.type !== "image/jpeg") {
+      alert("Please upload a JPEG file.");
+      event.preventDefault();
+    }
   });
 
   // searchForm.submit(function (event) {
@@ -114,5 +123,4 @@
   //     });
   //   }
   // });
-
 })(window.jQuery);
