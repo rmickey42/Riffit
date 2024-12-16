@@ -191,3 +191,28 @@ nav a {
 nav a:hover {
     text-decoration: underline;
 }
+
+#like_button,
+#dislike_button,
+#favorite_button {
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    margin: 0 5px;
+}
+
+#like_button.clicked {
+    filter: hue-rotate(120deg);
+}
+
+#dislike_button.clicked {
+    filter: hue-rotate(240deg);
+}
+
+#favorite_button.clicked {
+    filter: hue-rotate(240deg);
+}
+
+#notation {
+    white-space: pre-wrap;
+}

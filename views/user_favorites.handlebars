@@ -3,7 +3,7 @@
     <ul>
         {{#each user.favoritePosts}}
         <li>
-            {{> post post=this}}
+            {{> post session=session post=this}}
         </li>
         {{/each}}
     </ul>

@@ -5,8 +5,14 @@
         <label for="title">Title:</label>
         <input type="text" id="title" name="title" required>
         
-        <label for="notation">Notation:</label>
-        <input type="text" id="notation" name="notation" required>
+        <label for="notation">Tab/Chords/Notation:</label>
+        <textarea id="notation" name="notation" rows="7" cols="100">
+e|---------------------------------------------------------------|
+B|---------------------------------------------------------------|
+G|---------------------------------------------------------------|
+D|---------------------------------------------------------------|
+A|---------------------------------------------------------------|
+E|---------------------------------------------------------------|</textarea>
         
         <label for="key">Key:</label>
         <input type="text" id="key" name="key" required>
@@ -14,13 +20,18 @@
         <label for="instrument">Instrument:</label>
         <input type="text" id="instrument" name="instrument" required>
         
-        <label for="tags">Tags (comma separated):</label>
-        <input type="text" id="tags" name="tags" required>
-        
         <label for="audio">Upload Audio File:</label>
         <input type="file" id="audio" name="audio" accept="audio/mpeg" required>
+
+        <label for="tag-input-1">Tag 1:</label>
+        <input type="text" name="tag-input-1" placeholder="Tag" id="tag-input-1" required>
+
+        <button id="add-tag-button" type="button">Add Tag</button>
+        <button id="remove-tag-button" type="button">Remove Tag</button>
         
         <button type="submit">Create Post</button>
+
+        <input type="number" name="tagCount" id="tagCount" value="1" hidden>
     </form>  </form>
 
     <div class="error-message"></div>
@@ -31,7 +42,5 @@
     <p class="error">{{error}}</p>  
     
     {{/if}}
-
-    <a href="/login"><p>Already have an account? Click here to sign in</p></a>
 </main>
 

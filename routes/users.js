@@ -29,11 +29,14 @@ router
 
       const profileOwner = req.session.user && req.session.user._id === id;
 
+      const posts = await postData.getPostsByUserId(id);
+
       return res.render("user", {
         session: req.session.user,
         user: user,
         Title: user.username,
         profileOwner: profileOwner,
+        posts: posts
       });
     } catch (e) {
       return res.status(404).json({ error: e });

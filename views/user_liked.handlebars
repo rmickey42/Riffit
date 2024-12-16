@@ -3,7 +3,7 @@
     <ul>
         {{#each user.likedPosts}}
         <li>
-            <a href="/posts/{{this._id}}">View Post</a>
+            {{> post session=session post=this}}
         </li>
         {{/each}}
     </ul>

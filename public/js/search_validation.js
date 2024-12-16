@@ -1,4 +1,4 @@
-// Tag input field
+// Tag input fields
 
 const MAX_TAGS = 10;
 let tagCount = 1;

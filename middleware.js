@@ -81,6 +81,14 @@ const authPostMiddleware = async (req, res, next) => {
   }
 };
 
+const signedInMiddleware = async (req, res, next) => {
+  if (req.session.user) {
+    next();
+  } else {
+    return res.redirect("/login");
+  }
+};
+
 
 const constructorMethod = (app) => {
   // setup handlebars
@@ -139,6 +147,10 @@ const constructorMethod = (app) => {
   // Middleware: user authentication
   app.use("/users/:userId/edit", authUserMiddleware);
   app.use("/posts/:id/edit", authPostMiddleware);
+  app.use("/posts/new", signedInMiddleware);
+  app.use("/posts/:id/favorite", signedInMiddleware);
+  app.use("/posts/:id/dislike", signedInMiddleware);
+  app.use("/posts/:id/like", signedInMiddleware);
   app.delete("/posts/:id", authPostMiddleware);
 };
 

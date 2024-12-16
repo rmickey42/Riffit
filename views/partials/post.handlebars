@@ -3,7 +3,7 @@
     <source src="/audio/{{post.content}}" type="audio/mpeg">
     Your browser does not support the audio element.
 </audio>
-<p>{{post.notation}}</p>
+<pre>{{post.notation}}</pre>
 <p>Tags: {{post.tags}}</p>
 <p>Created by: <a href="/users/{{post.userId}}">{{post.username}}</a></p>
 <p>Created on: {{post.date}}</p>
@@ -12,9 +12,14 @@
 {{#if post.instrument}}<p>Instrument: {{post.instrument}}</p>{{/if}}
 
 {{#if user}}
-    <a href="/posts/{{post.id}}/edit">Edit</a>
-    <form action="/posts/{{post.id}}?_method=DELETE" method="POST">
+    <a href="/posts/{{post._id}}/edit">Edit</a>
+    <form action="/posts/{{post._id}}?_method=DELETE" method="POST">
         <label for="delete_button">Delete</label>
         <input type="submit" name="delete_button" id="delete_button">
     </form>
+{{/if}}
+{{#if session}}
+    <img src="/public/img/like.png" alt="Like" id="like_button" onclick="likePost('{{post._id}}')" />
+    <img src="/public/img/dislike.png" alt="Dislike" id="dislike_button" onclick="dislikePost('{{post._id}}')" />
+    <img src="/public/img/favorite.png" alt="Favorite" id="favorite_button" onclick="favoritePost('{{post._id}}')" />
 {{/if}}

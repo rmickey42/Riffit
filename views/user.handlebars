@@ -21,11 +21,11 @@
 
     <section class="posts">
         <h2>Posts</h2>
-        {{#if user.posts.length}}
+        {{#if posts.length}}
         <ul>
-            {{#each user.posts}}
+            {{#each posts}}
             <li>
-                {{> post post=this}}
+                {{> post post=this session=session user=profileOwner}}
             </li>
             {{/each}}
         </ul>

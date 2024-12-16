@@ -1,11 +1,14 @@
 import postRoutes from './posts.js';
 import userRoutes from './users.js';
+import audioRoutes from './audio.js';
 import {router as auth_routes} from './auth_routes.js';
 import {static as staticDir} from 'express';
 
 const constructorMethod = (app) => {
   app.use('/posts', postRoutes);
   app.use('/users', userRoutes);
+  app.use('/audio', audioRoutes);
+
   app.use(auth_routes);
 
   app.use('/public', staticDir('public'));

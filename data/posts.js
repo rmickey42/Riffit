@@ -132,6 +132,7 @@ const exportedMethods = {
       username: user.username,
       content: content,
       rating: 0,
+      favorites: 0,
       notation: notation,
       key: key,
       instrument: instrument,
@@ -260,18 +261,19 @@ const exportedMethods = {
     userId = validation.checkId(userId, "User Id");
     let updatePost;
     const postCollection = await posts();
+    const likedList = await userData.getUserById(userId).likedPosts;
     if (like) {
-      updatePost = await postCollection.findOneAndUpdate(
-        { _id: new ObjectId(id) },
-        { $inc: { rating: 1 } },
-        { returnDocument: "after" }
-      );
-      if (!updatePost)
-        throw `Error: Update failed, could not find a comment with an id of ${id}`;
-      await userData.userArrayAlter(userId, id, "likedPosts");
+      if (!likedList.includes(id)) {
+        updatePost = await postCollection.findOneAndUpdate(
+          { _id: new ObjectId(id) },
+          { $inc: { rating: 1 } },
+          { returnDocument: "after" }
+        );
+        if (!updatePost)
+          throw `Error: Update failed, could not find a post with an id of ${id}`;
+        await userData.userArrayAlter(userId, id, "likedPosts");
+      }else{ throw `Already liked`}
     } else {
-      likedList = await userData.getUserById(userId);
-      likedList = likedList.likedPosts
       if (likedList.includes(id)) {
         updatePost = await postCollection.findOneAndUpdate(
           { _id: new ObjectId(id) },
@@ -279,38 +281,77 @@ const exportedMethods = {
           { returnDocument: "after" }
         );
         if (!updatePost)
-          throw `Error: Update failed, could not find a comment with an id of ${id}`;
+          throw `Error: Update failed, could not find a post with an id of ${id}`;
         await userData.userArrayAlter(userId, id, "likedPosts", false);
-      }else{ throw ``}
+      }else{ throw `No like to reverse`}
     }
 
     updatePost._id = updatePost._id.toString();
     return updatePost;
   },
 
-  async postDislike(id, userId, like = true) {
+  async postDislike(id, userId, dislike = true) {
     id = validation.checkId(id, "Post Id");
     userId = validation.checkId(userId, "User Id");
     let updatePost;
     const postCollection = await posts();
-    if (like) {
-      updatePost = await postCollection.findOneAndUpdate(
-        { _id: new ObjectId(id) },
-        { $inc: { rating: 1 } },
-        { returnDocument: "after" }
-      );
-      if (!updatePost)
-        throw `Error: Update failed, could not find a comment with an id of ${id}`;
-      await userData.userArrayAlter(userId, id, "likedPosts");
+    const dislikedList = await userData.getUserById(userId).dislikedPosts;
+    if (dislike) {
+      if (!dislikedList.includes(id)) {
+        updatePost = await postCollection.findOneAndUpdate(
+          { _id: new ObjectId(id) },
+          { $inc: { rating: -1 } },
+          { returnDocument: "after" }
+        );
+        if (!updatePost)
+          throw `Error: Update failed, could not find a post with an id of ${id}`;
+        await userData.userArrayAlter(userId, id, "dislikedPosts");
+      }else{ throw `Already disliked`}
     } else {
-      updatePost = await postCollection.findOneAndUpdate(
-        { _id: new ObjectId(id) },
-        { $inc: { rating: -1 } },
-        { returnDocument: "after" }
-      );
-      if (!updatePost)
-        throw `Error: Update failed, could not find a comment with an id of ${id}`;
-      await userData.userArrayAlter(userId, id, "likedPosts", false);
+      if (dislikedList.includes(id)) {
+        updatePost = await postCollection.findOneAndUpdate(
+          { _id: new ObjectId(id) },
+          { $inc: { rating: 1 } },
+          { returnDocument: "after" }
+        );
+        if (!updatePost)
+          throw `Error: Update failed, could not find a post with an id of ${id}`;
+        await userData.userArrayAlter(userId, id, "dislikedPosts", false);
+      }else{ throw `No dislike to reverse`}
+    }
+
+    updatePost._id = updatePost._id.toString();
+    return updatePost;
+  },
+
+  async postFavorite(id, userId, favorite = true) {
+    id = validation.checkId(id, "Post Id");
+    userId = validation.checkId(userId, "User Id");
+    let updatePost;
+    const postCollection = await posts();
+    const favoritedList = await userData.getUserById(userId).favoritePosts;
+    if (favorite) {
+      if (!favoritedList.includes(id)) {
+        updatePost = await postCollection.findOneAndUpdate(
+          { _id: new ObjectId(id) },
+          { $inc: { favorites: 1 } },
+          { returnDocument: "after" }
+        );
+        if (!updatePost)
+          throw `Error: Update failed, could not find a post with an id of ${id}`;
+        await userData.userArrayAlter(userId, id, "favoritePosts");
+      }else{ throw 'Already favorited'}
+    } else {
+      if (favoritedList.includes(id)) {
+        updatePost = await postCollection.findOneAndUpdate(
+          { _id: new ObjectId(id) },
+          { $inc: { favorites: -1 } },
+          { returnDocument: "after" }
+        );
+        if (!updatePost)
+          throw `Error: Update failed, could not find a post with an id of ${id}`;
+        await userData.userArrayAlter(userId, id, "favoritePosts", false);
+      }else{ throw 'No favorite to reverse'}
     }
 
     updatePost._id = updatePost._id.toString();

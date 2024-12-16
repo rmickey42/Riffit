@@ -71,8 +71,13 @@ router.route("/new").get(async (req, res) => {
         "Instrument"
       );
     }
-    if (requestBody.tags)
-      requestBody.tags = validation.checkStringArray(requestBody.tags, "Tags");
+    
+    requestBody.tags = [];
+    const tagCount = parseInt(req.body.tagCount);
+    for (let i = 0; i < req.body.tagCount; i++) {
+      requestBody.tags.push(validation.checkTag(requestBody["tag-input-" + (i + 1)], i+1));
+    }
+    requestBody.tags = validation.checkStringArray(requestBody.tags, "Tags");
   } catch (e) {
     return res.status(400).render("post_new", { session: req.session.user, Title: "New Post", error: e });
   }
@@ -87,6 +92,7 @@ router.route("/new").get(async (req, res) => {
     } else {
       return res.status(400).render("post_new", { session: req.session.user, Title: "New Post", error: e });
     }
+  }
   
 
   //try to perform update
@@ -124,7 +130,7 @@ router
     //try getting the post by ID
     try {
       const post = await postData.getPostById(req.params.id);
-      return res.render("post", { post: post });
+      return res.render("single_post", { session: req.session.user, post: post });
     } catch (e) {
       return res.status(404).render("error", { session: req.session.user, 
         linkRoute: "/",
@@ -248,5 +254,66 @@ router.route("/:id/edit")
       return res.status(500).render("post_edit", { session: req.session.user, Title: "Edit Post", post: post, error: "Internal Server Error" });
     }
   });
+
+router.route("/:id/like").post(async (req, res) => {
+  let postId = req.params.id;
+  try {
+    postId = validation.checkId(postId, "Post ID");
+  } catch (e) {
+    return res.status(400).json({ error: e });
+  }
+
+  // check if attempting to reverse like
+  let reverse = req.body.reverse;
+  if (reverse === "true" || reverse === true) reverse = true;
+  else reverse = false;
+
+  try {
+    const post = await postData.postLike(postId, req.session.user._id, !reverse);
+    return res.json({success: true});
+  } catch (e) {
+    return res.status(400).json({ error: e });
+  }
+});
+router.route("/:id/dislike").post(async (req, res) => {
+  let postId = req.params.id;
+  try {
+    postId = validation.checkId(postId, "Post ID");
+  } catch (e) {
+    return res.status(400).json({ error: e });
+  }
+
+  // check if attempting to reverse dislike
+  let reverse = req.body.reverse;
+  if (reverse === "true" || reverse === true) reverse = true;
+  else reverse = false;
+
+  try {
+    const post = await postData.postDislike(postId, req.session.user._id, !reverse);
+    return res.json({success: true});
+  } catch (e) {
+    return res.status(400).json({ error: e });
+  }
+});
+router.route("/:id/favorite").post(async (req, res) => {
+  let postId = req.params.id;
+  try {
+    postId = validation.checkId(postId, "Post ID");
+  } catch (e) {
+    return res.status(400).json({ error: e });
+  }
+
+  // check if attempting to reverse favorite
+  let reverse = req.body.reverse;
+  if (reverse === "true" || reverse === true) reverse = true;
+  else reverse = false;
+
+  try {
+    const post = await postData.postFavorite(postId, req.session.user._id, !reverse);
+    return res.json({success: true});
+  } catch (e) {
+    return res.status(400).json({ error: e });
+  }
+});
 
 export default router;
