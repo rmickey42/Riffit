@@ -11,9 +11,7 @@
 
   let signInForm = $("#signin-form");
   let signUpForm = $("#signup-form");
-  let editProfileForm = $("#edit-profile-form");
-
-  let profilePictureInput = document.getElementById("profilePicture");
+  
 
   let searchForm = $("#search-form");
   let tagInput = $("#tag-input-1");
@@ -87,13 +85,7 @@
     // }
   });
 
-  editProfileForm.submit(function (event) {
-    let file = profilePictureInput.files[0];
-    if (file && file.type !== "image/jpeg") {
-      alert("Please upload a JPEG file.");
-      event.preventDefault();
-    }
-  });
+  
 
   // searchForm.submit(function (event) {
   //   event.preventDefault();
