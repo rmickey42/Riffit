@@ -1,7 +1,7 @@
 <main>
     <h1>{{user.username}}</h1>
     <section class="profile">
-        <img src="{{user.picture}}" alt="{{user.username}}'s profile picture" class="profile-picture">
+        <img src="/users/{{user._id}}/picture" alt="{{user.username}}" class="profile-picture">
         <p><strong>Bio:</strong> {{user.bio}}</p>
         <p><strong>Daily Streak:</strong> {{user.dailyStreak}}</p>
         <p><strong>Instruments:</strong> {{#each user.instruments}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}</p>

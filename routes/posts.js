@@ -5,6 +5,108 @@ import validation from "../validation.js";
 import multer from "multer";
 
 router
+  .route("/search")
+  .get(async (req, res) => {
+    return res.render("search", { Title: "Search" });
+  }).post(async (req, res) => {
+    let tags = [];
+    const tagCount = parseInt(req.body.tagCount);
+    for (let i = 0; i < req.body.tagCount; i++) {
+      tags.push(req.body["tag-input-" + (i + 1)]);
+    }
+
+    let sorting = req.body.sorting;
+
+    if (!sorting) {
+      sorting = "newest";
+    }
+
+    if (!Array.isArray(tags)) {
+      return res.status(400).render("search", { Title: "Search", error: "Tags must be an array" });
+    }
+
+    if (tags.length === 0) {
+      return res.status(400).render("search", { Title: "Search", error: "Tags must not be empty" });
+    }
+
+    try {
+      const posts = await postData.getPostsByTags(tags);
+      if (posts.length === 0) {
+        return res.status(404).render("search", { Title: "Search", error: "No Results" });
+      } else {
+        return res.render("search", { Title: "Search", posts: posts });
+      }
+    } catch (e) {
+      return res.status(500).render("search", { Title: "Search", error: "Internal Server Error" });
+    }
+  });
+
+const upload = multer();
+
+router.route("/new").get(upload.single("audio"), async (req, res) => {
+  return res.render("post_new", { Title: "New Post" });
+}).post(async (req, res) => {
+  const requestBody = req.body;
+
+  //check to make sure there is something in req.body
+  if (!requestBody || Object.keys(requestBody).length === 0) {
+    return res.status(400).render("post_new", { Title: "New Post", error: "No Data Provided" });
+  }
+
+  //check the inputs that will return 400 is fail
+  try {
+    requestBody.title = validation.checkString(requestBody.title, "Title");
+    if (requestBody.notation) {
+      requestBody.notation = validation.checkString(
+        requestBody.notation,
+        "Notation"
+      );
+    }
+    if (requestBody.key) {
+      requestBody.key = validation.checkString(requestBody.key, "Key");
+    }
+    if (requestBody.instrument) {
+      requestBody.instrument = validation.checkString(
+        requestBody.instrument,
+        "Instrument"
+      );
+    }
+    if (requestBody.tags)
+      requestBody.tags = validation.checkStringArray(requestBody.tags, "Tags");
+  } catch (e) {
+    return res.status(400).render("post_new", { Title: "New Post", error: e });
+  }
+
+  // audio file upload; audio data interface will handle validation
+  let audioId = null;
+  try {
+    audioId = await audioData.addAudio(req.file);
+  } catch (e) {
+    if (e === 500) {
+      return res.status(500).render("post_new", { Title: "New Post", error: "Internal Server Error: Audio could not be uploaded" });
+    } else {
+      return res.status(400).render("post_new", { Title: "New Post", error: e });
+    }
+  }
+
+  //try to perform update
+  try {
+    const newPost = await postData.addPost(
+      requestBody.title,
+      req.session.user._id,
+      `${audioId}`,
+      requestBody.notation,
+      requestBody.key,
+      requestBody.instrument,
+      requestBody.tags
+    );
+    return res.redirect(`/posts/${newPost._id}`);
+  } catch (e) {
+    return res.status(500).render("post_new", { Title: "New Post", error: "Internal Server Error: Post could not be created" });
+  }
+});
+
+router
   .route("/:id")
   .get(async (req, res) => {
     //check inputs
@@ -146,107 +248,5 @@ router.route("/:id/edit")
       return res.status(500).render("post_edit", { Title: "Edit Post", post: post, error: "Internal Server Error" });
     }
   });
-
-router
-  .route("/search")
-  .get(async (req, res) => {
-    return res.render("search", { Title: "Search" });
-  }).post(async (req, res) => {
-    let tags = [];
-    const tagCount = parseInt(req.body.tagCount);
-    for (let i = 0; i < req.body.tagCount; i++) {
-      tags.push(req.body["tag-input-" + (i + 1)]);
-    }
-
-    let sorting = req.body.sorting;
-
-    if (!sorting) {
-      sorting = "newest";
-    }
-
-    if (!Array.isArray(tags)) {
-      return res.status(400).render("search", { Title: "Search", error: "Tags must be an array" });
-    }
-
-    if (tags.length === 0) {
-      return res.status(400).render("search", { Title: "Search", error: "Tags must not be empty" });
-    }
-
-    try {
-      const posts = await postData.getPostsByTags(tags);
-      if (posts.length === 0) {
-        return res.status(404).render("search", { Title: "Search", error: "No Results" });
-      } else {
-        return res.render("search", { Title: "Search", posts: posts });
-      }
-    } catch (e) {
-      return res.status(500).render("search", { Title: "Search", error: "Internal Server Error" });
-    }
-  });
-
-const upload = multer();
-
-router.route("/new").get(upload.single("audio"), async (req, res) => {
-  return res.render("post_new", { Title: "New Post" });
-}).post(async (req, res) => {
-  const requestBody = req.body;
-
-  //check to make sure there is something in req.body
-  if (!requestBody || Object.keys(requestBody).length === 0) {
-    return res.status(400).render("post_new", { Title: "New Post", error: "No Data Provided" });
-  }
-
-  //check the inputs that will return 400 is fail
-  try {
-    requestBody.title = validation.checkString(requestBody.title, "Title");
-    if (requestBody.notation) {
-      requestBody.notation = validation.checkString(
-        requestBody.notation,
-        "Notation"
-      );
-    }
-    if (requestBody.key) {
-      requestBody.key = validation.checkString(requestBody.key, "Key");
-    }
-    if (requestBody.instrument) {
-      requestBody.instrument = validation.checkString(
-        requestBody.instrument,
-        "Instrument"
-      );
-    }
-    if (requestBody.tags)
-      requestBody.tags = validation.checkStringArray(requestBody.tags, "Tags");
-  } catch (e) {
-    return res.status(400).render("post_new", { Title: "New Post", error: e });
-  }
-
-  // audio file upload; audio data interface will handle validation
-  let audioId = null;
-  try {
-    audioId = await audioData.addAudio(req.file);
-  } catch (e) {
-    if (e === 500) {
-      return res.status(500).render("post_new", { Title: "New Post", error: "Internal Server Error: Audio could not be uploaded" });
-    } else {
-      return res.status(400).render("post_new", { Title: "New Post", error: e });
-    }
-  }
-
-  //try to perform update
-  try {
-    const newPost = await postData.addPost(
-      requestBody.title,
-      req.session.user._id,
-      `${audioId}`,
-      requestBody.notation,
-      requestBody.key,
-      requestBody.instrument,
-      requestBody.tags
-    );
-    return res.redirect(`/posts/${newPost._id}`);
-  } catch (e) {
-    return res.status(500).render("post_new", { Title: "New Post", error: "Internal Server Error: Post could not be created" });
-  }
-});
 
 export default router;

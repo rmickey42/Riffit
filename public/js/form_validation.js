@@ -5,7 +5,7 @@ let tagCount = 1;
 $('#add-tag-button').click(function() {
     tagCount++;
     const newTagInput = `
-        <label for="tag-input-${tagCount}">Tag ${tagCount}:</label>
+        <label id="tag-input-${tagCount}-label" for="tag-input-${tagCount}">Tag ${tagCount}:</label>
         <input type="text" name="tag-input-${tagCount}" placeholder="Tag" id="tag-input-${tagCount}">
     `;
     $(newTagInput).insertBefore('#add-tag-button');
@@ -20,6 +20,7 @@ $('#add-tag-button').click(function() {
 $('#remove-tag-button').click(function() {
     if (tagCount > 1) {
         $(`#tag-input-${tagCount}`).remove();
+        $(`#tag-input-${tagCount}-label`).remove();
         tagCount--;
         $('#add-tag-button').attr('disabled', false);
 

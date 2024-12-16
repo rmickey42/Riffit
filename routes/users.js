@@ -136,20 +136,34 @@ router
     let id = req.params.userId;
     try {
       id = validation.checkId(req.params.userId, "user Id");
-      let { bio, instruments, genres } = req.body;
-      bio = validation.checkString(bio, "Bio");
-      instruments = validation.checkStringArray(
-        instruments.split(","),
-        "Instruments"
-      );
-      genres = validation.checkStringArray(genres.split(","), "Genres");
-      let picture = req.files.profilePicture;
 
-      let userInfo = { bio, instruments, genres, picture };
+      let userInfo = {};
+      
+      let bio = req.body.bio;
+      if(bio){
+        bio = validation.checkString(bio, "Bio");
+        userInfo.bio = bio;
+      }
+      let instruments = req.body.instruments;
+      if(instruments){
+        instruments = validation.checkStringArray(
+          instruments.split(","),
+          "Instruments"
+        );
+        userInfo.instruments = instruments;
+      }
+      let genres = req.body.genres;
+      if(genres){
+        genres = validation.checkStringArray(genres.split(","), "Genres");
+        userInfo.genres = genres;
+      }
 
-      if (!picture) delete userInfo.picture;
-      else if (picture.mimetype !== "image/jpeg")
-        throw "Invalid image type for profile picture: " + picture.mimetype;
+      let picture = req.files[0];
+      if (picture){
+        if (picture.mimetype !== "image/jpeg") throw "Invalid image type for profile picture: " + picture.mimetype;
+        if (picture.size > validation.MAX_PFP_SIZE) throw "Profile picture is too large! Must be a JPEG image < 1MB";
+        userInfo.picture = picture;
+      }
 
       let updatedUser = await userData.updateUser(id, userInfo);
       req.session.user = updatedUser;
@@ -160,9 +174,26 @@ router
         linkRoute: "/",
         linkDesc: "Return to the homepage",
         errorName: "404 Not Found",
-        errorDesc: "This page doesn't exist!",
+        errorDesc: e,
         Title: "404 Not Found",
       });
+    }
+  });
+
+router
+  .route("/:userId/picture")
+  .get(async (req, res) => {
+    let id = req.params.userId;
+    try {
+      id = validation.checkId(id, "user Id");
+      const user = await userData.getUserById(id);
+      if (!user.picture || user.picture === "") {
+        return res.redirect("/public/img/default_pfp.jpg");
+      }
+
+      return res.contentType("image/jpeg").send(user.picture);
+    } catch (e) {
+      return res.redirect("/public/img/default_pfp.jpg");
     }
   });
 
