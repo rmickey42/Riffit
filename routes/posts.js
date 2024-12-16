@@ -87,14 +87,14 @@ router.route("/new").get(async (req, res) => {
     } else {
       return res.status(400).render("post_new", { session: req.session.user, Title: "New Post", error: e });
     }
-  }
+  
 
   //try to perform update
   try {
     const newPost = await postData.addPost(
       requestBody.title,
       req.session.user._id,
-      `${audioId}`,
+      audioId,
       requestBody.notation,
       requestBody.key,
       requestBody.instrument,

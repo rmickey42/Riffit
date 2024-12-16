@@ -35,7 +35,7 @@ const exportedMethods = {
         if (newInsertInformation.insertedCount === 0) {
             throw 500;
         }
-        return newId;
+        return newId.toString();
     },
 
     async removeAudio(id) {
