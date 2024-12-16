@@ -5,6 +5,102 @@ import validation from "../validation.js";
 import multer from "multer";
 
 router
+  .route("/search")
+  .get(async (req, res) => {
+    return res.render("search", { session: req.session.user, Title: "Search" });
+  }).post(async (req, res) => {
+    let tags = validation.checkTags(req.body.tags);
+    let page = req.body.page;
+    let sorting = req.body.sorting;
+
+    if (!sorting) {
+      sorting = "newest";
+    }
+    if (!page) {
+      page = 0;
+    }else page = parseInt(page)-1;
+
+    try {
+      const posts = await postData.getPostsByTags(tags, sorting, page);
+      if (posts.length === 0) {
+        return res.status(404).render("search", { session: req.session.user,  Title: "Search", error: "No Results" });
+      } else {
+        return res.render("search", { session: req.session.user,  Title: "Search", posts: posts });
+      }
+    } catch (e) {
+      return res.status(500).render("search", { session: req.session.user,  Title: "Search", error: "Internal Server Error" });
+    }
+  });
+
+const upload = multer();
+
+router.route("/new").get(async (req, res) => {
+  return res.render("post_new", { session: req.session.user,  Title: "New Post" });
+}).post(upload.single("audio"), async (req, res) => {
+  const requestBody = req.body;
+
+  //check to make sure there is something in req.body
+  if (!requestBody || Object.keys(requestBody).length === 0) {
+    return res.status(400).render("post_new", { session: req.session.user,  Title: "New Post", error: "No Data Provided" });
+  }
+
+  //check the inputs that will return 400 is fail
+  try {
+    requestBody.title = validation.checkString(requestBody.title, "Title");
+    if (requestBody.notation) {
+      requestBody.notation = validation.checkString(
+        requestBody.notation,
+        "Notation"
+      );
+    }
+    if (requestBody.key) {
+      requestBody.key = validation.checkString(requestBody.key, "Key");
+    }
+    if (requestBody.instrument) {
+      requestBody.instrument = validation.checkString(
+        requestBody.instrument,
+        "Instrument"
+      );
+    }
+    
+    if (requestBody.tags) {
+      requestBody.tags = validation.checkTags(requestBody.tags, "Tags");
+    }
+  } catch (e) {
+    return res.status(400).render("post_new", { session: req.session.user, Title: "New Post", error: e });
+  }
+
+  // audio file upload; audio data interface will handle validation
+  let audioId = null;
+  try {
+    audioId = await audioData.addAudio(req.file);
+  } catch (e) {
+    if (e === 500) {
+      return res.status(500).render("post_new", { session: req.session.user, Title: "New Post", error: "Internal Server Error: Audio could not be uploaded" });
+    } else {
+      return res.status(400).render("post_new", { session: req.session.user, Title: "New Post", error: e });
+    }
+  }
+  
+
+  //try to perform update
+  try {
+    const newPost = await postData.addPost(
+      requestBody.title,
+      req.session.user._id,
+      audioId,
+      requestBody.notation,
+      requestBody.key,
+      requestBody.instrument,
+      requestBody.tags
+    );
+    return res.redirect(`/posts/${newPost._id}`);
+  } catch (e) {
+    return res.status(500).render("post_new", { session: req.session.user, Title: "New Post", error: "Internal Server Error: Post could not be created" });
+  }
+});
+
+router
   .route("/:id")
   .get(async (req, res) => {
     //check inputs
@@ -109,28 +205,30 @@ router.route("/:id/edit")
       return res.status(400).render("post_edit", { Title: "Edit Post", post: post, error: "No Data Provided" });
     }
 
+    let updatedData = {};
     //check the inputs that will return 400 is fail
     try {
       req.params.id = validation.checkId(req.params.id, "Post ID");
       if (requestBody.title)
-        requestBody.title = validation.checkString(requestBody.title, "Title");
-      if (updatedData.notation) {
+        updatedData.title = validation.checkString(requestBody.title, "Title");
+      if (requestBody.notation) {
         updatedData.notation = validation.checkString(
-          updatedData.notation,
+          requestBody.notation,
           "Notation"
         );
       }
-      if (updatedData.key) {
-        updatedData.key = validation.checkString(updatedData.key, "Key");
+      if (requestBody.key) {
+        updatedData.key = validation.checkString(requestBody.key, "Key");
       }
-      if (updatedData.instrument) {
+      if (requestBody.instrument) {
         updatedData.instrument = validation.checkString(
-          updatedData.instrument,
+          requestBody.instrument,
           "Instrument"
         );
       }
-      if (requestBody.tags)
-        requestBody.tags = validation.checkStringArray(requestBody.tags, "Tags");
+      if (requestBody.tags) {
+        updatedData.tags = validation.checkTags(requestBody.tags);
+      }
     } catch (e) {
       return res.status(400).render("post_edit", { Title: "Edit Post", post: post, error: e });
     }
@@ -139,7 +237,7 @@ router.route("/:id/edit")
     try {
       const updatedPost = await postData.updatePost(
         req.params.id,
-        requestBody
+        updatedData
       );
       return res.redirect(`/posts/${updatedPost._id}`);
     } catch (e) {

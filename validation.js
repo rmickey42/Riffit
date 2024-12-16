@@ -10,6 +10,17 @@ const exportedMethods = {
     return str.trim();
   },
 
+  checkTags(tags) {
+    tags = this.checkStringArray(tags, "tags");
+    tags.forEach((tag, i) => {
+      tag = this.checkString(tag, `Tag ${i}`);
+      if (tag.length > 15) throw `Tag ${i} is too long`;
+      if (tag.length < 2) throw `Tag ${i} is too short`;
+      tags[i] = tag;
+    });
+    return tags;
+  },
+
   checkId(id, idName) {
     id = this.checkString(id, idName);
     if (!ObjectId.isValid(id)) throw `${idName} is not a valid ObjectId`;

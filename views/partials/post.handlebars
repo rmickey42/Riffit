@@ -20,10 +20,11 @@
     <img src="/public/img/favorite.png" alt="Favorite" id="favorite_button" onclick="favoritePost('{{post._id}}')" 
         {{#inList value=post._id list=session.favoritePosts}}class="clicked"{{/inList}} />
 {{/if}}
-{{#if user}}
-    <a href="/posts/{{post.id}}/edit">Edit</a>
-    <form action="/posts/{{post.id}}?_method=DELETE" method="POST">
-        <label for="delete_button">Delete</label>
-        <input type="submit" name="delete_button" id="delete_button">
+{{#if profileOwner}}
+    <form action="/posts/{{post._id}}?_method=DELETE" method="POST">
+        <input type="submit" id="delete_button" value="Delete">
+    </form>
+    <form action="/posts/{{post._id}}/edit" method="GET">
+        <input type="submit" id="edit_button" value="Edit">
     </form>
 {{/if}}

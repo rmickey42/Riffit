@@ -19,12 +19,17 @@
         
         <label for="audio">Upload Audio File:</label>
         <input type="file" id="audio" name="audio" accept="audio/mpeg" required>
+
+        <label for="tag-input-0">Tag 1:</label>
+        <input type="text" name="tags[]" placeholder="Tag" id="tag-input-0" required>
+
+        <button id="add-tag-button" type="button">Add Tag</button>
+        <button id="remove-tag-button" type="button">Remove Tag</button>
         
         <button type="submit">Create Post</button>
-    </form>  </form>
 
-    <div class="error-message"></div>
-
+        <input type="number" name="tagCount" id="tagCount" value="1" hidden>
+    </form>
     
     {{#if error}}
     
