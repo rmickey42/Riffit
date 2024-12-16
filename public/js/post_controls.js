@@ -9,7 +9,6 @@ function likePost(postId) {
                 console.log('Post liked successfully');
             },
             error: function() {
-                $("#like_button").toggleClass('clicked');
                 alert('Failed to like the post');
             }.bind(this)
         });
@@ -22,7 +21,6 @@ function likePost(postId) {
                 console.log('Post unliked successfully');
             },
             error: function() {
-                $("#like_button").toggleClass('clicked');
                 alert('Failed to unlike the post');
             }.bind(this)
         });
@@ -40,7 +38,6 @@ function dislikePost(postId) {
                 console.log('Post disliked successfully');
             },
             error: function() {
-                $("#dislike_button").toggleClass('clicked');
                 alert('Failed to dislike the post');
             }
         });
@@ -53,7 +50,6 @@ function dislikePost(postId) {
                 console.log('Post undisliked successfully');
             },
             error: function() {
-                $("#dislike_button").toggleClass('clicked');
                 alert('Failed to undislike the post');
             }
         });
@@ -71,7 +67,6 @@ function favoritePost(postId) {
                 console.log('Post favorited successfully');
             },
             error: function() {
-                $("#favorite_button").toggleClass('clicked');
                 alert('Failed to favorite the post');
             }
         });
@@ -84,7 +79,6 @@ function favoritePost(postId) {
                 console.log('Post unfavorited successfully');
             },
             error: function() {
-                $("#favorite_button").toggleClass('clicked');
                 alert('Failed to unfavorite the post');
             }
         });

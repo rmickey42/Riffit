@@ -261,9 +261,9 @@ const exportedMethods = {
     userId = validation.checkId(userId, "User Id");
     let updatePost;
     const postCollection = await posts();
-    const likedList = await userData.getUserById(userId).likedPosts;
+    const likedList = (await userData.getUserById(userId)).likedPosts;
     if (like) {
-      if (!likedList.includes(id)) {
+      if (!likedList || !likedList.includes(id)) {
         updatePost = await postCollection.findOneAndUpdate(
           { _id: new ObjectId(id) },
           { $inc: { rating: 1 } },
@@ -295,9 +295,9 @@ const exportedMethods = {
     userId = validation.checkId(userId, "User Id");
     let updatePost;
     const postCollection = await posts();
-    const dislikedList = await userData.getUserById(userId).dislikedPosts;
+    const dislikedList = (await userData.getUserById(userId)).dislikedPosts;
     if (dislike) {
-      if (!dislikedList.includes(id)) {
+      if (!dislikedList || !dislikedList.includes(id)) {
         updatePost = await postCollection.findOneAndUpdate(
           { _id: new ObjectId(id) },
           { $inc: { rating: -1 } },
@@ -329,9 +329,10 @@ const exportedMethods = {
     userId = validation.checkId(userId, "User Id");
     let updatePost;
     const postCollection = await posts();
-    const favoritedList = await userData.getUserById(userId).favoritePosts;
+    const favoritedList = (await userData.getUserById(userId)).favoritePosts;
+
     if (favorite) {
-      if (!favoritedList.includes(id)) {
+      if (!favoritedList || !favoritedList.includes(id)) {
         updatePost = await postCollection.findOneAndUpdate(
           { _id: new ObjectId(id) },
           { $inc: { favorites: 1 } },

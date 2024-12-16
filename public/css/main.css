@@ -202,15 +202,15 @@ nav a:hover {
 }
 
 #like_button.clicked {
-    filter: hue-rotate(120deg);
+    filter: rgb(0, 255, 0);
 }
 
 #dislike_button.clicked {
-    filter: hue-rotate(240deg);
+    filter: rgb(255, 0, 0);
 }
 
 #favorite_button.clicked {
-    filter: hue-rotate(240deg);
+    filter: rgb(255, 0, 0);
 }
 
 #notation {
