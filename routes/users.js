@@ -5,6 +5,7 @@ import { commentData, userData, postData } from "../data/index.js";
 import { ObjectId } from "mongodb";
 import validation from "../validation.js";
 import multer from "multer";
+import session from "express-session";
 
 router
   .route("/me") //working
@@ -29,6 +30,7 @@ router
       const profileOwner = req.session.user && req.session.user._id === id;
 
       return res.render("user", {
+        session: req.session.user,
         user: user,
         Title: user.username,
         profileOwner: profileOwner,
@@ -44,11 +46,12 @@ router.route("/:userId/comments").get(async (req, res) => {
     id = validation.checkId(id, "user Id");
     const user = await userData.getUserById(id);
     return res.render("user_comments", {
+      session: req.session.user,
       user: user,
       Title: `${user.username}'s Comments`,
     });
   } catch (e) {
-    return res.status(404).render("404", {
+    return res.status(404).render("404", { session: req.session.user,
       linkRoute: "/",
       linkDesc: "Return to the homepage",
       errorName: "404 Not Found",
@@ -64,12 +67,12 @@ router
       let id = req.params.userId;
       id = validation.checkId(id, "user Id");
       const user = await userData.getUserById(id);
-      return res.render("user_liked", {
+      return res.render("user_liked", { session: req.session.user,
         user: user,
         Title: `${user.username}'s Likes`,
       });
     } catch (e) {
-      return res.status(404).render("404", {
+      return res.status(404).render("404", { session: req.session.user,
         linkRoute: "/",
         linkDesc: "Return to the homepage",
         errorName: "404 Not Found",
@@ -86,12 +89,12 @@ router
       let id = req.params.userId;
       id = validation.checkId(id, "user Id");
       const user = await userData.getUserById(id);
-      return res.render("user_disliked", {
+      return res.render("user_disliked", { session: req.session.user,
         user: user,
         Title: `${user.username}'s Dislikes`,
       });
     } catch (e) {
-      return res.status(404).render("404", {
+      return res.status(404).render("404", { session: req.session.user,
         linkRoute: "/",
         linkDesc: "Return to the homepage",
         errorName: "404 Not Found",
@@ -108,12 +111,12 @@ router
       let id = req.params.userId;
       id = validation.checkId(id, "user Id");
       const user = await userData.getUserById(id);
-      return res.render("user_favorites", {
+      return res.render("user_favorites", { session: req.session.user,
         user: user,
         Title: `${user.username}'s Favorites`,
       });
     } catch (e) {
-      return res.status(404).render("404", {
+      return res.status(404).render("404", { session: req.session.user,
         linkRoute: "/",
         linkDesc: "Return to the homepage",
         errorName: "404 Not Found",
@@ -130,7 +133,7 @@ router
   .get(async (req, res) => {
     let id = req.params.userId;
     const user = await userData.getUserById(id);
-    return res.render("user_edit", { user: user, Title: "Edit Profile" });
+    return res.render("user_edit", { session: req.session.user, user: user, Title: "Edit Profile" });
   })
   .post(upload.any(), async (req, res) => {
     let id = req.params.userId;
@@ -170,7 +173,7 @@ router
 
       return res.redirect(`/users/${id}`);
     } catch (e) {
-      return res.status(404).render("error", {
+      return res.status(404).render("error", { session: req.session.user,
         linkRoute: "/",
         linkDesc: "Return to the homepage",
         errorName: "404 Not Found",

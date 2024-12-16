@@ -94,7 +94,7 @@ router
 
         return res.redirect("/users/me");
     } catch (e) {
-      return res.status(401).render("login", {
+      return res.status(401).render("login", { 
         Title: "Login",
         error: e
       });

@@ -1,5 +1,6 @@
-const MAX_TAGS = 10;
+// Tag input field
 
+const MAX_TAGS = 10;
 let tagCount = 1;
 
 $('#add-tag-button').click(function() {
@@ -30,3 +31,4 @@ $('#remove-tag-button').click(function() {
     }
     $('#tagCount').val(tagCount);
 });
+
