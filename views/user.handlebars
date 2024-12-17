@@ -8,15 +8,15 @@
         <p><strong>Genres:</strong> {{#each user.genres}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}</p>
     </section>
 
-    <section class="user-actions"></section>
-    <a href="/users/{{user._id}}/likes">Liked Posts</a>
-    <a href="/users/{{user._id}}/dislikes">Disliked Posts</a>
-    <a href="/users/{{user._id}}/comments">Comments</a>
-    <a href="/users/{{user._id}}/favorites">Favorited Posts</a> 
+    <section class="user-actions">
+        <a href="/users/{{user._id}}/likes">Liked Posts</a>
+        <a href="/users/{{user._id}}/dislikes">Disliked Posts</a>
+        <a href="/users/{{user._id}}/comments">Comments</a>
+        <a href="/users/{{user._id}}/favorites">Favorited Posts</a> 
 
-    {{#if profileOwner}}
-    <a href="/users/{{user._id}}/edit">Edit Profile</a>
-    {{/if}}
+        {{#if profileOwner}}
+        <a href="/users/{{user._id}}/edit">Edit Profile</a>
+        {{/if}}
     </section>
 
     <section class="posts">
