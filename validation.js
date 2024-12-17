@@ -64,7 +64,7 @@ const exportedMethods = {
     });
   },
 
-  checkUserName(str, refName) {
+  checkUsername(str, refName) {
     // Usernames can only contain letters and numbers
     str = this.checkString(str, refName);
     if (!refName) throw `No name for ${str}`;

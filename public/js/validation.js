@@ -55,25 +55,25 @@
 
     checkUsername(str, refName) {
       // Usernames can only contain letters and numbers
-      let trimmed = this.checkString(str, refName);
-      for (let i in trimmed) {
-        if (!alpha_numer.includes(trimmed[i].toLowerCase()))
-          throw `${refName || str} contains invalid character ${trimmed[i]}`;
+      let str = this.checkString(str, refName);
+      for (let i in str) {
+        if (!alpha_numer.includes(str[i].toLowerCase()))
+          throw `${refName || str} contains invalid character ${str[i]}`;
       }
-      return trimmed;
+      return str;
     },
 
     checkPassword(str, refName) {
-      let trimmed = this.checkString(str, refName);
-      if (trimmed.length < 5) throw `Passwords must be at least 5 chatacters`;
-      if (trimmed.length > 16)
+      let str = this.checkString(str, refName);
+      if (str.length < 5) throw `Passwords must be at least 5 chatacters`;
+      if (str.length > 16)
         throw `Passwords cannot be longer than 16 characters.`;
       let capital_count = 0,
         symbol_count = 0,
         number_count = 0;
-      for (let i in trimmed) {
-        let char = trimmed[i].toLowerCase();
-        if (char != trimmed[i]) capital_count++;
+      for (let i in str) {
+        let char = str[i].toLowerCase();
+        if (char != str[i]) capital_count++;
         else if (numbers.includes(char)) number_count++;
         else if (good_symbols.includes(char)) symbol_count++;
         else if (!alphabet.includes(char))
@@ -85,7 +85,7 @@
       if (symbol_count < 1) throw `Passwords must contain at least 1 symbol`;
       if (number_count < 1) throw `Passwords must contain at least 1 number`;
 
-      return trimmed;
+      return str;
     },
   };
 
