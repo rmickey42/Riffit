@@ -21,9 +21,9 @@
         {{#inList value=post._id list=session.favoritePosts}}class="clicked"{{/inList}} />
     <img src="/public/img/comment.png" alt="Comments" id="show_comments_button" onclick="showCommentsView('{{post._id}}', '{{session._id}}')" />
 
-    <div id="commentsView">
+    <div id="commentsView-{{post._id}}" class="commentsView">
         <h4>Comments</h4>
-        <ul id="commentsList">
+        <ul id="commentsList-{{post._id}}">
             
         </ul>
         <section>

@@ -85,7 +85,7 @@ function favoritePost(postId) {
     }
 }
 
-const commentsView = $('#commentsView');
+const commentsView = $('.commentsView');
 const commentsList = $('#commentsList');
 const commentsButton = $('#submit_comment');
 let post = null;
@@ -93,6 +93,11 @@ let user = null;
 let hidden = true;
 
 function showCommentsView(postId, userId) {
+    const commentsView = $(`#commentsView-${postId}`);
+    const commentsList = $(`#commentsList-${postId}`);
+    
+    const commentsButton = $(`#submit_comment-${postId}`);
+
     if (!hidden) {
         hidden = true;
         commentsView.toggle();
@@ -125,6 +130,12 @@ function showCommentsView(postId, userId) {
 
 commentsButton.click(function (event) {
     event.preventDefault();
+    let postId = event.target.parentNode.parentNode.id.split("-")[1]
+    const commentsView = $(`#commentsView-${postId}`);
+    const commentsList = $(`#commentsList-${postId}`);
+    const commentsButton = $(`#submit_comment-${postId}`);
+
+
 
     const content = $('#comment_content').val().trim();
 
@@ -135,7 +146,7 @@ commentsButton.click(function (event) {
 
     $.ajax({
         type: 'POST',
-        url: `/posts/${post}/comments`,
+        url: `/posts/${postId}/comments`,
         data: { comment: content, userId: user },
         success: function () {
             console.log('Comment added successfully');
