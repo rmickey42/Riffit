@@ -24,7 +24,6 @@ router
       const user = await userData.getUserById(id);
       const profileOwner = req.session.user && req.session.user._id === id;
       const posts = await postData.getPostsByUserId(id, 0);
-
       return res.render("user", {
         session: req.session.user,
         user: user,

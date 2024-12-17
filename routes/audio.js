@@ -9,7 +9,7 @@ router.get('/:id', async (req, res) => {
     if (!audioId) {
         return res.status(400).json({ error: "No audio ID provided" });
     }
-    if (!validation.checkId(audioId)) {
+    if (!validation.checkId(audioId, "audio ID")) {
         return res.status(400).json({ error: "Invalid audio ID" });
     }
     
