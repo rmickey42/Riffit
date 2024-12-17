@@ -99,10 +99,11 @@ const exportedMethods = {
   },
 
   checkProfilePicture(file) {
+    const allowedFileTypes = ["image/jpeg", "image/png"]
     if (!file) {
       throw "No image file provided";
     }
-    if (file.mimetype !== "image/jpeg") {
+    if (! allowedFileTypes.includes(file.mimetype)) {
       throw "Image must be a JPEG file";
     }
     if (file.size > MAX_PFP_SIZE) {

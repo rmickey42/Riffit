@@ -180,13 +180,8 @@ router
         userInfo.picture = "DELETE";
       } else if (req.files && req.files.length > 0) {
         let picture = req.files[0];
-
-        if (picture.mimetype !== "image/jpeg") {
-          throw "Invalid image type for profile picture: " + picture.mimetype;
-        }
-        if (picture.size > validation.MAX_PFP_SIZE) {
-          throw "Profile picture is too large! Must be a JPEG image < 1MB";
-        }
+        validation.checkProfilePicture(picture)
+        
         userInfo.picture = picture;
       }
 
