@@ -54,9 +54,11 @@ router.route("/:userId/comments").get(async (req, res) => {
     let id = req.params.userId;
     id = validation.checkId(id, "User Id");
     const user = await userData.getUserById(id);
+    const comments = await commentData.getCommentsByIds(user.comments);
     return res.render("user_comments", {
       session: req.session.user,
       user: user,
+      comments: comments,
       Title: `${user.username}'s Comments`,
     });
   } catch (e) {
@@ -78,14 +80,14 @@ router
       let id = req.params.userId;
       id = validation.checkId(id, "User Id");
       const user = await userData.getUserById(id);
-      return res.render("user_liked", {
-        session: req.session.user,
+      const posts = await postData.getPostsByIds(user.likedPosts);
+      return res.render("user_liked", { session: req.session.user,
         user: user,
+        posts: posts,
         Title: `${user.username}'s Likes`,
       });
     } catch (e) {
-      return res.status(404).render("error", {
-        session: req.session.user,
+      return res.status(404).render("error", { session: req.session.user,
         linkRoute: "/",
         linkDesc: "Return to the homepage",
         errorName: "404 Not Found",
@@ -102,14 +104,14 @@ router
       let id = req.params.userId;
       id = validation.checkId(id, "User Id");
       const user = await userData.getUserById(id);
-      return res.render("user_disliked", {
-        session: req.session.user,
+      const posts = await postData.getPostsByIds(user.dislikedPosts);
+      return res.render("user_disliked", { session: req.session.user,
         user: user,
+        posts: posts,
         Title: `${user.username}'s Dislikes`,
       });
     } catch (e) {
-      return res.status(404).render("error", {
-        session: req.session.user,
+      return res.status(404).render("error", { session: req.session.user,
         linkRoute: "/",
         linkDesc: "Return to the homepage",
         errorName: "404 Not Found",
@@ -126,14 +128,14 @@ router
       let id = req.params.userId;
       id = validation.checkId(id, "User Id");
       const user = await userData.getUserById(id);
-      return res.render("user_favorites", {
-        session: req.session.user,
+      const posts = await postData.getPostsByIds(user.favoritePosts);
+      return res.render("user_favorites", { session: req.session.user,
         user: user,
+        posts: posts,
         Title: `${user.username}'s Favorites`,
       });
     } catch (e) {
-      return res.status(404).render("error", {
-        session: req.session.user,
+      return res.status(404).render("error", { session: req.session.user,
         linkRoute: "/",
         linkDesc: "Return to the homepage",
         errorName: "404 Not Found",

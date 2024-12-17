@@ -1,9 +1,9 @@
 <main>
     <h1>{{user.username}}'s Favorites</h1>
     <ul>
-        {{#each user.favoritePosts}}
+        {{#each posts}}
         <li>
-            {{> post post=this}}
+            {{> post session=../session post=this}}
         </li>
         {{/each}}
     </ul>

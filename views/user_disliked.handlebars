@@ -1,9 +1,9 @@
 <main>
     <h1>{{user.username}}'s Dislikes</h1>
     <ul>
-        {{#each user.dislikedPosts}}
+        {{#each posts}}
         <li>
-            {{> post post=this}}
+            {{> post post=this session=../session}}
         </li>
         {{/each}}
     </ul>

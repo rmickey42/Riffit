@@ -157,6 +157,11 @@ const constructorMethod = (app) => {
   // Middleware: user authentication
   app.use("/users/:userId/edit", authUserMiddleware);
   app.use("/posts/:id/edit", authPostMiddleware);
+  app.use("/posts/new", signedInMiddleware);
+  app.use("/posts/:id/favorite", signedInMiddleware);
+  app.use("/posts/:id/dislike", signedInMiddleware);
+  app.use("/posts/:id/like", signedInMiddleware);
+  app.post("/posts/:id/comments", signedInMiddleware);
   app.delete("/posts/:id", authPostMiddleware);
 };
 

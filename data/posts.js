@@ -26,7 +26,19 @@ const exportedMethods = {
     return post;
   },
 
-  async getPostsByTags(tags_lst, page, sorting = "newest") {
+  async getPostsByIds(ids) {
+    if (!Array.isArray(ids)) throw "Must pass array of IDs";
+
+    const postCollection = await posts();
+    let ls = [];
+    ids.forEach(async (id) => {
+      id = validation.checkId(id, "Post ID");
+      ls.push(await this.getPostById(id));
+    });
+    return ls;
+  },
+
+  async getPostsByTags(tags_lst, sorting = "newest") {
     tags_lst = validation.checkStringArray(tags_lst, "Tags");
     page = validation.checkNum(page, "page");
 
