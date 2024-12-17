@@ -1,5 +1,6 @@
 import express from "express";
 import exphbs from "express-handlebars";
+import xss from "express-xss-sanitizer"
 import session from "express-session";
 import validation from "./validation.js";
 
@@ -107,6 +108,7 @@ const constructorMethod = (app) => {
 
   app.use(express.json()); // json encoding for POSTs
   app.use(express.urlencoded()); // url encoding for API
+  app.use(xss())
 
   app.use(
     session({
