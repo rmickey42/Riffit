@@ -105,7 +105,13 @@ const constructorMethod = (app) => {
       }
     }
   });
-  app.engine("handlebars", handlebars.engine);
+  app.engine(
+    "handlebars",
+    exphbs.engine({
+      defaultLayout: "main",
+      helpers: { equals: (a, b) => a === b },
+    })
+  );
   app.set("view engine", "handlebars");
 
   app.use(express.json()); // json encoding for POSTs

@@ -6,6 +6,8 @@ import  postData from "./posts.js";
 
 const BCRYPT_SALT = 11;
 
+const DEFAULT_PFP = "/public/img/defaultPfp.jpeg";
+
 const exportedMethods = {
   async getAllUsers() {
     const userCollection = await users();
@@ -23,7 +25,6 @@ const exportedMethods = {
     if (!user) throw "Error: User not found";
     if (!includePassword) delete user.password;
     user._id = user._id.toString();
-    user.picture = user.picture.buffer;
     return user;
   },
   async getUserByUsername(username, includePassword = false) {
@@ -71,7 +72,7 @@ const exportedMethods = {
       password: await bcrypt.hash(password, BCRYPT_SALT),
       bio: "",
       dailyStreak: 0,
-      picture: "",
+      picture: DEFAULT_PFP,
       instruments: [],
       genres: [],
       comments: [],
@@ -159,10 +160,16 @@ const exportedMethods = {
         userInfo.dailyStreak,
         "daily streak"
       );
-    if (userInfo.picture)
-      updatedUserData.picture = validation.checkProfilePicture(
-        userInfo.picture
-      );
+      if (userInfo.picture) {
+        if (userInfo.picture === "DELETE") {
+          updatedUserData.picture = DEFAULT_PFP;
+        } else {
+          updatedUserData.picture = validation.checkProfilePicture(
+            userInfo.picture
+          );
+        }
+      }
+  
     if (userInfo.instruments)
       updatedUserData.instruments = validation.checkStringArray(
         userInfo.instruments,
@@ -257,7 +264,6 @@ const exportedMethods = {
     updateUser._id = updateUser._id.toString();
     return updateUser;
   },
-
   
 };
 
