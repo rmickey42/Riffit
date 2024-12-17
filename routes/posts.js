@@ -1,6 +1,6 @@
 import { Router } from "express";
 const router = Router();
-import { postData, audioData } from "../data/index.js";
+import { postData, audioData, commentData } from "../data/index.js";
 import validation from "../validation.js";
 import multer from "multer";
 
@@ -301,6 +301,40 @@ router.route("/:id/favorite").post(async (req, res) => {
   try {
     const post = await postData.postFavorite(postId, req.session.user._id, !reverse);
     return res.json({success: true});
+  } catch (e) {
+    return res.status(400).json({ error: e });
+  }
+});
+
+router.route("/:id/comments")
+.get(async (req, res) => {
+  let postId = req.params.id;
+  try {
+    postId = validation.checkId(postId, "Post ID");
+  } catch (e) {
+    return res.status(400).json({ error: e });
+  }
+
+  try {
+    const comments = await commentData.getCommentsByPostId(postId);
+    return res.status(200).json(comments);
+  } catch (e) {
+    return res.status(400).json({ error: e });
+  }
+})
+.post(async (req, res) => {
+  let postId = req.params.id;
+  let comment = req.body.comment;
+  try {
+    postId = validation.checkId(postId, "Post ID");
+    comment = validation.checkString(comment, "Comment");
+  } catch (e) {
+    return res.status(400).json({ error: e });
+  }
+  
+  try {
+    const post = await commentData.addComment(comment, req.session.user._id, postId);
+    return res.status(200).json({success: true});
   } catch (e) {
     return res.status(400).json({ error: e });
   }

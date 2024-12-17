@@ -19,8 +19,22 @@
         {{#inList value=post._id list=session.dislikedPosts}}class="clicked"{{/inList}} />
     <img src="/public/img/favorite.png" alt="Favorite" id="favorite_button" onclick="favoritePost('{{post._id}}')" 
         {{#inList value=post._id list=session.favoritePosts}}class="clicked"{{/inList}} />
+    <img src="/public/img/comment.png" alt="Comments" id="show_comments_button" onclick="showCommentsView('{{post._id}}', '{{session._id}}')" />
+
+    <div id="commentsView">
+        <h4>Comments</h4>
+        <ul id="commentsList">
+            
+        </ul>
+        <section>
+            <textarea id="comment_content" placeholder="Write a comment..." required></textarea>
+            <button id="submit_comment">Submit Comment</button>
+        </section>
+    </div>
 {{/if}}
+
 {{#if profileOwner}}
+    <br/>
     <form action="/posts/{{post._id}}?_method=DELETE" method="POST">
         <input type="submit" id="delete_button" value="Delete">
     </form>

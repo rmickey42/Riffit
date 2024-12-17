@@ -4,7 +4,6 @@ import users from "../data/users.js";
 import posts from "../data/posts.js";
 import comments from "../data/comments.js";
 
-
 const db = await dbConnection();
 await db.dropDatabase();
 
@@ -124,23 +123,21 @@ const post4 = await posts.addPost(
   ["Pop", "Flute"]
 );
 
-await posts.postLike(post4._id, user3._id)
-const post4c = await posts.postLike(post4._id, user2._id)
-
+await posts.postLike(post4._id, user3._id);
+const post4c = await posts.postLike(post4._id, user2._id);
 
 // console.log(post4c)
-const post4a = await posts.postDislike(post4._id, user1._id)
+const post4a = await posts.postDislike(post4._id, user1._id);
 const updatePost2 = {
-    tags: ["Something else"],
+  tags: ["Something else"],
+};
 
-  };
-
-const post4b = await posts.updatePost(post4._id, updatePost2)
+const post4b = await posts.updatePost(post4._id, updatePost2);
 // console.log(post4b)
 
-await posts.postLike(post3._id, user1._id)
+await posts.postLike(post3._id, user1._id);
 
-await posts.postFavorite(post2._id, user4._id)
+await posts.postFavorite(post2._id, user4._id);
 // const list1 = await users.getLikedPostsByUserId(user1._id)
 // console.log(list1)
 
@@ -153,19 +150,27 @@ await posts.postFavorite(post2._id, user4._id)
 // let list = await posts.getAllPosts()
 // console.log(list);
 
-
 // console.log(user2)
 
-await comments.addComment("nice", user2._id, post3._id)
-await comments.addComment("omg wow so nice", user3._id, post3._id)
-await comments.addComment("cool", user4._id, post3._id)
-let comment = await comments.addComment("thanks guys", user1._id, post3._id)
+await comments.addComment("nice", user2._id, post3._id);
+const comment1 = await comments.addComment(
+  "omg wow so nice",
+  user3._id,
+  post3._id
+);
+await comments.addComment("cool", user4._id, post3._id);
+const comment2 = await comments.addComment("thanks guys", user1._id, post3._id);
+const comment3 = await comments.updateComment(comment1._id, "nevermind");
 
-// console.log(await comments.getCommentById(comment._id))
+// await comments.removeComment(comment2._id)
+
+// console.log(comment3)
+
+// // console.log(await comments.getCommentById(comment._id))
 
 // console.log(await comments.getAllComments())
-console.log(await comments.getCommentsByPostId(post3._id))
 
-
+// console.log(await comments.getCommentById(comment1._id))
+// console.log(await comments.getCommentsByPostId(post3._id))
 
 await closeConnection();

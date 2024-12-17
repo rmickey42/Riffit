@@ -28,9 +28,7 @@ const exportedMethods = {
 
   async getPostsByTags(tags_lst, page, sorting = "newest") {
     tags_lst = validation.checkStringArray(tags_lst, "Tags");
-    console.log("working")
     page = validation.checkNum(page, "page");
-
 
     const postCollection = await posts();
     let postList = [];
@@ -250,8 +248,8 @@ const exportedMethods = {
     id = validation.checkId(id, "Post Id");
     arrayId = validation.checkId(arrayId, "User Id");
 
-    let updatePost;
     const postCollection = await posts();
+    let updatePost;
     if (add) {
       updatePost = await postCollection.findOneAndUpdate(
         { _id: new ObjectId(id) },

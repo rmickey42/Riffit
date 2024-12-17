@@ -229,6 +229,8 @@ const exportedMethods = {
     id = validation.checkId(id, "User Id");
     arrayId = validation.checkId(arrayId, "User Id");
     param = validation.checkString(param, "Type");
+
+    
     const type = [
       "comments",
       "posts",
@@ -261,7 +263,6 @@ const exportedMethods = {
     if (!updateUser)
       throw `Error: Update failed, could not find a ${type} with an id of ${id}`;
 
-    delete updateUser.password;
     updateUser._id = updateUser._id.toString();
     return updateUser;
   },
