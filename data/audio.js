@@ -1,7 +1,7 @@
 import { audio } from "../config/mongoCollections.js";
 import { ObjectId } from "mongodb";
 import validation from "../validation.js";
-const getMP3Duration = require('get-mp3-duration');
+import getMP3Duration from 'get-mp3-duration';
 
 const MAX_AUDIO_BYTES = 5000000; // 5MB
 
