@@ -12,7 +12,6 @@ let signInForm = $("#signin-form");
 let signUpForm = $("#signup-form");
 
 let searchForm = $("#search-form");
-let tagInput = $("#tag-input-1");
 
 signInForm.submit(function (event) {
   let username, password;

@@ -74,6 +74,7 @@ const exportedMethods = {
       bio: "",
       dailyStreak: 0,
       picture: DEFAULT_PFP,
+      pictureType: "image/jpeg",
       instruments: [],
       genres: [],
       comments: [],
@@ -165,10 +166,10 @@ const exportedMethods = {
     if (userInfo.picture) {
       if (userInfo.picture === "DELETE") {
         updatedUserData.picture = DEFAULT_PFP;
+        updatedUserData.pictureType = "image/jpeg";
       } else {
-        updatedUserData.picture = validation.checkProfilePicture(
-          userInfo.picture
-        );
+        updatedUserData.picture = validation.checkProfilePicture(userInfo.picture);
+        updatedUserData.pictureType = userInfo.picture.mimetype;
       }
     }
 

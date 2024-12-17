@@ -186,7 +186,7 @@ commentsButton.click(function (event) {
     success: function () {
       console.log("Comment added successfully");
       commentsList.append(`<li><a href="/users/me">You</a>: ${content}</li>`);
-      $("#comment_content").val("");
+      $(`#comment_content-${postId}`).val("");
     },
     error: function () {
       alert("Failed to add comment");

@@ -323,9 +323,10 @@ const exportedMethods = {
     userId = validation.checkId(userId, "User Id");
     let updatePost;
     const postCollection = await posts();
-    const dislikedList = (await userData.getUserById(userId)).dislikedPosts;
+    const user = await userData.getUserById(userId);
+    const dislikedList = user.dislikedPosts;
     if (dislike) {
-      if (!dislikedList || !dislikedList.includes(id)) {
+      if (!dislikedList || !dislikedList.includes(id)) {          
         updatePost = await postCollection.findOneAndUpdate(
           { _id: new ObjectId(id) },
           { $inc: { rating: -1 } },
@@ -333,6 +334,7 @@ const exportedMethods = {
         );
         if (!updatePost)
           throw `Error: Update failed, could not find a post with an id of ${id}`;
+
         await userData.userArrayAlter(userId, id, "dislikedPosts");
       }else{ throw `Already disliked`}
     } else {

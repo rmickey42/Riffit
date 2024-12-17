@@ -109,8 +109,8 @@ const exportedMethods = {
     if (!file) {
       throw "No image file provided";
     }
-    if (! allowedFileTypes.includes(file.mimetype)) {
-      throw "Image must be a JPEG file";
+    if (!allowedFileTypes.includes(file.mimetype)) {
+      throw "Image must be a JPEG or PNG file";
     }
     if (file.size > MAX_PFP_SIZE) {
       throw "Image too large";

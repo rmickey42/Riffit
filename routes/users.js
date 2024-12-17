@@ -232,7 +232,7 @@ router.route("/:userId/picture").get(async (req, res) => {
       let picturePath = "public/img/defaultPfp.jpeg";
       return res.sendFile(picturePath, { root: "." });
     } else {
-      return res.contentType("image/jpeg").send(user.picture.buffer);
+      return res.contentType(user.pictureType).send(user.picture.buffer);
     }
   } catch (e) {
     return res.status(404).json("404 Not Found");

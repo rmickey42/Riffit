@@ -16,9 +16,6 @@ const exportedMethods = {
     },
 
     async addAudio(file) {
-        console.dir(file)
-
-
         if (!file) {
             throw "No audio file provided";
         }

@@ -30,13 +30,14 @@ router
     try {
       if (not_found.length)
         throw `Must supply additional fields [${not_found.join(", ")}]`;
-      validation.checkUsername(clean_data.username);
-      validation.checkPassword(clean_data.password);
+      validation.checkUsername(clean_data.username, "Username");
+      validation.checkPassword(clean_data.password, "Password");
       if (clean_data.password !== clean_data.confirmPassword)
         throw `Password and Password Confirmation must match`;
     } catch (e) {
       return res.status(400).render("signup", {
-        Title: "Sign Up"
+        Title: "Sign Up",
+        error: e
       });
     }
 
