@@ -1,5 +1,4 @@
 import { dbConnection, closeConnection } from "../config/mongoConnection.js";
-import { ObjectId } from "mongodb";
 import users from "../data/users.js";
 import posts from "../data/posts.js";
 import comments from "../data/comments.js";
@@ -31,16 +30,7 @@ const updatePost1 = {
   title: "Second Post Now",
 };
 const updatedpost1 = await posts.updatePost(post1._id, updatePost1);
-//   console.log(updatedpost1);
-
-// const updatething = await users.userArrayAdd(user1._id, post1._id, "posts")
-
-// console.log(updatething)
-
-// const user1a = await users.getUserById(user1._id)
 const post1a = await posts.postLike(post1._id, user1._id);
-// console.log(await users.getUserById(user1._id))
-// console.log(post1a)
 
 const user2 = await users.addUser("anotherGuy", "Pa$$w0rd");
 const updateUser2 = {
@@ -67,11 +57,6 @@ const updateUser4 = {
 };
 await users.updateUser(user4._id, updateUser4);
 
-// console.log(await users.getAllUsers())
-
-// console.log(await users.getUserByUsername("oneMORE"))
-// await users.removeUser(user4._id)
-// console.log(await users.getAllUsers())
 
 const post2 = await posts.addPost(
   "Another Post",
@@ -126,31 +111,17 @@ const post4 = await posts.addPost(
 await posts.postLike(post4._id, user3._id);
 const post4c = await posts.postLike(post4._id, user2._id);
 
-// console.log(post4c)
+
 const post4a = await posts.postDislike(post4._id, user1._id);
 const updatePost2 = {
   tags: ["Something else"],
 };
 
 const post4b = await posts.updatePost(post4._id, updatePost2);
-// console.log(post4b)
 
 await posts.postLike(post3._id, user1._id);
 
 await posts.postFavorite(post2._id, user4._id);
-// const list1 = await users.getLikedPostsByUserId(user1._id)
-// console.log(list1)
-
-// try {
-//     let list = await posts.getPostsByTags(["Something else", "Violin", "Pop"], 0)
-// } catch (error) {
-//     console.log(error)
-// }
-
-// let list = await posts.getAllPosts()
-// console.log(list);
-
-// console.log(user2)
 
 await comments.addComment("nice", user2._id, post3._id);
 const comment1 = await comments.addComment(
@@ -162,15 +133,8 @@ await comments.addComment("cool", user4._id, post3._id);
 const comment2 = await comments.addComment("thanks guys", user1._id, post3._id);
 const comment3 = await comments.updateComment(comment1._id, "nevermind");
 
-// await comments.removeComment(comment2._id)
+await comments.removeComment(comment2._id)
 
-// console.log(comment3)
 
-// // console.log(await comments.getCommentById(comment._id))
-
-// console.log(await comments.getAllComments())
-
-// console.log(await comments.getCommentById(comment1._id))
-// console.log(await comments.getCommentsByPostId(post3._id))
 
 await closeConnection();
