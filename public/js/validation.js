@@ -55,7 +55,7 @@
 
     checkUsername(str, refName) {
       // Usernames can only contain letters and numbers
-      let str = this.checkString(str, refName);
+      str = this.checkString(str, refName);
       for (let i in str) {
         if (!alpha_numer.includes(str[i].toLowerCase()))
           throw `${refName || str} contains invalid character ${str[i]}`;
@@ -64,7 +64,7 @@
     },
 
     checkPassword(str, refName) {
-      let str = this.checkString(str, refName);
+      str = this.checkString(str, refName);
       if (str.length < 5) throw `Passwords must be at least 5 chatacters`;
       if (str.length > 16)
         throw `Passwords cannot be longer than 16 characters.`;
