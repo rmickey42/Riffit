@@ -10,8 +10,8 @@ const main = async () => {
   // Create users
   const user1 = await userData.addUser("johnDoe", "Password123!");
   const user2 = await userData.addUser("janeDoe", "Password123!");
-  const user3 = await userData.addUser("trumpet_god", "iloveTrumpet42?");
-  const user4 = await userData.addUser("bass_master", "BassGuitar321!");
+  const user3 = await userData.addUser("trumpetgod", "iloveTrumpet42?");
+  const user4 = await userData.addUser("bassmaster", "BassGuitar321!");
 
   // add audio
   const audioId1 = await audioData.addAudioDirect(fs.readFileSync(path.resolve('public/riff1.mp3')));
