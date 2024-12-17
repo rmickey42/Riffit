@@ -1,6 +1,7 @@
 import { audio } from "../config/mongoCollections.js";
 import { ObjectId } from "mongodb";
 import validation from "../validation.js";
+const getMP3Duration = require('get-mp3-duration');
 
 const MAX_AUDIO_BYTES = 5000000; // 5MB
 
@@ -15,6 +16,9 @@ const exportedMethods = {
     },
 
     async addAudio(file) {
+        console.dir(file)
+
+
         if (!file) {
             throw "No audio file provided";
         }
@@ -23,7 +27,10 @@ const exportedMethods = {
         }
         if (file.size > MAX_AUDIO_BYTES) {
             throw "Audio file too large";
-        }     
+        }
+        if(getMP3Duration(file.buffer) > 45000) {
+            throw "Audio duration too long";
+        }
 
         const audioCollection = await audio();
         const newAudio = {
