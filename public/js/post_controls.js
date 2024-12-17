@@ -87,7 +87,7 @@ function favoritePost(postId) {
 
 const commentsView = $('.commentsView');
 const commentsList = $('#commentsList');
-const commentsButton = $('#submit_comment');
+const commentsButton = $('.submit_comment');
 let post = null;
 let user = null;
 let hidden = true;
@@ -137,7 +137,7 @@ commentsButton.click(function (event) {
 
 
 
-    const content = $('#comment_content').val().trim();
+    const content = $(`#comment_content-${postId}`).val().trim();
 
     if(content.length === 0) {
         alert('Comment cannot be empty');
