@@ -1,6 +1,6 @@
 import express from "express";
 import exphbs from "express-handlebars";
-import xss from "express-xss-sanitizer"
+import { xss } from "express-xss-sanitizer"
 import session from "express-session";
 import validation from "./validation.js";
 
