@@ -198,38 +198,36 @@ nav a:hover {
     text-decoration: underline;
 }
 
-#like_button,
-#dislike_button,
-#favorite_button,
-#show_comments_button {
+.like_button,
+.dislike_button,
+.favorite_button,
+.show_comments_button {
     width: 24px;
     height: 24px;
     cursor: pointer;
     margin: 0 5px;
 }
 
-#like_button.clicked {
+.like_button.clicked {
     width: 36px;
     height: 36px;
 }
 
-#dislike_button.clicked {
+.dislike_button.clicked {
     width: 36px;
     height: 36px;
 }
 
-#favorite_button.clicked {
+.favorite_button.clicked {
     width: 36px;
     height: 36px;
-}
-
-#notation {
-    white-space: pre-line;
-    font-family: monospace;
-    font-size: 14px;
 }
 
 .notation {
+    white-space: pre-line;
+    font-family: monospace;
+    font-size: 14px;
+    text-align: center;
     display: flex;
     flex-direction: column;
     align-items: center;
