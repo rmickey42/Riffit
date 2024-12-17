@@ -84,7 +84,7 @@ router.route("/new").get(async (req, res) => {
     const newPost = await postData.addPost(
       requestBody.title,
       req.session.user._id,
-      audioId,
+      audioId.toString(),
       requestBody.notation,
       requestBody.key,
       requestBody.instrument,
