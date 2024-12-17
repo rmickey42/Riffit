@@ -230,3 +230,14 @@ nav a:hover {
     display: flex;
     flex-direction: row;
 }
+
+.comment_writing_zone{
+    display:flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.comment_content {
+    margin-bottom:0px;
+    margin-right: 25px;
+}

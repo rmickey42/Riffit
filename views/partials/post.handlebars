@@ -20,24 +20,23 @@
 
 {{#if session}}
     <div class="post_controls">
-        <img src="/public/img/like.png" alt="Like" id="like_button-{{post._id}}" class="like_button" onclick="likePost('{{post._id}}')" 
+        <img src="/public/img/like.png" alt="Like" id="like_button-{{post._id}}" class="like_button" onclick="" 
             {{#inList value=post._id list=session.likedPosts}}class="clicked"{{/inList}} />
         <img src="/public/img/dislike.png" alt="Dislike" id="dislike_button-{{post._id}}" class="dislike_button" onclick="dislikePost('{{post._id}}')" 
             {{#inList value=post._id list=session.dislikedPosts}}class="clicked"{{/inList}} />
         <img src="/public/img/favorite.png" alt="Favorite" id="favorite_button-{{post._id}}" class="favorite_button" onclick="favoritePost('{{post._id}}')" 
             {{#inList value=post._id list=session.favoritePosts}}class="clicked"{{/inList}} />
         <img src="/public/img/comment.png" alt="Comments" class="show_comments_button" onclick="showCommentsView('{{post._id}}', '{{session._id}}')" />
-
-        <div id="commentsView-{{post._id}}" class="commentsView">
-            <h4>Comments</h4>
-            <ul id="commentsList-{{post._id}}">
-                
-            </ul>
-            <section>
-                <textarea id="comment_content-{{post._id}}" placeholder="Write a comment..." required></textarea>
-                <button class="submit_comment">Submit Comment</button>
-            </section>
-        </div>
+    </div>
+    <div id="commentsView-{{post._id}}" class="commentsView">
+        <h4>Comments</h4>
+        <ul id="commentsList-{{post._id}}">
+            
+        </ul>
+        <section class="comment_writing_zone">
+            <textarea id="comment_content-{{post._id}}" class="comment_content" placeholder="Write a comment..." required></textarea>
+            <button class="submit_comment">Submit Comment</button>
+        </section>
     </div>
 {{/if}}
 
