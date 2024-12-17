@@ -20,7 +20,7 @@
 
 {{#if session}}
     <div class="post_controls">
-        <img src="/public/img/like.png" alt="Like" id="like_button-{{post._id}}" class="like_button" onclick="" 
+        <img src="/public/img/like.png" alt="Like" id="like_button-{{post._id}}" class="like_button" onclick="likePost('{{post._id}}')"
             {{#inList value=post._id list=session.likedPosts}}class="clicked"{{/inList}} />
         <img src="/public/img/dislike.png" alt="Dislike" id="dislike_button-{{post._id}}" class="dislike_button" onclick="dislikePost('{{post._id}}')" 
             {{#inList value=post._id list=session.dislikedPosts}}class="clicked"{{/inList}} />
