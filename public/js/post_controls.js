@@ -1,6 +1,6 @@
 function likePost(postId) {
-    $("#like_button").toggleClass('clicked');
-    if ($("#like_button").hasClass('clicked')) {
+    $(".like_button").toggleClass('clicked');
+    if ($(".like_button").hasClass('clicked')) {
         $.ajax({
             type: 'POST',
             url: `/posts/${postId}/like`,
@@ -28,8 +28,8 @@ function likePost(postId) {
 }
 
 function dislikePost(postId) {
-    $("#dislike_button").toggleClass('clicked');
-    if ($("#dislike_button").hasClass('clicked')) {
+    $(".dislike_button").toggleClass('clicked');
+    if ($(".dislike_button").hasClass('clicked')) {
         $.ajax({
             type: 'POST',
             url: `/posts/${postId}/dislike`,
@@ -57,8 +57,8 @@ function dislikePost(postId) {
 }
 
 function favoritePost(postId) {
-    $("#favorite_button").toggleClass('clicked');
-    if ($("#favorite_button").hasClass('clicked')) {
+    $(".favorite_button").toggleClass('clicked');
+    if ($(".favorite_button").hasClass('clicked')) {
         $.ajax({
             type: 'POST',
             url: `/posts/${postId}/favorite`,

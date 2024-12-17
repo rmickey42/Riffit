@@ -13,13 +13,13 @@
 {{#if post.instrument}}<p>Instrument: {{post.instrument}}</p>{{/if}}
 
 {{#if session}}
-    <img src="/public/img/like.png" alt="Like" id="like_button" onclick="likePost('{{post._id}}')" 
+    <img src="/public/img/like.png" alt="Like" class="like_button" onclick="likePost('{{post._id}}')" 
         {{#inList value=post._id list=session.likedPosts}}class="clicked"{{/inList}} />
-    <img src="/public/img/dislike.png" alt="Dislike" id="dislike_button" onclick="dislikePost('{{post._id}}')" 
+    <img src="/public/img/dislike.png" alt="Dislike" class="dislike_button" onclick="dislikePost('{{post._id}}')" 
         {{#inList value=post._id list=session.dislikedPosts}}class="clicked"{{/inList}} />
-    <img src="/public/img/favorite.png" alt="Favorite" id="favorite_button" onclick="favoritePost('{{post._id}}')" 
+    <img src="/public/img/favorite.png" alt="Favorite" class="favorite_button" onclick="favoritePost('{{post._id}}')" 
         {{#inList value=post._id list=session.favoritePosts}}class="clicked"{{/inList}} />
-    <img src="/public/img/comment.png" alt="Comments" id="show_comments_button" onclick="showCommentsView('{{post._id}}', '{{session._id}}')" />
+    <img src="/public/img/comment.png" alt="Comments" class="show_comments_button" onclick="showCommentsView('{{post._id}}', '{{session._id}}')" />
 
     <div id="commentsView-{{post._id}}" class="commentsView">
         <h4>Comments</h4>
@@ -36,9 +36,9 @@
 {{#if profileOwner}}
     <br/>
     <form action="/posts/{{post._id}}?_method=DELETE" method="POST">
-        <input type="submit" id="delete_button" value="Delete">
+        <input type="submit" class="delete_button" value="Delete">
     </form>
     <form action="/posts/{{post._id}}/edit" method="GET">
-        <input type="submit" id="edit_button" value="Edit">
+        <input type="submit" class="edit_button" value="Edit">
     </form>
 {{/if}}
