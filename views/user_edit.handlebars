@@ -5,7 +5,9 @@
 
     <section class="profile">
         <form action="/users/{{user._id}}/edit" method="POST" id="edit-profile-form" enctype="multipart/form-data">
-            <img src="/users/{{user._id}}/picture" alt="Your profile picture" class="profile-picture">
+            <img src="/users/{{user._id}}/picture" 
+            alt="{{#if (equals user.picture "/public/img/defaultPfp.jpeg")}}No profile picture{{else}}{{user.username}}'s profile picture{{/if}}"
+            class="profile-picture">
 
             <label for="bio">Bio:
                 <textarea id="bio" name="bio">{{user.bio}}</textarea>
@@ -23,7 +25,13 @@
 
             <label for="profilePicture">Profile Picture:
                 <input type="file" id="profilePicture" name="profilePicture">
-             </label>
+            </label>
+
+             {{#unless (equals user.picture defaultPic)}}
+            <label for="deletePicture">Delete Profile Picture
+                <input type="checkbox" name="deletePicture" id="deletePicture" value="true">
+            </label>
+            {{/unless}}
 
 
             <input type="submit" value="Save Changes" id="edit_profile_button">

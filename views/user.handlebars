@@ -1,7 +1,8 @@
 <main>
     <h1>{{user.username}}</h1>
     <section class="profile">
-        <img src="/users/{{user._id}}/picture" alt="{{user.username}}" class="profile-picture">
+        <img src="/users/{{user._id}}/picture" alt="{{#if (equals user.picture "/public/img/defaultPfp.jpeg")}}No profile picture{{else}}{{user.username}}'s profile picture{{/if}}"
+        class="profile-picture">
         <p><strong>Bio:</strong> {{user.bio}}</p>
         <p><strong>Daily Streak:</strong> {{user.dailyStreak}}</p>
         <p><strong>Instruments:</strong> {{#each user.instruments}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}</p>
@@ -21,9 +22,9 @@
 
     <section class="posts">
         <h2>Posts</h2>
-        {{#if posts.length}}
+        {{#if user.posts.length}}
         <ul>
-            {{#each posts}}
+            {{#each user.posts}}
             <li>
                 {{> post post=this session=../session profileOwner=../profileOwner}}
             </li>

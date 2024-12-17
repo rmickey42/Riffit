@@ -3,8 +3,11 @@ import { ObjectId } from "mongodb";
 import bcrypt from "bcrypt";
 import validation from "../validation.js";
 import  postData from "./posts.js";
+import commentData from "./comments.js"
 
 const BCRYPT_SALT = 11;
+
+const DEFAULT_PFP = "/public/img/defaultPfp.jpeg";
 
 const exportedMethods = {
   async getAllUsers() {
@@ -23,7 +26,6 @@ const exportedMethods = {
     if (!user) throw "Error: User not found";
     if (!includePassword) delete user.password;
     user._id = user._id.toString();
-    user.picture = user.picture.buffer;
     return user;
   },
   async getUserByUsername(username, includePassword = false) {
@@ -71,7 +73,7 @@ const exportedMethods = {
       password: await bcrypt.hash(password, BCRYPT_SALT),
       bio: "",
       dailyStreak: 0,
-      picture: "",
+      picture: DEFAULT_PFP,
       instruments: [],
       genres: [],
       comments: [],
@@ -102,7 +104,7 @@ const exportedMethods = {
     id = validation.checkId(id, "User Id");
     const user = await this.getUserById(id);
     for (let i = 0; i < user.comments.length; i++) {
-      user.comments[i] = await this.getCommentById(user.comments[i]);
+      user.comments[i] = await commentData.getCommentById(user.comments[i]);
     }
     return user.comments;
   },
@@ -110,7 +112,7 @@ const exportedMethods = {
     id = validation.checkId(id, "User Id");
     const user = await this.getUserById(id);
     for (let i = 0; i < user.likedPosts.length; i++) {
-      user.likedPosts[i] = await this.getPostById(user.likedPosts[i]);
+      user.likedPosts[i] = await postData.getPostById(user.likedPosts[i]);
     }
     return user.likedPosts;
   },
@@ -118,7 +120,7 @@ const exportedMethods = {
     id = validation.checkId(id, "User Id");
     const user = await this.getUserById(id);
     for (let i = 0; i < user.dislikedPosts.length; i++) {
-      user.dislikedPosts[i] = await this.getPostById(user.dislikedPosts[i]);
+      user.dislikedPosts[i] = await postData.getPostById(user.dislikedPosts[i]);
     }
     return user.dislikedPosts;
   },
@@ -126,7 +128,7 @@ const exportedMethods = {
     id = validation.checkId(id, "User Id");
     const user = await this.getUserById(id);
     for (let i = 0; i < user.learnedPosts.length; i++) {
-      user.learnedPosts[i] = await this.getPostById(user.learnedPosts[i]);
+      user.learnedPosts[i] = await postData.getPostById(user.learnedPosts[i]);
     }
     return user.learnedPosts;
   },
@@ -134,7 +136,7 @@ const exportedMethods = {
     id = validation.checkId(id, "User Id");
     const user = await this.getUserById(id);
     for (let i = 0; i < user.favoritePosts.length; i++) {
-      user.favoritePosts[i] = await this.getPostById(user.favoritePosts[i]);
+      user.favoritePosts[i] = await postData.getPostById(user.favoritePosts[i]);
     }
     return user.favoritePosts;
   },
@@ -152,17 +154,23 @@ const exportedMethods = {
         userInfo.password,
         "password"
       );
-    if (userInfo.bio)
-      updatedUserData.bio = validation.checkString(userInfo.bio, "bio");
+    if (userInfo.bio !== undefined)
+      updatedUserData.bio = validation.checkBio(userInfo.bio);
     if (userInfo.dailyStreak)
       updatedUserData.dailyStreak = validation.checkNum(
         userInfo.dailyStreak,
         "daily streak"
       );
-    if (userInfo.picture)
-      updatedUserData.picture = validation.checkProfilePicture(
-        userInfo.picture
-      );
+      if (userInfo.picture) {
+        if (userInfo.picture === "DELETE") {
+          updatedUserData.picture = DEFAULT_PFP;
+        } else {
+          updatedUserData.picture = validation.checkProfilePicture(
+            userInfo.picture
+          );
+        }
+      }
+  
     if (userInfo.instruments)
       updatedUserData.instruments = validation.checkStringArray(
         userInfo.instruments,
@@ -258,7 +266,6 @@ const exportedMethods = {
     updateUser._id = updateUser._id.toString();
     return updateUser;
   },
-
   
 };
 

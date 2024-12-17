@@ -2,12 +2,12 @@ import { comments } from "../config/mongoCollections.js";
 import userData from "./users.js";
 import { ObjectId } from "mongodb";
 import validation from "../validation.js";
-import  postData from "./posts.js";
+import postData from "./posts.js";
 
 const exportedMethods = {
   async getCommentById(id) {
     id = validation.checkId(id, "Comment ID");
-    
+
     const commentCollection = await comments();
     const comment = await commentCollection.findOne({ _id: new ObjectId(id) });
     if (!comment) throw "Comment not found";
@@ -35,19 +35,35 @@ const exportedMethods = {
 
     const newInsertInformation = await commentCollection.insertOne(comment);
     if (!newInsertInformation.insertedId) throw "Could not add comment";
+    await userData.userArrayAlter(
+      userId,
+      newInsertInformation.insertedId.toString(),
+      "comments"
+    );
+    await postData.postComment(
+      postId,
+      newInsertInformation.insertedId.toString()
+    );
     const commentId = newInsertInformation.insertedId.toString();
 
-    await postData.postComment(postId, commentId)
-    await userData.userArrayAlter(userId, commentId, "comments")  
+    await postData.postComment(postId, commentId);
+    await userData.userArrayAlter(userId, commentId, "comments");
 
-    return await this.getCommentById(
-      commentId
-    );
+    return await this.getCommentById(commentId);
+  },
+
+  async getCommentById(id) {
+    id = validation.checkId(id, "Comment ID");
+    const commentCollection = await comments();
+    const comment = await commentCollection.findOne({ _id: new ObjectId(id) });
+    if (!comment) throw "Comment not found";
+    comment._id = comment._id.toString();
+    return comment;
   },
 
   async getAllComments() {
     const commentCollection = await comments();
-    commentList = await commentCollection.find({}).toArray();
+    let commentList = await commentCollection.find({}).toArray();
 
     commentList.forEach((comment) => {
       comment._id = comment._id.toString();
@@ -80,35 +96,41 @@ const exportedMethods = {
     return commentList;
   },
 
-  async removeComment(id) {
-    id = validation.checkId(id, "Comment ID");
+    async removeComment(id) {
+        id = validation.checkId(id, 'Comment ID');
 
     const commentCollection = await comments();
     const deletionInfo = await commentCollection.findOneAndDelete({
       _id: new ObjectId(id),
     });
+    
 
     if (!deletionInfo) throw `Could not delete comment with id of ${id}`;
-    await userData.userArrayAlter(userId, newInsertInformation.insertedId, "comments", false)
-    await postData.postComment(postId, newInsertInformation.insertedId, false)
+    await userData.userArrayAlter(
+      deletionInfo.userId,
+      id,
+      "comments",
+      false
+    );
+
+    await postData.postComment(deletionInfo.postId, id, false);
     return { ...deletionInfo, deleted: true };
   },
 
-  async updateComment(id, content) {
-    id = validation.checkId(id, "Comment ID");
-    content = validation.checkString(content, "Content");
+    async updateComment(id, content) {
+        id = validation.checkId(id, 'Comment ID');
+        content = validation.checkString(content, 'Content');
 
-    const commentCollection = await comments();
-    const updateComment = await commentCollection.findOneAndUpdate(
-      { _id: new ObjectId(id) },
-      { $set: { content: content } },
-      { returnDocument: "after" }
-    );
+        const commentCollection = await comments();
+        const updateInfo = await commentCollection.findOneAndUpdate(
+            {_id: new ObjectId(id)},
+            {$set: {content: content}},
+            {returnDocument: 'after'}
+        );
 
-    if (!updateComment) throw `Could not update comment with id ${id}`;
-    updateComment._id = updateComment._id.toString();
-    return updateComment;
-  },
+        if (!updateInfo) throw `Could not update comment with id ${id}`;
+        return updateInfo;
+    }
 };
 
 export default exportedMethods;
