@@ -145,7 +145,6 @@ const upload = multer();
 router
   .route("/:userId/edit")
   .get(async (req, res) => {
-    console.log("ping")
     try {
       let id = validation.checkId(req.params.userId, "User Id");
       const user = await userData.getUserById(id);
@@ -157,7 +156,6 @@ router
         defaultPic: defaultPic,
       });
     } catch (e) {
-      console.log(e)
       return res.status(404).render("error", {
         session: req.session.user,
         linkRoute: "/",
@@ -199,17 +197,25 @@ router
         }
       }
 
-      if (instruments) {
-        instruments = validation.checkStringArray(
-          instruments.split(","),
-          "Instruments"
-        );
-        userInfo.instruments = instruments;
+      if (instruments !== undefined) {
+        if (instruments.trim() === "") {
+          userInfo.instruments = [];
+        } else {
+          instruments = validation.checkStringArray(
+            instruments.split(","),
+            "Instruments"
+          );
+          userInfo.instruments = instruments;
+        }
       }
 
-      if (genres) {
-        genres = validation.checkStringArray(genres.split(","), "Genres");
-        userInfo.genres = genres;
+      if (genres !== undefined) {
+        if (genres.trim() === "") {
+          userInfo.genres = [];
+        } else {
+          genres = validation.checkStringArray(genres.split(","), "Genres");
+          userInfo.genres = genres;
+        }
       }
 
       let updatedUser = await userData.updateUser(id, userInfo);

@@ -11,11 +11,6 @@ const exportedMethods = {
     return str.trim();
   },
 
-  checkBio(str) {
-    if (typeof str !== "string") throw `Bio is not a string`;
-    return str.trim();
-  },
-
   checkTags(tags) {
     tags = this.checkStringArray(tags, "tags");
     tags.forEach((tag, i) => {
