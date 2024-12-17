@@ -114,6 +114,7 @@ const constructorMethod = (app) => {
       defaultLayout: "main",
       helpers: { equals: (a, b) => a === b, 
         splitNotation (notation){
+          if(!notation) return "";
           return notation.split("\n").map((s)=>s.trim())
         }
       },
