@@ -153,8 +153,8 @@ const exportedMethods = {
         userInfo.password,
         "password"
       );
-    if (userInfo.bio)
-      updatedUserData.bio = validation.checkString(userInfo.bio, "bio");
+    if (userInfo.bio !== undefined)
+      updatedUserData.bio = validation.checkBio(userInfo.bio);
     if (userInfo.dailyStreak)
       updatedUserData.dailyStreak = validation.checkNum(
         userInfo.dailyStreak,

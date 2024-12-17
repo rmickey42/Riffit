@@ -177,15 +177,18 @@ router
           throw "Invalid image type for profile picture: " + picture.mimetype;
         }
         if (picture.size > validation.MAX_PFP_SIZE) {
-        throw "Profile picture is too large! Must be a JPEG image < 1MB";
+          throw "Profile picture is too large! Must be a JPEG image < 1MB";
         }
         userInfo.picture = picture;
       }
-      
 
-      if (bio) {
-        bio = validation.checkString(bio, "Bio");
-        userInfo.bio = bio;
+      if (bio !== undefined) {
+        if (bio.trim() === "") {
+          userInfo.bio = "";
+        } else {
+          bio = validation.checkString(bio, "Bio");
+          userInfo.bio = bio;
+        }
       }
 
       if (instruments) {
