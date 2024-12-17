@@ -4,7 +4,6 @@ import { xss } from "express-xss-sanitizer"
 import session from "express-session";
 import validation from "./validation.js";
 import methodOverride from "method-override";
-import { xss } from "express-xss-sanitizer";
 
 import postsData from "./data/posts.js";
 
