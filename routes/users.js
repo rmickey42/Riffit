@@ -21,13 +21,9 @@ router
   .get(async (req, res) => {
     try {
       let id = validation.checkId(req.params.userId, "User Id");
-      console.log(1)
       const user = await userData.getUserById(id);
-      console.log(2)
       const profileOwner = req.session.user && req.session.user._id === id;
-      console.log(3)
       const posts = await postData.getPostsByUserId(id, 0);
-      console.log(4)
 
       return res.render("user", {
         session: req.session.user,
@@ -150,6 +146,7 @@ const upload = multer();
 router
   .route("/:userId/edit")
   .get(async (req, res) => {
+    console.log("ping")
     try {
       let id = validation.checkId(req.params.userId, "User Id");
       const user = await userData.getUserById(id);
@@ -161,6 +158,7 @@ router
         defaultPic: defaultPic,
       });
     } catch (e) {
+      console.log(e)
       return res.status(404).render("error", {
         session: req.session.user,
         linkRoute: "/",

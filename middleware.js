@@ -11,7 +11,7 @@ const AUTH_SECRET = "AuThSeCrEt12345";
 
 const authUserMiddleware = (req, res, next) => {
   try {
-    let id = validation.checkId(req.params.userId);
+    let id = validation.checkId(req.params.userId, "user ID");
     if (req.session.user) {
       if (req.session.user._id === id) {
         next();
@@ -35,6 +35,7 @@ const authUserMiddleware = (req, res, next) => {
         });
     }
   } catch (e) {
+    console.dir(e)
     return res
       .status(404)
       .render("error", {
@@ -48,8 +49,8 @@ const authUserMiddleware = (req, res, next) => {
 
 const authPostMiddleware = (req, res, next) => {
   try {
-    let post = postsData.getPostById(req.params.id);
-    let id = validation.checkId(post.userId);
+    let post = postsData.getPostById(req.params.id, "post ID");
+    let id = validation.checkId(post.userId, "user ID");
     if (req.session.user) {
       if (req.session.user._id === id) {
         next();
@@ -72,6 +73,7 @@ const authPostMiddleware = (req, res, next) => {
         });
     }
   } catch (e) {
+    console.dir(e)
     return res
       .status(404)
       .render("error", {
