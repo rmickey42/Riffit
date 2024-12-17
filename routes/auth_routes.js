@@ -20,7 +20,7 @@ router
     // first, check that each field has been passed
     fields.forEach((field) => {
       try {
-        clean_data[field] = validation.checkString(unclean_data[field]);
+        clean_data[field] = validation.checkString(unclean_data[field], field);
       } catch (e) {
         not_found.push(field);
       }
@@ -70,11 +70,14 @@ router
     let clean_data = {}; // going to store the trimmed fields in here
     let not_found = []; // if any fields are missing from the request, will put them here
 
+    console.dir(req.body)
+
     // first, check that each field has been passed
     fields.forEach((field) => {
       try {
-        clean_data[field] = validation.checkString(unclean_data[field]);
-      } catch {
+        clean_data[field] = validation.checkString(unclean_data[field], field);
+      } catch (e) {
+        console.dir(e)
         not_found.push(field);
       }
     });
