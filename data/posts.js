@@ -111,9 +111,9 @@ const exportedMethods = {
       throw "Invalid sorting method";
     }
 
-    if (postList.length() === 0) {
-      throw `Page number ${page} is invalid`;
-    }
+    //if (postList.length === 0) {
+    //  throw `Page number ${page} is invalid`;
+    //}
 
     postList.forEach((post) => {
       post._id = post._id.toString();
