@@ -206,21 +206,14 @@ nav a:hover {
     height: 24px;
     cursor: pointer;
     margin: 0 5px;
+    background-color: #666;
+    overflow: hidden;
+    border-radius: 5px;
+    border-width: 0px;
 }
 
-.like_button.clicked {
-    width: 36px;
-    height: 36px;
-}
-
-.dislike_button.clicked {
-    width: 36px;
-    height: 36px;
-}
-
-.favorite_button.clicked {
-    width: 36px;
-    height: 36px;
+.clicked {
+    background-color: orange;
 }
 
 .notation {
