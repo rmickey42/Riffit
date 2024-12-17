@@ -70,13 +70,13 @@ const exportedMethods = {
     if (!refName) throw `No name for ${str}`;
     if (/[^a-zA-Z\d]/.test(str))
       throw `${refName} must only contain letters and numbers`;
-    if (trimmed.length < 4 && trimmed.length > 15)
+    if (str.length < 4 && str.length > 15)
       throw `${refName} must be between 4 and 15 characters`;
 
-    // for(let i in trimmed){
-    //   if(!alpha_numer.includes(trimmed[i].toLowerCase())) throw `${refName || str} contains invalid character ${trimmed[i]}`;
+    // for(let i in str){
+    //   if(!alpha_numer.includes(str[i].toLowerCase())) throw `${refName || str} contains invalid character ${str[i]}`;
     // }
-    return trimmed.toLocaleLowerCase();
+    return str.toLocaleLowerCase();
   },
 
   checkPassword(str, refName) {
@@ -86,9 +86,9 @@ const exportedMethods = {
     let capital_count = 0,
       symbol_count = 0,
       number_count = 0;
-    for (let i in trimmed) {
-      let char = trimmed[i].toLowerCase();
-      if (char != trimmed[i]) capital_count++;
+    for (let i in str) {
+      let char = str[i].toLowerCase();
+      if (char != str[i]) capital_count++;
       else if (numbers.includes(char)) number_count++;
       else if (good_symbols.includes(char)) symbol_count++;
       else if (!alphabet.includes(char))
@@ -100,7 +100,7 @@ const exportedMethods = {
     if (symbol_count < 1) throw `Passwords must contain at least 1 symbol`;
     if (number_count < 1) throw `Passwords must contain at least 1 number`;
 
-    return trimmed;
+    return str;
   },
 
   checkProfilePicture(file) {
