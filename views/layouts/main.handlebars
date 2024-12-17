@@ -7,6 +7,22 @@
     <link rel="stylesheet" href="/public/css/main.css">
 </head>
 <body>
+    <header>
+        <nav>
+            <ul>
+                {{#if session}}
+                <li><a href="/users/me">My Profile</a></li>
+                <li><a href="/signout">Sign Out</a></li>
+                <li><a href="/posts/new">Create Post</a></li>
+                {{else}}
+                <li><a href="/login">Sign In</a></li>
+                <li><a href="/register">Register</a></li>
+                {{/if}}
+                <li><a href="/posts/search">Search</a></li>
+            </ul>
+        </nav>
+    </header>
+
     {{{body}}}
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
