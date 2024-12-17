@@ -190,10 +190,10 @@ const exportedMethods = {
 
     if (!deletionInfo) throw `Could not delete post with id of ${id}`;
     await userData.userArrayAlter(deletionInfo.userId, id, "posts", false);
-    deletionInfo.comments.forEach((element) => {
-      commentData.removeComment(element);
-    });
-    await commentData.removeComment;
+
+    for(let commentId of deletionInfo.comments) {
+      await commentData.removeComment(commentId, false);
+    }
     return { ...deletionInfo, deleted: true };
   },
 
@@ -278,7 +278,7 @@ const exportedMethods = {
     }
 
     if (!updatePost)
-      throw `Error: Update failed, could not find a comment with an id of ${id}`;
+      throw `Error: Update failed, could not find a post with an id of ${id}`;
 
     updatePost._id = updatePost._id.toString();
     return updatePost;

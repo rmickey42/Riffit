@@ -107,8 +107,8 @@ const exportedMethods = {
     return commentList;
   },
 
-    async removeComment(id) {
-        id = validation.checkId(id, 'Comment ID');
+  async removeComment(id, removeFromPost=true) {
+    id = validation.checkId(id, 'Comment ID');
 
     const commentCollection = await comments();
     const deletionInfo = await commentCollection.findOneAndDelete({
@@ -124,7 +124,7 @@ const exportedMethods = {
       false
     );
 
-    await postData.postComment(deletionInfo.postId, id, false);
+    if(removeFromPost) await postData.postComment(deletionInfo.postId, id, false);
     return { ...deletionInfo, deleted: true };
   },
 

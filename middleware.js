@@ -9,7 +9,7 @@ import postsData from "./data/posts.js";
 
 const AUTH_SECRET = "AuThSeCrEt12345";
 
-const authUserMiddleware = (req, res, next) => {
+const authUserMiddleware = async (req, res, next) => {
   try {
     let id = validation.checkId(req.params.userId, "user ID");
     if (req.session.user) {
@@ -47,9 +47,9 @@ const authUserMiddleware = (req, res, next) => {
   }
 };
 
-const authPostMiddleware = (req, res, next) => {
+const authPostMiddleware = async (req, res, next) => {
   try {
-    let post = postsData.getPostById(req.params.id, "post ID");
+    let post = await postsData.getPostById(req.params.id, "post ID");
     let id = validation.checkId(post.userId, "user ID");
     if (req.session.user) {
       if (req.session.user._id === id) {
@@ -73,7 +73,6 @@ const authPostMiddleware = (req, res, next) => {
         });
     }
   } catch (e) {
-    console.dir(e)
     return res
       .status(404)
       .render("error", {
