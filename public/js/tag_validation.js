@@ -7,7 +7,7 @@ $('#add-tag-button').click(function() {
     tagCount++;
     const newTagInput = `
         <label id="tag-input-${tagCount-1}-label" for="tag-input-${tagCount-1}">Tag ${tagCount-1}:</label>
-        <input type="text" name="tags[]" placeholder="Tag" id="tag-input-${tagCount-1}">
+        <input type="text" name="tags[]" placeholder="Tag" id="tag-input-${tagCount-1}" required>
     `;
     $(newTagInput).insertBefore('#add-tag-button');
     $('#remove-tag-button').attr('disabled', false);
