@@ -256,6 +256,7 @@ router.route("/:id/like").post(async (req, res) => {
 
   try {
     const post = await postData.postLike(postId, req.session.user._id, !reverse);
+    req.session.user = await userData.getUserById(req.session.user._id);
     return res.json({success: true});
   } catch (e) {
     return res.status(400).json({ error: e });
@@ -276,6 +277,7 @@ router.route("/:id/dislike").post(async (req, res) => {
 
   try {
     const post = await postData.postDislike(postId, req.session.user._id, !reverse);
+    req.session.user = await userData.getUserById(req.session.user._id);
     return res.json({success: true});
   } catch (e) {
     return res.status(400).json({ error: e });
@@ -296,6 +298,7 @@ router.route("/:id/favorite").post(async (req, res) => {
 
   try {
     const post = await postData.postFavorite(postId, req.session.user._id, !reverse);
+    req.session.user = await userData.getUserById(req.session.user._id);
     return res.json({success: true});
   } catch (e) {
     return res.status(400).json({ error: e });
@@ -330,6 +333,7 @@ router.route("/:id/comments")
   
   try {
     const post = await commentData.addComment(comment, req.session.user._id, postId);
+    req.session.user = await userData.getUserById(req.session.user._id);
     return res.status(200).json({success: true});
   } catch (e) {
     return res.status(400).json({ error: e });

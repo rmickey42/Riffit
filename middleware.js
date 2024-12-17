@@ -163,6 +163,7 @@ const constructorMethod = (app) => {
   app.use("/posts/:id/favorite", signedInMiddleware);
   app.use("/posts/:id/dislike", signedInMiddleware);
   app.use("/posts/:id/like", signedInMiddleware);
+  app.post("/posts/:id/comments", signedInMiddleware);
   app.delete("/posts/:id", authPostMiddleware);
 };
 
