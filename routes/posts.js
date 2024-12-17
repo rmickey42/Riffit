@@ -1,6 +1,6 @@
 import { Router } from "express";
 const router = Router();
-import { postData, audioData, commentData } from "../data/index.js";
+import { postData, audioData, commentData, userData } from "../data/index.js";
 import validation from "../validation.js";
 import multer from "multer";
 
@@ -17,13 +17,14 @@ router
     }
 
     try {
-      const posts = await postData.getPostsByTags(tags, sorting);
+      const posts = await postData.getPostsByTags(tags, 1, sorting);
       if (posts.length === 0) {
         return res.status(404).render("search", { session: req.session.user,  Title: "Search", error: "No Results" });
       } else {
         return res.render("search", { session: req.session.user,  Title: "Search", posts: posts });
       }
     } catch (e) {
+      console.dir(e)
       return res.status(500).render("search", { session: req.session.user,  Title: "Search", error: "Internal Server Error" });
     }
   });
@@ -246,6 +247,7 @@ router.route("/:id/like").post(async (req, res) => {
   try {
     postId = validation.checkId(postId, "Post ID");
   } catch (e) {
+    console.dir(e)
     return res.status(400).json({ error: e });
   }
 
@@ -259,6 +261,7 @@ router.route("/:id/like").post(async (req, res) => {
     req.session.user = await userData.getUserById(req.session.user._id);
     return res.json({success: true});
   } catch (e) {
+    console.dir(e)
     return res.status(400).json({ error: e });
   }
 });

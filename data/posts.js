@@ -38,36 +38,37 @@ const exportedMethods = {
     return ls;
   },
 
-  async getPostsByTags(tags_lst, sorting = "newest") {
+  async getPostsByTags(tags_lst, page, sorting = "newest") {
     tags_lst = validation.checkStringArray(tags_lst, "Tags");
     page = validation.checkNum(page, "page");
 
     const postCollection = await posts();
     let postList = [];
+    page=page-1
     if (sorting === "newest") {
       postList = await postCollection
-        .find({ tags: { $in: tags_lst } })
+        .find({ tags: { $all: tags_lst } })
         .sort({ _id: -1 })
         .skip(page * 10)
         .limit(10)
         .toArray();
     } else if (sorting === "oldest") {
       postList = await postCollection
-        .find({ tags: { $in: tags_lst } })
+        .find({ tags: { $all: tags_lst } })
         .sort({ _id: 1 })
         .skip(page * 10)
         .limit(10)
         .toArray();
     } else if (sorting === "most_popular") {
       postList = await postCollection
-        .find({ tags: { $in: tags_lst } })
+        .find({ tags: { $all: tags_lst } })
         .sort({ rating: -1 })
         .skip(page * 10)
         .limit(10)
         .toArray();
     } else if (sorting === "least_popular") {
       postList = await postCollection
-        .find({ tags: { $in: tags_lst } })
+        .find({ tags: { $all: tags_lst } })
         .sort({ rating: 1 })
         .skip(page * 10)
         .limit(10)
@@ -76,10 +77,10 @@ const exportedMethods = {
       throw "Invalid sorting method";
     }
 
-    if (postList.length === 0) {
-      throw `Page number ${page} is invalid`;
-    }
-
+    //if (postList.length === 0) {
+    //  throw `Page number ${page} is invalid`;
+    //}
+    
     postList.forEach((post) => {
       post._id = post._id.toString();
     });
