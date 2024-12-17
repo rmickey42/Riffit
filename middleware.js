@@ -112,7 +112,11 @@ const constructorMethod = (app) => {
     "handlebars",
     exphbs.engine({
       defaultLayout: "main",
-      helpers: { equals: (a, b) => a === b },
+      helpers: { equals: (a, b) => a === b, 
+        splitNotation (notation){
+          return notation.split("\n").map((s)=>s.trim())
+        }
+      },
     })
   );
   app.set("view engine", "handlebars");

@@ -1,8 +1,9 @@
 <main>
     <h1>{{user.username}}'s Comments</h1>
     <ul>
-        {{#each user.comments}}
+        {{#each comments}}
         <li>
+            {{log this}}
             <p>{{this.content}}</p>
             <small>Posted on: {{this.date}}</small>
             <a href="/posts/{{this.postId}}">View Post</a>

@@ -228,3 +228,9 @@ nav a:hover {
     font-family: monospace;
     font-size: 14px;
 }
+
+.notation {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}

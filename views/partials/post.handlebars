@@ -4,7 +4,13 @@
     Your browser does not support the audio element.
 </audio>
 
-<pre>                {{post.notation}}</pre>
+<div class="notation">
+    {{#each (splitNotation post.notation)}}
+        <span class="notation_row">{{this}}</span>
+    {{/each}}
+</div>
+
+
 <p>Tags: {{post.tags}}</p>
 <p>Created by: <a href="/users/{{post.userId}}">{{post.username}}</a></p>
 <p>Created on: {{post.date}}</p>
