@@ -15,6 +15,17 @@ const exportedMethods = {
     return comment;
   },
 
+  async getCommentsByIds(ids) {
+    if (!Array.isArray(ids)) throw "Must pass array of IDs";
+
+    let ls = [];
+    ids.forEach(async (id) => {
+      id = validation.checkId(id, "Comment ID");
+      ls.push(await this.getCommentById(id));
+    });
+    return ls;
+  },
+
   async addComment(content, userId, postId) {
     content = validation.checkString(content, "Content");
     userId = validation.checkId(userId, "User ID");
