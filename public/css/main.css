@@ -1,6 +1,6 @@
 /* anything */
 
-.error-message{
+.error-message, #error, .error{
     color: red;
 }
 

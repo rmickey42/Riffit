@@ -148,7 +148,7 @@ router
         session: req.session.user,
         user: user,
         Title: "Edit Profile",
-        defaultPic: defaultPic
+        defaultPic: defaultPic,
       });
     } catch (e) {
       return res.status(404).render("error", {
@@ -171,12 +171,24 @@ router
       if (req.body.deletePicture === "true") {
         userInfo.picture = "DELETE";
       } else if (req.files && req.files.length > 0) {
-        userInfo.picture = req.files[0];
+        let picture = req.files[0];
+
+        if (picture.mimetype !== "image/jpeg") {
+          throw "Invalid image type for profile picture: " + picture.mimetype;
+        }
+        if (picture.size > validation.MAX_PFP_SIZE) {
+          throw "Profile picture is too large! Must be a JPEG image < 1MB";
+        }
+        userInfo.picture = picture;
       }
 
-      if (bio) {
-        bio = validation.checkString(bio, "Bio");
-        userInfo.bio = bio;
+      if (bio !== undefined) {
+        if (bio.trim() === "") {
+          userInfo.bio = "";
+        } else {
+          bio = validation.checkString(bio, "Bio");
+          userInfo.bio = bio;
+        }
       }
 
       if (instruments) {
@@ -194,15 +206,6 @@ router
 
       let updatedUser = await userData.updateUser(id, userInfo);
       req.session.user = updatedUser;
-
-      // let picture = req.files[0];
-      // if (picture) {
-      //   if (picture.mimetype !== "image/jpeg")
-      //     throw "Invalid image type for profile picture: " + picture.mimetype;
-      //   if (picture.size > validation.MAX_PFP_SIZE)
-      //     throw "Profile picture is too large! Must be a JPEG image < 1MB";
-      //   userInfo.picture = picture;
-      // }
 
       return res.redirect(`/users/${id}`);
     } catch (e) {

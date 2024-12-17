@@ -10,9 +10,14 @@ const __dirname = path.dirname(__filename);
 const exportedMethods = {
   checkString(str, valName) {
     if (!str) throw `No input for ${valName}`;
-    if (!valName) throw `No name for ${str}`
+    if (!valName) throw `No name for ${str}`;
     if (typeof str !== "string") throw `${valName} is not a string`;
     if (str.trim().length === 0) throw `${valName} is empty`;
+    return str.trim();
+  },
+
+  checkBio(str) {
+    if (typeof str !== "string") throw `Bio is not a string`;
     return str.trim();
   },
 
@@ -48,9 +53,9 @@ const exportedMethods = {
   checkStringArray(arr, valName) {
     if (!arr || !Array.isArray(arr))
       throw `You must provide an array of ${valName}`;
-    if (!valName) throw `No name for string array`
+    if (!valName) throw `No name for string array`;
     for (let i = 0; i < arr.length; i++) {
-      arr[i] = this.checkString(arr[i], `${valName} element`); 
+      arr[i] = this.checkString(arr[i], `${valName} element`);
     }
     return arr;
   },
@@ -58,7 +63,7 @@ const exportedMethods = {
   checkRefId(arr, refName) {
     if (!arr || !Array.isArray(arr))
       throw `You must provide an array of ${refName}`;
-    if (!valName) throw `No name for Id array`
+    if (!valName) throw `No name for Id array`;
     arr.forEach((element) => {
       element = this.checkId(arr[i]);
     });
@@ -67,7 +72,7 @@ const exportedMethods = {
   checkUsername(str, refName) {
     // Usernames can only contain letters and numbers
     str = this.checkString(str, refName);
-    if (!refName) throw `No name for ${str}`
+    if (!refName) throw `No name for ${str}`;
     if (/[^a-zA-Z\d]/.test(str))
       throw `${refName} must only contain letters and numbers`;
     if (str.length < 4 && str.length > 15)
@@ -78,8 +83,7 @@ const exportedMethods = {
   checkPassword(str, refName) {
     str = this.checkString(str, refName);
     if (str.length < 5) throw `Passwords must be at least 5 chatacters`;
-    if (str.length > 16)
-      throw `Passwords cannot be longer than 16 characters.`;
+    if (str.length > 16) throw `Passwords cannot be longer than 16 characters.`;
     let capital_count = 0,
       symbol_count = 0,
       number_count = 0;
