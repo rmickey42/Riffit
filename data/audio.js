@@ -10,7 +10,7 @@ const exportedMethods = {
         const audioCollection = await audio();
         const audioData = await audioCollection.findOne({ _id: new ObjectId(id) });
         if (!audioData) throw "Error: Audio not found";
-        
+
         return audioData.content.buffer;
     },
 
@@ -28,6 +28,24 @@ const exportedMethods = {
         const audioCollection = await audio();
         const newAudio = {
             content: file.buffer,
+        };
+
+        const newInsertInformation = await audioCollection.insertOne(newAudio);
+        const newId = newInsertInformation.insertedId;
+        if (newInsertInformation.insertedCount === 0) {
+            throw 500;
+        }
+        return newId;
+    },
+
+    async addAudioDirect(buffer) {
+        if (!buffer) {
+            throw "No audio buffer provided";
+        }
+
+        const audioCollection = await audio();
+        const newAudio = {
+            content: buffer,
         };
 
         const newInsertInformation = await audioCollection.insertOne(newAudio);

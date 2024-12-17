@@ -10,18 +10,14 @@ router
     return res.render("search", { session: req.session.user, Title: "Search" });
   }).post(async (req, res) => {
     let tags = validation.checkTags(req.body.tags);
-    let page = req.body.page;
     let sorting = req.body.sorting;
 
     if (!sorting) {
       sorting = "newest";
     }
-    if (!page) {
-      page = 0;
-    }else page = parseInt(page)-1;
 
     try {
-      const posts = await postData.getPostsByTags(tags, sorting, page);
+      const posts = await postData.getPostsByTags(tags, sorting);
       if (posts.length === 0) {
         return res.status(404).render("search", { session: req.session.user,  Title: "Search", error: "No Results" });
       } else {
@@ -88,7 +84,7 @@ router.route("/new").get(async (req, res) => {
     const newPost = await postData.addPost(
       requestBody.title,
       req.session.user._id,
-      audioId,
+      audioId.toString(),
       requestBody.notation,
       requestBody.key,
       requestBody.instrument,
@@ -260,6 +256,7 @@ router.route("/:id/like").post(async (req, res) => {
 
   try {
     const post = await postData.postLike(postId, req.session.user._id, !reverse);
+    req.session.user = await userData.getUserById(req.session.user._id);
     return res.json({success: true});
   } catch (e) {
     return res.status(400).json({ error: e });
@@ -280,6 +277,7 @@ router.route("/:id/dislike").post(async (req, res) => {
 
   try {
     const post = await postData.postDislike(postId, req.session.user._id, !reverse);
+    req.session.user = await userData.getUserById(req.session.user._id);
     return res.json({success: true});
   } catch (e) {
     return res.status(400).json({ error: e });
@@ -300,6 +298,7 @@ router.route("/:id/favorite").post(async (req, res) => {
 
   try {
     const post = await postData.postFavorite(postId, req.session.user._id, !reverse);
+    req.session.user = await userData.getUserById(req.session.user._id);
     return res.json({success: true});
   } catch (e) {
     return res.status(400).json({ error: e });
@@ -334,6 +333,7 @@ router.route("/:id/comments")
   
   try {
     const post = await commentData.addComment(comment, req.session.user._id, postId);
+    req.session.user = await userData.getUserById(req.session.user._id);
     return res.status(200).json({success: true});
   } catch (e) {
     return res.status(400).json({ error: e });

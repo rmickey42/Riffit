@@ -26,7 +26,19 @@ const exportedMethods = {
     return post;
   },
 
-  async getPostsByTags(tags_lst, page, sorting = "newest") {
+  async getPostsByIds(ids) {
+    if (!Array.isArray(ids)) throw "Must pass array of IDs";
+
+    const postCollection = await posts();
+    let ls = [];
+    ids.forEach(async (id) => {
+      id = validation.checkId(id, "Post ID");
+      ls.push(await this.getPostById(id));
+    });
+    return ls;
+  },
+
+  async getPostsByTags(tags_lst, sorting = "newest") {
     tags_lst = validation.checkStringArray(tags_lst, "Tags");
     page = validation.checkNum(page, "page");
 
@@ -111,9 +123,9 @@ const exportedMethods = {
       throw "Invalid sorting method";
     }
 
-    if (postList.length() === 0) {
-      throw `Page number ${page} is invalid`;
-    }
+    //if (postList.length === 0) {
+    //  throw `Page number ${page} is invalid`;
+    //}
 
     postList.forEach((post) => {
       post._id = post._id.toString();
@@ -168,7 +180,7 @@ const exportedMethods = {
     id = validation.checkId(id, "Post ID");
 
     const post = await this.getPostById(id);
-    // await audioData.removeAudio(post.content);
+    await audioData.removeAudio(post.content);
 
     const postCollection = await posts();
     const deletionInfo = await postCollection.findOneAndDelete({

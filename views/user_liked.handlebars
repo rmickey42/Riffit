@@ -1,9 +1,9 @@
 <main>
     <h1>{{user.username}}'s Likes</h1>
     <ul>
-        {{#each user.likedPosts}}
+        {{#each posts}}
         <li>
-            {{> post session=session post=this}}
+            {{> post session=../session post=this}}
         </li>
         {{/each}}
     </ul>

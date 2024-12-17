@@ -23,7 +23,7 @@ E|---------------------------------------------------------------|</textarea>
         <label for="audio">Upload Audio File:</label>
         <input type="file" id="audio" name="audio" accept="audio/mpeg" required>
 
-        <label for="tag-input-0">Tag 1:</label>
+        <label for="tag-input-0">Tag 0:</label>
         <input type="text" name="tags[]" placeholder="Tag" id="tag-input-0" required>
 
         <button id="add-tag-button" type="button">Add Tag</button>
@@ -39,5 +39,7 @@ E|---------------------------------------------------------------|</textarea>
     <p class="error">{{error}}</p>  
     
     {{/if}}
+
+    <a href="/login"><p>Already have an account? Click here to sign in</p></a>
 </main>
 

@@ -1,11 +1,6 @@
 import { ObjectId } from "mongodb";
-import path from "path";
-import fs from "fs";
-import { fileURLToPath } from "url";
 
 const MAX_PFP_SIZE = 1000000; // 1 MB
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 const exportedMethods = {
   checkString(str, valName) {
@@ -77,6 +72,10 @@ const exportedMethods = {
       throw `${refName} must only contain letters and numbers`;
     if (str.length < 4 && str.length > 15)
       throw `${refName} must be between 4 and 15 characters`;
+
+    // for(let i in str){
+    //   if(!alpha_numer.includes(str[i].toLowerCase())) throw `${refName || str} contains invalid character ${str[i]}`;
+    // }
     return str.toLocaleLowerCase();
   },
 
@@ -95,6 +94,7 @@ const exportedMethods = {
       else if (!alphabet.includes(char))
         throw `Passwords cannot contain the symbol '${char}'`;
     }
+
     if (capital_count < 1)
       throw `Passwords must contain at least 1 capital letter`;
     if (symbol_count < 1) throw `Passwords must contain at least 1 symbol`;
@@ -115,9 +115,7 @@ const exportedMethods = {
     }
 
     return file.buffer;
-  },
-
-  MAX_PFP_SIZE: MAX_PFP_SIZE,
+  }
 };
 
 let alphabet = "qwertyuiopasdfghjklzxcvbnm";

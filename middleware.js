@@ -1,5 +1,6 @@
 import express from "express";
 import exphbs from "express-handlebars";
+import { xss } from "express-xss-sanitizer"
 import session from "express-session";
 import validation from "./validation.js";
 import methodOverride from "method-override";
@@ -9,24 +10,25 @@ import postsData from "./data/posts.js";
 
 const AUTH_SECRET = "AuThSeCrEt12345";
 
-const authUserMiddleware = async (req, res, next) => {
+const authUserMiddleware = (req, res, next) => {
   try {
-    let id = validation.checkId(req.params.userId, "User ID");
+    let id = validation.checkId(req.params.userId, "user ID");
     if (req.session.user) {
       if (req.session.user._id === id) {
         next();
       } else if (req.session.user) {
-        return res.status(401).render("error", { session: req.session.user,
+        return res.status(401).render("error", {
           linkRoute: "/user/me",
           linkDesc: "Return to your profile",
           errorName: "Unauthorized Access",
           errorDesc: "You do not have permission to view this page.",
         });
       }
+
     } else {
       return res
         .status(401)
-        .render("error", { session: req.session.user,
+        .render("error", {
           linkRoute: "/login",
           linkDesc: "Login",
           errorName: "Unauthorized Access",
@@ -34,9 +36,10 @@ const authUserMiddleware = async (req, res, next) => {
         });
     }
   } catch (e) {
+    console.dir(e)
     return res
       .status(404)
-      .render("error", { session: req.session.user,
+      .render("error", {
         linkRoute: "/",
         linkDesc: "Return to the homepage",
         errorName: "Page Doesn't Exist",
@@ -45,16 +48,15 @@ const authUserMiddleware = async (req, res, next) => {
   }
 };
 
-const authPostMiddleware = async (req, res, next) => {
+const authPostMiddleware = (req, res, next) => {
   try {
-    let postId = validation.checkId(req.params.id, "Post ID");
-    let post = await postsData.getPostById(postId);
-    let id = post.userId;
+    let post = postsData.getPostById(req.params.id, "post ID");
+    let id = validation.checkId(post.userId, "user ID");
     if (req.session.user) {
       if (req.session.user._id === id) {
         next();
       } else {
-        return res.status(401).render("error", { session: req.session.user,
+        return res.status(401).render("error", {
           linkRoute: "/user/me",
           linkDesc: "Return to your profile",
           errorName: "Unauthorized Access",
@@ -64,7 +66,7 @@ const authPostMiddleware = async (req, res, next) => {
     } else {
       return res
         .status(401)
-        .render("error", { session: req.session.user,
+        .render("error", {
           linkRoute: "/login",
           linkDesc: "Login",
           errorName: "Unauthorized Access",
@@ -72,9 +74,10 @@ const authPostMiddleware = async (req, res, next) => {
         });
     }
   } catch (e) {
+    console.dir(e)
     return res
       .status(404)
-      .render("error", { session: req.session.user,
+      .render("error", {
         linkRoute: "/",
         linkDesc: "Return to the homepage",
         errorName: "Page Doesn't Exist",
@@ -117,7 +120,7 @@ const constructorMethod = (app) => {
 
   app.use(express.json()); // json encoding for POSTs
   app.use(express.urlencoded()); // url encoding for API
-  app.use(xss())
+  app.use(xss()); // sanitize inputs
 
   app.use(
     session({
@@ -169,6 +172,7 @@ const constructorMethod = (app) => {
   app.use("/posts/:id/favorite", signedInMiddleware);
   app.use("/posts/:id/dislike", signedInMiddleware);
   app.use("/posts/:id/like", signedInMiddleware);
+  app.post("/posts/:id/comments", signedInMiddleware);
   app.delete("/posts/:id", authPostMiddleware);
 };
 

@@ -1,7 +1,7 @@
 <main>
     <h1>{{user.username}}'s Comments</h1>
     <ul>
-        {{#each comments}}
+        {{#each user.comments}}
         <li>
             <p>{{this.content}}</p>
             <small>Posted on: {{this.date}}</small>
