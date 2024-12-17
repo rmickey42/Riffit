@@ -3,6 +3,7 @@ import { ObjectId } from "mongodb";
 import bcrypt from "bcrypt";
 import validation from "../validation.js";
 import  postData from "./posts.js";
+import commentData from "./comments.js"
 
 const BCRYPT_SALT = 11;
 
@@ -103,7 +104,7 @@ const exportedMethods = {
     id = validation.checkId(id, "User Id");
     const user = await this.getUserById(id);
     for (let i = 0; i < user.comments.length; i++) {
-      user.comments[i] = await this.getCommentById(user.comments[i]);
+      user.comments[i] = await commentData.getCommentById(user.comments[i]);
     }
     return user.comments;
   },
@@ -111,7 +112,7 @@ const exportedMethods = {
     id = validation.checkId(id, "User Id");
     const user = await this.getUserById(id);
     for (let i = 0; i < user.likedPosts.length; i++) {
-      user.likedPosts[i] = await this.getPostById(user.likedPosts[i]);
+      user.likedPosts[i] = await postData.getPostById(user.likedPosts[i]);
     }
     return user.likedPosts;
   },
@@ -119,7 +120,7 @@ const exportedMethods = {
     id = validation.checkId(id, "User Id");
     const user = await this.getUserById(id);
     for (let i = 0; i < user.dislikedPosts.length; i++) {
-      user.dislikedPosts[i] = await this.getPostById(user.dislikedPosts[i]);
+      user.dislikedPosts[i] = await postData.getPostById(user.dislikedPosts[i]);
     }
     return user.dislikedPosts;
   },
@@ -127,7 +128,7 @@ const exportedMethods = {
     id = validation.checkId(id, "User Id");
     const user = await this.getUserById(id);
     for (let i = 0; i < user.learnedPosts.length; i++) {
-      user.learnedPosts[i] = await this.getPostById(user.learnedPosts[i]);
+      user.learnedPosts[i] = await postData.getPostById(user.learnedPosts[i]);
     }
     return user.learnedPosts;
   },
@@ -135,7 +136,7 @@ const exportedMethods = {
     id = validation.checkId(id, "User Id");
     const user = await this.getUserById(id);
     for (let i = 0; i < user.favoritePosts.length; i++) {
-      user.favoritePosts[i] = await this.getPostById(user.favoritePosts[i]);
+      user.favoritePosts[i] = await postData.getPostById(user.favoritePosts[i]);
     }
     return user.favoritePosts;
   },

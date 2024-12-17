@@ -34,7 +34,7 @@ const exportedMethods = {
   },
 
   checkNum(num, valName) {
-    if (!num) throw `No input for ${valName}`;
+    if (!num && !(num===0)) throw `No input for ${valName}`;
     if (!valName) throw `No name for ${num}`
     if (num === undefined) throw `${valName} is undefined`;
     if (typeof num !== "number") throw `${valName} is not a number`;

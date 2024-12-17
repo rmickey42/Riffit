@@ -4,6 +4,7 @@ import users from "../data/users.js";
 import posts from "../data/posts.js";
 import comments from "../data/comments.js";
 
+
 const db = await dbConnection();
 await db.dropDatabase();
 
@@ -16,7 +17,6 @@ const updateUser1 = {
 const name = await users.updateUser(user1._id, updateUser1);
 // console.log(name);
 
-
 const post1 = await posts.addPost(
   "First Post",
   user1._id,
@@ -27,35 +27,21 @@ const post1 = await posts.addPost(
   ["Hard Rock"]
 );
 
-// console.log(post1)
-try {
-  const updatePost1 = {
-    tags: ["Something else    "],
-    title: "Second Post Now",
-  };
-  const updatedpost1 = await posts.updatePost(post1._id, updatePost1);
+const updatePost1 = {
+  tags: ["Something else    "],
+  title: "Second Post Now",
+};
+const updatedpost1 = await posts.updatePost(post1._id, updatePost1);
 //   console.log(updatedpost1);
-} catch (error) {
-  console.log(error);
-}
 
 // const updatething = await users.userArrayAdd(user1._id, post1._id, "posts")
 
 // console.log(updatething)
 
-
 // const user1a = await users.getUserById(user1._id)
-const post1a = await posts.postRating(post1._id, user1._id)
+const post1a = await posts.postLike(post1._id, user1._id);
 // console.log(await users.getUserById(user1._id))
 // console.log(post1a)
-
-const post1b = await posts.postRating(post1._id, user1._id, false)
-// console.log(await users.getUserById(user1._id))
-// console.log(post1b)
-
-// const post1c = await posts.removePost(post1._id)
-// console.log(await users.getUserById(user1._id))
-
 
 const user2 = await users.addUser("anotherGuy", "Pa$$w0rd");
 const updateUser2 = {
@@ -84,8 +70,102 @@ await users.updateUser(user4._id, updateUser4);
 
 // console.log(await users.getAllUsers())
 
-console.log(await users.getUserByUsername("oneMORE"))
-await users.removeUser(user4._id)
-console.log(await users.getAllUsers())
+// console.log(await users.getUserByUsername("oneMORE"))
+// await users.removeUser(user4._id)
+// console.log(await users.getAllUsers())
+
+const post2 = await posts.addPost(
+  "Another Post",
+  user1._id,
+  "somethingelse",
+  "somethingelse",
+  "G minor",
+  "bass",
+  ["Soft Rock"]
+);
+
+const post3 = await posts.addPost(
+  "Yet Another Post",
+  user1._id,
+  "somethingsomething",
+  "somethingsomething",
+  "G major",
+  "guitar",
+  ["Hard Rock"]
+);
+
+const post6 = await posts.addPost(
+  "User2's First Post",
+  user2._id,
+  "Description for user2's post",
+  "tabsForUser2",
+  "A minor",
+  "violin",
+  ["Classical", "Violin"]
+);
+
+const post5 = await posts.addPost(
+  "User3's First Post",
+  user3._id,
+  "Description for user3's post",
+  "tabsForUser3",
+  "B major",
+  "saxophone",
+  ["Jazz", "Saxophone"]
+);
+
+const post4 = await posts.addPost(
+  "User4's First Post",
+  user4._id,
+  "Description for user4's post",
+  "tabsForUser4",
+  "E minor",
+  "flute",
+  ["Pop", "Flute"]
+);
+
+await posts.postLike(post4._id, user3._id)
+const post4c = await posts.postLike(post4._id, user2._id)
+
+
+// console.log(post4c)
+const post4a = await posts.postDislike(post4._id, user1._id)
+const updatePost2 = {
+    tags: ["Something else"],
+
+  };
+
+const post4b = await posts.updatePost(post4._id, updatePost2)
+// console.log(post4b)
+
+await posts.postLike(post3._id, user1._id)
+
+await posts.postFavorite(post2._id, user4._id)
+// const list1 = await users.getLikedPostsByUserId(user1._id)
+// console.log(list1)
+
+// try {
+//     let list = await posts.getPostsByTags(["Something else", "Violin", "Pop"], 0)
+// } catch (error) {
+//     console.log(error)
+// }
+
+// let list = await posts.getAllPosts()
+// console.log(list);
+
+
+// console.log(user2)
+
+await comments.addComment("nice", user2._id, post3._id)
+await comments.addComment("omg wow so nice", user3._id, post3._id)
+await comments.addComment("cool", user4._id, post3._id)
+let comment = await comments.addComment("thanks guys", user1._id, post3._id)
+
+// console.log(await comments.getCommentById(comment._id))
+
+// console.log(await comments.getAllComments())
+console.log(await comments.getCommentsByPostId(post3._id))
+
+
 
 await closeConnection();

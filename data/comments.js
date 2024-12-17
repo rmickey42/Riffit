@@ -2,7 +2,7 @@ import { comments } from "../config/mongoCollections.js";
 import userData from "./users.js";
 import { ObjectId } from "mongodb";
 import validation from "../validation.js";
-import  postData from "./posts.js";
+import postData from "./posts.js";
 
 const exportedMethods = {
   async addComment(content, userId, postId) {
@@ -21,8 +21,15 @@ const exportedMethods = {
 
     const newInsertInformation = await commentCollection.insertOne(comment);
     if (!newInsertInformation.insertedId) throw "Could not add comment";
-    await userData.userArrayAlter(userId, newInsertInformation.insertedId, "comments")
-    await postData.postComment(postId, newInsertInformation.insertedId)
+    await userData.userArrayAlter(
+      userId,
+      newInsertInformation.insertedId.toString(),
+      "comments"
+    );
+    await postData.postComment(
+      postId,
+      newInsertInformation.insertedId.toString()
+    );
     return await this.getCommentById(
       newInsertInformation.insertedId.toString()
     );
@@ -31,7 +38,7 @@ const exportedMethods = {
   async getCommentById(id) {
     id = validation.checkId(id, "Comment ID");
     const commentCollection = await comments();
-    const comment = await commentCollection.findOne({ _id: ObjectId(id) });
+    const comment = await commentCollection.findOne({ _id: new ObjectId(id) });
     if (!comment) throw "Comment not found";
     comment._id = comment._id.toString();
     return comment;
@@ -39,7 +46,7 @@ const exportedMethods = {
 
   async getAllComments() {
     const commentCollection = await comments();
-    commentList = await commentCollection.find({}).toArray();
+    let commentList = await commentCollection.find({}).toArray();
 
     commentList.forEach((comment) => {
       comment._id = comment._id.toString();
@@ -54,12 +61,12 @@ const exportedMethods = {
     const commentCollection = await comments();
     if (sorting === "newest") {
       commentList = await commentCollection
-        .find({ postId: ObjectId(postId) })
+        .find({ postId: new ObjectId(postId) })
         .sort({ _id: -1 })
         .toArray();
     } else if (sorting === "oldest") {
       commentList = await commentCollection
-        .find({ postId: ObjectId(postId) })
+        .find({ postId: new ObjectId(postId) })
         .sort({ _id: 1 })
         .toArray();
     } else {
@@ -81,8 +88,13 @@ const exportedMethods = {
     });
 
     if (!deletionInfo) throw `Could not delete comment with id of ${id}`;
-    await userData.userArrayAlter(userId, newInsertInformation.insertedId, "comments", false)
-    await postData.postComment(postId, newInsertInformation.insertedId, false)
+    await userData.userArrayAlter(
+      userId,
+      newInsertInformation.insertedId,
+      "comments",
+      false
+    );
+    await postData.postComment(postId, newInsertInformation.insertedId, false);
     return { ...deletionInfo, deleted: true };
   },
 

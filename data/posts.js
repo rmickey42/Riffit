@@ -26,33 +26,48 @@ const exportedMethods = {
     return post;
   },
 
-  async getPostsByTags(tags_lst, sorting = "newest") {
+  async getPostsByTags(tags_lst, page, sorting = "newest") {
     tags_lst = validation.checkStringArray(tags_lst, "Tags");
+    console.log("working")
+    page = validation.checkNum(page, "page");
+
 
     const postCollection = await posts();
     let postList = [];
     if (sorting === "newest") {
-      postlist = await postCollection
+      postList = await postCollection
         .find({ tags: { $in: tags_lst } })
         .sort({ _id: -1 })
+        .skip(page * 10)
+        .limit(10)
         .toArray();
     } else if (sorting === "oldest") {
       postList = await postCollection
         .find({ tags: { $in: tags_lst } })
         .sort({ _id: 1 })
+        .skip(page * 10)
+        .limit(10)
         .toArray();
     } else if (sorting === "most_popular") {
       postList = await postCollection
         .find({ tags: { $in: tags_lst } })
         .sort({ rating: -1 })
+        .skip(page * 10)
+        .limit(10)
         .toArray();
     } else if (sorting === "least_popular") {
       postList = await postCollection
         .find({ tags: { $in: tags_lst } })
         .sort({ rating: 1 })
+        .skip(page * 10)
+        .limit(10)
         .toArray();
     } else {
       throw "Invalid sorting method";
+    }
+
+    if (postList.length === 0) {
+      throw `Page number ${page} is invalid`;
     }
 
     postList.forEach((post) => {
@@ -61,32 +76,45 @@ const exportedMethods = {
     return postList;
   },
 
-  async getPostsByUserId(userId, sorting = "newest") {
+  async getPostsByUserId(userId, page, sorting = "newest") {
     userId = validation.checkId(userId, "User ID");
+    page = validation.checkNum(page, "page");
     let postList = [];
     const postCollection = await posts();
     if (sorting === "newest") {
       postList = await postCollection
         .find({ userId: userId })
         .sort({ _id: -1 })
+        .skip(page * 10)
+        .limit(10)
         .toArray();
     } else if (sorting === "oldest") {
       postList = await postCollection
         .find({ userId: userId })
         .sort({ _id: 1 })
+        .skip(page * 10)
+        .limit(10)
         .toArray();
     } else if (sorting === "most_popular") {
       postList = await postCollection
         .find({ userId: userId })
         .sort({ rating: -1 })
+        .skip(page * 10)
+        .limit(10)
         .toArray();
     } else if (sorting === "least_popular") {
       postList = await postCollection
         .find({ userId: userId })
         .sort({ rating: 1 })
+        .skip(page * 10)
+        .limit(10)
         .toArray();
     } else {
       throw "Invalid sorting method";
+    }
+
+    if (postList.length() === 0) {
+      throw `Page number ${page} is invalid`;
     }
 
     postList.forEach((post) => {
@@ -94,20 +122,6 @@ const exportedMethods = {
     });
     return postList;
   },
-
-  async getPostsByPostId(postList) {
-    postList = validation.checkRefId(postList, "List of Posts")
-    let posts = [];
-
-
-    postList.forEach((post) => {
-      
-      post._id = post._id.toString();
-    });
-    return postList;
-  },
-
-
 
   async addPost(title, userId, content, notation, key, instrument, tags) {
     title = validation.checkString(title, "Title");
@@ -217,7 +231,7 @@ const exportedMethods = {
       );
     }
 
-    console.log(updatedPostData);
+
     const postCollection = await posts();
     const updatePost = await postCollection.findOneAndUpdate(
       { _id: new ObjectId(id) },
@@ -230,20 +244,22 @@ const exportedMethods = {
     return updatePost;
   },
 
+
   //DO NOT USE IMMEDIATELY, USE ADD COMMENT INSTEAD
   async postComment(id, arrayId, add = true) {
     id = validation.checkId(id, "Post Id");
     arrayId = validation.checkId(arrayId, "User Id");
 
+    let updatePost;
     const postCollection = await posts();
     if (add) {
-      const updatePost = await postCollection.findOneAndUpdate(
+      updatePost = await postCollection.findOneAndUpdate(
         { _id: new ObjectId(id) },
         { $addToSet: { comments: arrayId } },
         { returnDocument: "after" }
       );
     } else {
-      const updatePost = await postCollection.findOneAndUpdate(
+      updatePost = await postCollection.findOneAndUpdate(
         { _id: new ObjectId(id) },
         { $pull: { comments: arrayId } },
         { returnDocument: "after" }
