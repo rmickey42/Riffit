@@ -199,17 +199,25 @@ router
         }
       }
 
-      if (instruments) {
-        instruments = validation.checkStringArray(
-          instruments.split(","),
-          "Instruments"
-        );
-        userInfo.instruments = instruments;
+      if (instruments !== undefined) {
+        if (instruments.trim() === "") {
+          userInfo.instruments = [];
+        } else {
+          instruments = validation.checkStringArray(
+            instruments.split(","),
+            "Instruments"
+          );
+          userInfo.instruments = instruments;
+        }
       }
 
-      if (genres) {
-        genres = validation.checkStringArray(genres.split(","), "Genres");
-        userInfo.genres = genres;
+      if (genres !== undefined) {
+        if (genres.trim() === "") {
+          userInfo.genres = [];
+        } else {
+          genres = validation.checkStringArray(genres.split(","), "Genres");
+          userInfo.genres = genres;
+        }
       }
 
       let updatedUser = await userData.updateUser(id, userInfo);
