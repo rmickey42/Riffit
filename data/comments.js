@@ -5,36 +5,44 @@ import validation from "../validation.js";
 import  postData from "./posts.js";
 
 const exportedMethods = {
+  async getCommentById(id) {
+    id = validation.checkId(id, "Comment ID");
+    
+    const commentCollection = await comments();
+    const comment = await commentCollection.findOne({ _id: new ObjectId(id) });
+    if (!comment) throw "Comment not found";
+    comment._id = comment._id.toString();
+    return comment;
+  },
+
   async addComment(content, userId, postId) {
     content = validation.checkString(content, "Content");
     userId = validation.checkId(userId, "User ID");
     postId = validation.checkId(postId, "Post ID");
+    const user = await userData.getUserById(userId);
+    const post = await postData.getPostById(postId);
+    const username = user.username;
 
     const commentCollection = await comments();
 
     const comment = {
       content,
       date: new Date(),
+      username,
       userId,
       postId,
     };
 
     const newInsertInformation = await commentCollection.insertOne(comment);
     if (!newInsertInformation.insertedId) throw "Could not add comment";
-    await userData.userArrayAlter(userId, newInsertInformation.insertedId, "comments")
-    await postData.postComment(postId, newInsertInformation.insertedId)
-    return await this.getCommentById(
-      newInsertInformation.insertedId.toString()
-    );
-  },
+    const commentId = newInsertInformation.insertedId.toString();
 
-  async getCommentById(id) {
-    id = validation.checkId(id, "Comment ID");
-    const commentCollection = await comments();
-    const comment = await commentCollection.findOne({ _id: ObjectId(id) });
-    if (!comment) throw "Comment not found";
-    comment._id = comment._id.toString();
-    return comment;
+    await postData.postComment(postId, commentId)
+    await userData.userArrayAlter(userId, commentId, "comments")  
+
+    return await this.getCommentById(
+      commentId
+    );
   },
 
   async getAllComments() {
@@ -54,12 +62,12 @@ const exportedMethods = {
     const commentCollection = await comments();
     if (sorting === "newest") {
       commentList = await commentCollection
-        .find({ postId: ObjectId(postId) })
+        .find({ postId: postId })
         .sort({ _id: -1 })
         .toArray();
     } else if (sorting === "oldest") {
       commentList = await commentCollection
-        .find({ postId: ObjectId(postId) })
+        .find({ postId: postId })
         .sort({ _id: 1 })
         .toArray();
     } else {

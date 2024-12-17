@@ -194,7 +194,8 @@ nav a:hover {
 
 #like_button,
 #dislike_button,
-#favorite_button {
+#favorite_button,
+#show_comments_button {
     width: 24px;
     height: 24px;
     cursor: pointer;

@@ -236,14 +236,15 @@ const exportedMethods = {
     arrayId = validation.checkId(arrayId, "User Id");
 
     const postCollection = await posts();
+    let updatePost;
     if (add) {
-      const updatePost = await postCollection.findOneAndUpdate(
+      updatePost = await postCollection.findOneAndUpdate(
         { _id: new ObjectId(id) },
         { $addToSet: { comments: arrayId } },
         { returnDocument: "after" }
       );
     } else {
-      const updatePost = await postCollection.findOneAndUpdate(
+      updatePost = await postCollection.findOneAndUpdate(
         { _id: new ObjectId(id) },
         { $pull: { comments: arrayId } },
         { returnDocument: "after" }
