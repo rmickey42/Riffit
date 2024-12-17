@@ -84,7 +84,7 @@ router
     try {
       if (not_found.length)
         throw `Must supply additional fields [${not_found.join(", ")}]`;
-      // validation.checkUserName(clean_data.username);
+      // validation.checkUsername(clean_data.username);
       // validation.checkPassword(clean_data.password);
       let signInAttempt = await users.signInUser(
         clean_data.username,
