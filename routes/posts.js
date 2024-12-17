@@ -24,7 +24,6 @@ router
         return res.render("search", { session: req.session.user,  Title: "Search", posts: posts });
       }
     } catch (e) {
-      console.dir(e)
       return res.status(500).render("search", { session: req.session.user,  Title: "Search", error: "Internal Server Error" });
     }
   });
