@@ -22,9 +22,9 @@
 
     <section class="posts">
         <h2>Posts</h2>
-        {{#if posts.length}}
+        {{#if user.posts.length}}
         <ul>
-            {{#each posts}}
+            {{#each user.posts}}
             <li>
                 {{> post post=this session=../session profileOwner=../profileOwner}}
             </li>

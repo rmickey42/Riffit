@@ -10,7 +10,7 @@ const exportedMethods = {
         const audioCollection = await audio();
         const audioData = await audioCollection.findOne({ _id: new ObjectId(id) });
         if (!audioData) throw "Error: Audio not found";
-        
+
         return audioData.content.buffer;
     },
 
@@ -35,7 +35,7 @@ const exportedMethods = {
         if (newInsertInformation.insertedCount === 0) {
             throw 500;
         }
-        return newId.toString();
+        return newId;
     },
 
     async removeAudio(id) {

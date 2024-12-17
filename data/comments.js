@@ -96,8 +96,8 @@ const exportedMethods = {
     return commentList;
   },
 
-  async removeComment(id) {
-    id = validation.checkId(id, "Comment ID");
+    async removeComment(id) {
+        id = validation.checkId(id, 'Comment ID');
 
     const commentCollection = await comments();
     const deletionInfo = await commentCollection.findOneAndDelete({
@@ -117,21 +117,20 @@ const exportedMethods = {
     return { ...deletionInfo, deleted: true };
   },
 
-  async updateComment(id, content) {
-    id = validation.checkId(id, "Comment ID");
-    content = validation.checkString(content, "Content");
+    async updateComment(id, content) {
+        id = validation.checkId(id, 'Comment ID');
+        content = validation.checkString(content, 'Content');
 
-    const commentCollection = await comments();
-    const updateComment = await commentCollection.findOneAndUpdate(
-      { _id: new ObjectId(id) },
-      { $set: { content: content } },
-      { returnDocument: "after" }
-    );
+        const commentCollection = await comments();
+        const updateInfo = await commentCollection.findOneAndUpdate(
+            {_id: new ObjectId(id)},
+            {$set: {content: content}},
+            {returnDocument: 'after'}
+        );
 
-    if (!updateComment) throw `Could not update comment with id ${id}`;
-    updateComment._id = updateComment._id.toString();
-    return updateComment;
-  },
+        if (!updateInfo) throw `Could not update comment with id ${id}`;
+        return updateInfo;
+    }
 };
 
 export default exportedMethods;

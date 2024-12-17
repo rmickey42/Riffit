@@ -168,7 +168,7 @@ const exportedMethods = {
     id = validation.checkId(id, "Post ID");
 
     const post = await this.getPostById(id);
-    // await audioData.removeAudio(post.content);
+    await audioData.removeAudio(post.content);
 
     const postCollection = await posts();
     const deletionInfo = await postCollection.findOneAndDelete({

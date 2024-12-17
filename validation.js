@@ -1,11 +1,6 @@
 import { ObjectId } from "mongodb";
-import path from "path";
-import fs from "fs";
-import { fileURLToPath } from "url";
 
 const MAX_PFP_SIZE = 1000000; // 1 MB
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 const exportedMethods = {
   checkString(str, valName) {
@@ -69,15 +64,19 @@ const exportedMethods = {
     });
   },
 
-  checkUsername(str, refName) {
+  checkUserName(str, refName) {
     // Usernames can only contain letters and numbers
     str = this.checkString(str, refName);
     if (!refName) throw `No name for ${str}`;
     if (/[^a-zA-Z\d]/.test(str))
       throw `${refName} must only contain letters and numbers`;
-    if (str.length < 4 && str.length > 15)
+    if (trimmed.length < 4 && trimmed.length > 15)
       throw `${refName} must be between 4 and 15 characters`;
-    return str.toLocaleLowerCase();
+
+    // for(let i in trimmed){
+    //   if(!alpha_numer.includes(trimmed[i].toLowerCase())) throw `${refName || str} contains invalid character ${trimmed[i]}`;
+    // }
+    return trimmed.toLocaleLowerCase();
   },
 
   checkPassword(str, refName) {
@@ -87,20 +86,21 @@ const exportedMethods = {
     let capital_count = 0,
       symbol_count = 0,
       number_count = 0;
-    for (let i in str) {
-      let char = str[i].toLowerCase();
-      if (char != str[i]) capital_count++;
+    for (let i in trimmed) {
+      let char = trimmed[i].toLowerCase();
+      if (char != trimmed[i]) capital_count++;
       else if (numbers.includes(char)) number_count++;
       else if (good_symbols.includes(char)) symbol_count++;
       else if (!alphabet.includes(char))
         throw `Passwords cannot contain the symbol '${char}'`;
     }
+
     if (capital_count < 1)
       throw `Passwords must contain at least 1 capital letter`;
     if (symbol_count < 1) throw `Passwords must contain at least 1 symbol`;
     if (number_count < 1) throw `Passwords must contain at least 1 number`;
 
-    return str;
+    return trimmed;
   },
 
   checkProfilePicture(file) {
@@ -115,9 +115,7 @@ const exportedMethods = {
     }
 
     return file.buffer;
-  },
-
-  MAX_PFP_SIZE: MAX_PFP_SIZE,
+  }
 };
 
 let alphabet = "qwertyuiopasdfghjklzxcvbnm";

@@ -20,6 +20,9 @@ E|---------------------------------------------------------------|</textarea>
         <label for="instrument">Instrument:</label>
         <input type="text" id="instrument" name="instrument" required>
         
+        <label for="tags">Tags (comma separated):</label>
+        <input type="text" id="tags" name="tags" required>
+        
         <label for="audio">Upload Audio File:</label>
         <input type="file" id="audio" name="audio" accept="audio/mpeg" required>
 
@@ -39,5 +42,7 @@ E|---------------------------------------------------------------|</textarea>
     <p class="error">{{error}}</p>  
     
     {{/if}}
+
+    <a href="/login"><p>Already have an account? Click here to sign in</p></a>
 </main>
 
