@@ -203,15 +203,18 @@ nav a:hover {
 }
 
 #like_button.clicked {
-    filter: rgb(0, 255, 0);
+    width: 36px;
+    height: 36px;
 }
 
 #dislike_button.clicked {
-    filter: rgb(255, 0, 0);
+    width: 36px;
+    height: 36px;
 }
 
 #favorite_button.clicked {
-    filter: rgb(255, 0, 0);
+    width: 36px;
+    height: 36px;
 }
 
 #notation {
