@@ -2,8 +2,8 @@ import { users } from "../config/mongoCollections.js";
 import { ObjectId } from "mongodb";
 import bcrypt from "bcrypt";
 import validation from "../validation.js";
-import  postData from "./posts.js";
-import commentData from "./comments.js"
+import postData from "./posts.js";
+import commentData from "./comments.js";
 
 const BCRYPT_SALT = 11;
 
@@ -95,8 +95,8 @@ const exportedMethods = {
       _id: new ObjectId(id),
     });
     if (!deletionInfo) throw `Error: Could not delete user with id of ${id}`;
-    deletionInfo.posts.forEach(element => {
-      postData.removePost(element)
+    deletionInfo.posts.forEach((element) => {
+      postData.removePost(element);
     });
     return { ...deletionInfo, deleted: true };
   },
@@ -154,23 +154,24 @@ const exportedMethods = {
         userInfo.password,
         "password"
       );
-    if (userInfo.bio !== undefined)
-      updatedUserData.bio = validation.checkString(userInfo.bio, "Bio");
+    if (userInfo.bio !== undefined) {
+      updatedUserData.bio = validation.checkStrType(userInfo.bio, "Bio");
+    }
     if (userInfo.dailyStreak)
       updatedUserData.dailyStreak = validation.checkNum(
         userInfo.dailyStreak,
         "daily streak"
       );
-      if (userInfo.picture) {
-        if (userInfo.picture === "DELETE") {
-          updatedUserData.picture = DEFAULT_PFP;
-        } else {
-          updatedUserData.picture = validation.checkProfilePicture(
-            userInfo.picture
-          );
-        }
+    if (userInfo.picture) {
+      if (userInfo.picture === "DELETE") {
+        updatedUserData.picture = DEFAULT_PFP;
+      } else {
+        updatedUserData.picture = validation.checkProfilePicture(
+          userInfo.picture
+        );
       }
-  
+    }
+
     if (userInfo.instruments)
       updatedUserData.instruments = validation.checkStringArray(
         userInfo.instruments,
@@ -230,7 +231,6 @@ const exportedMethods = {
     arrayId = validation.checkId(arrayId, "User Id");
     param = validation.checkString(param, "Type");
 
-    
     const type = [
       "comments",
       "posts",
@@ -251,8 +251,7 @@ const exportedMethods = {
         { $addToSet: { [param]: arrayId } },
         { returnDocument: "after" }
       );
-    }
-    else {
+    } else {
       updateUser = await userCollection.findOneAndUpdate(
         { _id: new ObjectId(id) },
         { $pull: { [param]: arrayId } },
@@ -266,7 +265,6 @@ const exportedMethods = {
     updateUser._id = updateUser._id.toString();
     return updateUser;
   },
-  
 };
 
 export default exportedMethods;
