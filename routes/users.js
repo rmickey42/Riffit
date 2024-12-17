@@ -6,7 +6,7 @@ import validation from "../validation.js";
 import multer from "multer";
 
 router
-  .route("/me") //working
+  .route("/me")
   .get(async (req, res) => {
     if (req.session.user) {
       let id = req.session.user._id;
@@ -17,7 +17,7 @@ router
   });
 
 router
-  .route("/:userId") //working
+  .route("/:userId")
   .get(async (req, res) => {
     try {
       let id = validation.checkId(req.params.userId, "User Id");
@@ -29,7 +29,7 @@ router
         user: user,
         Title: user.username,
         profileOwner: profileOwner,
-        posts: posts,
+        posts: posts
       });
     } catch (e) {
       console.log(e)
@@ -39,7 +39,7 @@ router
         linkDesc: "Return to the homepage",
         errorName: "404 Not Found",
         errorDesc: "This page doesn't exist!",
-        Title: "404 Not Found",
+        Title: "404 Not Found"
       });
     }
   });
@@ -54,7 +54,7 @@ router.route("/:userId/comments").get(async (req, res) => {
       session: req.session.user,
       user: user,
       comments: comments,
-      Title: `${user.username}'s Comments`,
+      Title: `${user.username}'s Comments`
     });
   } catch (e) {
     return res.status(404).render("error", {
@@ -63,13 +63,13 @@ router.route("/:userId/comments").get(async (req, res) => {
       linkDesc: "Return to the homepage",
       errorName: "404 Not Found",
       errorDesc: "This page doesn't exist!",
-      Title: "404 Not Found",
+      Title: "404 Not Found"
     });
   }
 });
 
 router
-  .route("/:userId/likes") //working
+  .route("/:userId/likes")
   .get(async (req, res) => {
     try {
       let id = req.params.userId;
@@ -93,7 +93,7 @@ router
   });
 
 router
-  .route("/:userId/dislikes") //working
+  .route("/:userId/dislikes")
   .get(async (req, res) => {
     try {
       let id = req.params.userId;
@@ -117,7 +117,7 @@ router
   });
 
 router
-  .route("/:userId/favorites") //working
+  .route("/:userId/favorites")
   .get(async (req, res) => {
     try {
       let id = req.params.userId;
@@ -145,7 +145,6 @@ const upload = multer();
 router
   .route("/:userId/edit")
   .get(async (req, res) => {
-    console.log("ping")
     try {
       let id = validation.checkId(req.params.userId, "User Id");
       const user = await userData.getUserById(id);
@@ -154,10 +153,9 @@ router
         session: req.session.user,
         user: user,
         Title: "Edit Profile",
-        defaultPic: defaultPic,
+        defaultPic: defaultPic
       });
     } catch (e) {
-      console.log(e)
       return res.status(404).render("error", {
         session: req.session.user,
         linkRoute: "/",
@@ -194,7 +192,7 @@ router
         if (bio.trim() === "") {
           userInfo.bio = "";
         } else {
-          bio = validation.checkString(bio, "Bio");
+          bio = validation.checkStrType(bio, "Bio");
           userInfo.bio = bio;
         }
       }
@@ -227,7 +225,7 @@ router
     } catch (e) {
       return res
         .status(400)
-        .render("user_edit", { error: e, Title: "Edit Profile" });
+        .render("user_edit", { error: e, Title: "Edit Profile", session: req.session.user});
     }
   });
 
