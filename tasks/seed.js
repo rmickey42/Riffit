@@ -12,21 +12,42 @@ const main = async () => {
   const user2 = await userData.addUser("janeDoe", "Password123!");
 
   // add audio
-  const audioPath = path.resolve('public/riff1.mp3');
-  const audioBuffer = fs.readFileSync(audioPath);
-  const audioId1 = await audioData.addAudioDirect(audioBuffer);
+  const audioId1 = await audioData.addAudioDirect(fs.readFileSync(path.resolve('public/riff1.mp3')));
+  const audioId2 = await audioData.addAudioDirect(fs.readFileSync(path.resolve('public/riff2.mp3')));
+  const audioId3 = await audioData.addAudioDirect(fs.readFileSync(path.resolve('public/riff3.mp3')));
+
 
   const blank_tab = "e|---------------------------------------------------------------|\nB|---------------------------------------------------------------|\nG|---------------------------------------------------------------|\nD|---------------------------------------------------------------|\nA|---------------------------------------------------------------|\nE|---------------------------------------------------------------|";
 
   // Create posts
   const post1 = await postData.addPost(
-    "First Riff",
+    "Bluesy Solo Lick",
     user1._id,
     audioId1,
     blank_tab,
     "A minor",
     "Guitar",
-    ["rock", "blues"]
+    ["rock", "blues", "solo", "slow"]
+  );
+
+  const post2 = await postData.addPost(
+    "Alternative Rock Riff",
+    user2._id,
+    audioId2,
+    blank_tab,
+    "E major",
+    "Guitar",
+    ["rock", "alternative", "riff", "fast"]
+  );
+
+  const post3 = await postData.addPost(
+    "Indie Riff",
+    user1._id,
+    audioId3,
+    blank_tab,
+    "F# minor",
+    "Guitar",
+    ["indie", "riff", "fast", "fun"]
   );
 
   // Create comments
@@ -34,6 +55,12 @@ const main = async () => {
     "Great post!",
     user2._id,
     post1._id
+  );
+
+  const comment2 = await commentData.addComment(
+    "I love this riff!",
+    user1._id,
+    post2._id
   );
 
   console.log("Database seeded successfully");
