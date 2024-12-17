@@ -10,12 +10,14 @@ const main = async () => {
   // Create users
   const user1 = await userData.addUser("johnDoe", "Password123!");
   const user2 = await userData.addUser("janeDoe", "Password123!");
+  const user3 = await userData.addUser("trumpet_god", "iloveTrumpet42?");
+  const user4 = await userData.addUser("bass_master", "BassGuitar321!");
 
   // add audio
   const audioId1 = await audioData.addAudioDirect(fs.readFileSync(path.resolve('public/riff1.mp3')));
   const audioId2 = await audioData.addAudioDirect(fs.readFileSync(path.resolve('public/riff2.mp3')));
   const audioId3 = await audioData.addAudioDirect(fs.readFileSync(path.resolve('public/riff3.mp3')));
-
+  const audioId4 = await audioData.addAudioDirect(fs.readFileSync(path.resolve('public/riff4.mp3')));
 
   const blank_tab = "e|---------------------------------------------------------------|\nB|---------------------------------------------------------------|\nG|---------------------------------------------------------------|\nD|---------------------------------------------------------------|\nA|---------------------------------------------------------------|\nE|---------------------------------------------------------------|";
 
@@ -50,6 +52,16 @@ const main = async () => {
     ["indie", "riff", "fast", "fun"]
   );
 
+  const post4 = await postData.addPost(
+    "Slow Trumpet Jazz",
+    user3._id,
+    audioId4,
+    "N/A",
+    "C major",
+    "Trumpet",
+    ["jazz", "slow", "trumpet"]
+  );
+
   // Create comments
   const comment1 = await commentData.addComment(
     "Great post!",
@@ -61,6 +73,24 @@ const main = async () => {
     "I love this riff!",
     user1._id,
     post2._id
+  );
+
+  const comment3 = await commentData.addComment(
+    "Would love to play this on trumpet......",
+    user3._id,
+    post3._id
+  );
+
+  const comment4 = await commentData.addComment(
+    "I could do a great bassline under this!",
+    user4._id,
+    post2._id
+  );
+
+  const comment5 = await commentData.addComment(
+    "Awesome playing",
+    user1._id,
+    post4._id
   );
 
   console.log("Database seeded successfully");
