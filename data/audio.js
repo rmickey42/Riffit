@@ -38,6 +38,24 @@ const exportedMethods = {
         return newId.toString();
     },
 
+    async addAudioDirect(buffer) {
+        if (!buffer) {
+            throw "No audio buffer provided";
+        }
+
+        const audioCollection = await audio();
+        const newAudio = {
+            content: buffer,
+        };
+
+        const newInsertInformation = await audioCollection.insertOne(newAudio);
+        const newId = newInsertInformation.insertedId;
+        if (newInsertInformation.insertedCount === 0) {
+            throw 500;
+        }
+        return newId.toString();
+    },
+
     async removeAudio(id) {
         id = validation.checkId(id, "Audio ID");
 
