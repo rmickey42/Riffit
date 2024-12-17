@@ -210,10 +210,12 @@ nav a:hover {
     overflow: hidden;
     border-radius: 5px;
     border-width: 0px;
+    filter:grayscale(1);
 }
 
 .clicked {
-    background-color: orange;
+    background-color: rgb(59 136 195);
+    filter:grayscale(0);
 }
 
 .notation {
