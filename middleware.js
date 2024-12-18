@@ -98,14 +98,7 @@ const constructorMethod = (app) => {
   const handlebars = exphbs.create({
     defaultLayout: "main",
     layoutsDir: "./views/layouts",
-    partialsDir: "./views/partials",
-    helpers: {
-      inList (options) { 
-        const { list, value } = options.hash;
-        if(list.includes(value)) return options.fn(this);
-        else return "";
-      }
-    }
+    partialsDir: "./views/partials"
   });
   app.engine(
     "handlebars",
@@ -115,6 +108,15 @@ const constructorMethod = (app) => {
         splitNotation (notation){
           if(!notation) return "";
           return notation.split("\n").map((s)=>s.trim())
+        },
+        inList (options) { 
+          try{
+            const { list, value } = options.hash;
+            if(list.includes(value)) return options.fn(this);
+            else return "";
+          } catch (e){
+            return "";
+          }
         }
       },
     })
