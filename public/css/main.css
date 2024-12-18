@@ -1,6 +1,8 @@
 /* anything */
 
-.error-message, #error, .error{
+.error-message,
+#error,
+.error {
     color: red;
 }
 
@@ -20,8 +22,33 @@ main {
     border-radius: 8px;
 }
 
-h1, h2, h3 {
+h1,
+h2,
+h3 {
     color: #333;
+}
+
+#logo {
+    font-size: 24px;
+    font-weight: bold;
+    color: white;
+   
+   
+    text-align: left;
+    margin-right: auto;
+    padding-left: 10%;
+   
+}
+
+#logo a {
+    text-decoration: none;
+    color: white;
+   
+}
+
+#logo a:hover {
+    text-decoration: none;
+   
 }
 
 p {
@@ -192,10 +219,14 @@ nav a {
     color: #fff;
     text-decoration: none;
     font-size: 16px;
+    transition: all 0.3s ease;
 }
 
 nav a:hover {
-    text-decoration: underline;
+    color: white;
+    text-decoration: none;
+    border: 2px solid blue;
+    background-color: blue;
 }
 
 .like_button,
@@ -211,12 +242,12 @@ nav a:hover {
     overflow: hidden;
     border-radius: 5px;
     border-width: 0px;
-    filter:grayscale(1);
+    filter: grayscale(1);
 }
 
 .clicked {
     background-color: rgb(59 136 195);
-    filter:grayscale(0);
+    filter: grayscale(0);
 }
 
 .notation {
@@ -234,13 +265,13 @@ nav a:hover {
     flex-direction: row;
 }
 
-.comment_writing_zone{
-    display:flex;
+.comment_writing_zone {
+    display: flex;
     align-items: center;
     justify-content: center;
 }
 
 .comment_content {
-    margin-bottom:0px;
+    margin-bottom: 0px;
     margin-right: 25px;
 }
