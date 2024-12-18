@@ -13,6 +13,25 @@ let signUpForm = $("#signup-form");
 
 let searchForm = $("#search-form");
 
+let togglePasswordInput = $("#togglePassword");
+let toggleConfirmPasswordInput = $("#toggleConfirmPassword");
+
+togglePasswordInput.click(function () {
+  if (passwordInput.attr("type") === "password") {
+    passwordInput.attr("type", "text");
+  } else {
+    passwordInput.attr("type", "password");
+  }
+});
+
+toggleConfirmPasswordInput.click(function () {
+  if (confirmPasswordInput.attr("type") === "password") {
+    confirmPasswordInput.attr("type", "text");
+  } else {
+    confirmPasswordInput.attr("type", "password");
+  }
+});
+
 signInForm.submit(function (event) {
   let username, password;
   try {

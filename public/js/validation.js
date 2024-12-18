@@ -87,6 +87,12 @@
 
       return str;
     },
+
+    checkConfirmedPassword(password, confirmedPassword){
+      confirmedPassword = this.checkPassword(confirmedPassword, "Confirmed Password")
+      if (password !== confirmedPassword) throw `Password and Confirmed Password must match!`
+      return confirmedPassword;
+    }
   };
 
   let alphabet = "qwertyuiopasdfghjklzxcvbnm";

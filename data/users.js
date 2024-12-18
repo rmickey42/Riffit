@@ -150,11 +150,50 @@ const exportedMethods = {
         userInfo.username,
         "username"
       );
-    if (userInfo.password)
-      updatedUserData.password = validation.checkString(
-        userInfo.password,
-        "password"
+
+    if (
+      userInfo.currentPassword ||
+      userInfo.newPassword ||
+      userInfo.confirmPassword
+    ) {
+      if (!userInfo.newPassword || !userInfo.confirmPassword || !userInfo.currentPassword) {
+        throw "All password fields must be provided.";
+      }
+
+      const currentUser = await this.getUserById(id, true);
+
+      const isCurrentPasswordValid = await bcrypt.compare(
+        //checks if user current password entered is correct
+        userInfo.currentPassword,
+        currentUser.password
       );
+
+      if (!isCurrentPasswordValid) {
+        throw "Current password is incorrect.";
+      }
+
+      if (userInfo.newPassword !== userInfo.confirmPassword) {
+        throw "New password and confirmed password do not match.";
+      }
+
+      const isNewPasswordSameAsCurrent = await bcrypt.compare(
+        //checks if user new password mathces current
+        userInfo.newPassword,
+        currentUser.password
+      );
+      if (isNewPasswordSameAsCurrent) {
+        throw "New password must be different from the current password.";
+      }
+      const validatedPassword = validation.checkPassword(
+        userInfo.newPassword,
+        "New Password"
+      );
+      updatedUserData.password = await bcrypt.hash(
+        validatedPassword,
+        BCRYPT_SALT
+      );
+    }
+
     if (userInfo.bio !== undefined) {
       updatedUserData.bio = validation.checkStrType(userInfo.bio, "Bio");
     }
@@ -168,7 +207,9 @@ const exportedMethods = {
         updatedUserData.picture = DEFAULT_PFP;
         updatedUserData.pictureType = "image/jpeg";
       } else {
-        updatedUserData.picture = validation.checkProfilePicture(userInfo.picture);
+        updatedUserData.picture = validation.checkProfilePicture(
+          userInfo.picture
+        );
         updatedUserData.pictureType = userInfo.picture.mimetype;
       }
     }

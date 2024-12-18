@@ -2,14 +2,19 @@
 <main>
     <h1>Create An Account</h1>
     <form action="/signup" method="post" id="signup-form">
-        <label for="username">Username:</label>
+        <label for="username">Username:
         <input type="text" id="username" name="username">
+        </label>
 
-        <label for="password">Password:</label>
+        <label for="password">Password:
         <input type="password" id="password" name="password">
+        <input type="checkbox" id="togglePassword"> Show Password
+        </label>
 
-        <label for="confirmPassword">Confirm Password:</label>
+        <label for="confirmPassword">Confirm Password:
         <input type="password" id="confirmPassword" name="confirmPassword">
+        <input type="checkbox" id="toggleConfirmPassword"> Show Password
+        </label>
 
         
         <input type="submit" name="submit_button" id="submit_button" value = "Sign Up">

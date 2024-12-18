@@ -5,9 +5,8 @@
 
     <section class="profile">
         <form action="/users/{{user._id}}/edit" method="POST" id="edit-profile-form" enctype="multipart/form-data">
-            <img src="/users/{{user._id}}/picture" 
-            alt="{{#if (equals user.picture "/public/img/defaultPfp.jpeg")}}No profile picture{{else}}{{user.username}}'s profile picture{{/if}}"
-            class="profile-picture">
+            <img src="/users/{{user._id}}/picture" alt="{{#if (equals user.picture " /public/img/defaultPfp.jpeg")}}No
+                profile picture{{else}}{{user.username}}'s profile picture{{/if}}" class="profile-picture">
 
             <label for="bio">Bio:
                 <textarea id="bio" name="bio">{{user.bio}}</textarea>
@@ -27,11 +26,29 @@
                 <input type="file" id="profilePicture" name="profilePicture">
             </label>
 
-             {{#unless (equals user.picture defaultPic)}}
+            {{#unless (equals user.picture defaultPic)}}
             <label for="deletePicture">Delete Profile Picture
                 <input type="checkbox" name="deletePicture" id="deletePicture" value="true">
             </label>
             {{/unless}}
+
+            <h2>Change Password</h2>
+
+            <div class="error-message"></div>
+
+            <label for="currentPassword"> Current Password:
+                <input type="password" id="currentPassword" name="currentPassword">
+                <input type="checkbox" id="toggleCurrentPassword"> Show Password
+            </label>
+            <label for="newPassword">New Password:
+                <input type="password" id="newPassword" name="newPassword">
+                <input type="checkbox" id="toggleNewPassword"> Show Password
+            </label>
+            <label for="confirmPassword">Confirm New Password:
+                <input type="password" id="confirmNewPassword" name="confirmPassword">
+                <input type="checkbox" id="toggleConfirmNewPassword"> Show Password
+            </label>
+
 
 
             <input type="submit" value="Save Changes" id="edit_profile_button">

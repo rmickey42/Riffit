@@ -104,6 +104,12 @@ const exportedMethods = {
     return str;
   },
 
+  checkConfirmedPassword(password, confirmedPassword){
+    confirmedPassword = this.checkPassword(confirmedPassword, "Confirmed Password")
+    if (password !== confirmedPassword) throw `Password and Confirmed Password must match!`
+    return confirmedPassword;
+  },
+
   checkProfilePicture(file) {
     const allowedFileTypes = ["image/jpeg", "image/png"]
     if (!file) {
