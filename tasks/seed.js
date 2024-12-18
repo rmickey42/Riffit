@@ -155,6 +155,24 @@ const main = async () => {
     post6._id
   );
 
+  // Add likes
+  await postData.postLike(post1._id, user2._id);
+  await postData.postLike(post2._id, user1._id);
+  await postData.postLike(post3._id, user3._id);
+  await postData.postLike(post4._id, user4._id);
+
+  // Add dislikes
+  await postData.postDislike(post5._id, user1._id);
+  await postData.postDislike(post6._id, user2._id);
+  await postData.postDislike(post7._id, user3._id);
+  await postData.postDislike(post8._id, user4._id);
+
+  // Add favorites
+  await postData.postFavorite(post1._id, user1._id);
+  await postData.postFavorite(post2._id, user2._id);
+  await postData.postFavorite(post3._id, user3._id);
+  await postData.postFavorite(post4._id, user4._id);
+
   console.log("Database seeded successfully");
   await closeConnection();
 };

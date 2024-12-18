@@ -20,15 +20,17 @@
 
 {{#if session}}
     <div class="post_controls">
-        <img src="/public/img/like.png" alt="Like" id="like_button-{{post._id}}" class="like_button" onclick="likePost('{{post._id}}')"
+        <img src="/public/img/like.png" title="Like" alt="Like" id="like_button-{{post._id}}" class="like_button" onclick="likePost('{{post._id}}')"
              />
-        <p id="rating-{{post._id}}" class="rating">{{post.rating}}</p>
-        <img src="/public/img/dislike.png" alt="Dislike" id="dislike_button-{{post._id}}" class="dislike_button" onclick="dislikePost('{{post._id}}')" 
+        <p title="Rating" id="rating-{{post._id}}" class="rating">{{post.rating}}</p>
+        <img src="/public/img/dislike.png" title="Dislike" alt="Dislike" id="dislike_button-{{post._id}}" class="dislike_button" onclick="dislikePost('{{post._id}}')" 
             />
         
-        <img src="/public/img/comment.png" alt="Comments" class="show_comments_button" onclick="showCommentsView('{{post._id}}', '{{session._id}}')" />
-        <img src="/public/img/favorite.png" alt="Favorite" id="favorite_button-{{post._id}}" class="favorite_button" onclick="favoritePost('{{post._id}}')" 
+        <img src="/public/img/comment.png" title="Comments" alt="Comments" class="show_comments_button" onclick="showCommentsView('{{post._id}}', '{{session._id}}')" />
+        <img src="/public/img/favorite.png" title="Favorite" alt="Favorite" id="favorite_button-{{post._id}}" class="favorite_button" onclick="favoritePost('{{post._id}}')" 
             />
+
+        <img src="/public/img/share.png" alt="Copy Share Link" class="share_button" onclick="navigator.clipboard.writeText(`${window.location.origin}/posts/{{post._id}}`); alert('Sharing link copied to clipboard')" />
     </div>
     <div id="commentsView-{{post._id}}" class="commentsView">
         <h4>Comments</h4>
