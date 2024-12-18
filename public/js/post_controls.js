@@ -1,6 +1,9 @@
+
+
 function likePost(postId) {
   const btn = $(`#like_button-${postId}`);
   const otherbtn = $(`#dislike_button-${postId}`);
+  const rating = $(`#rating-${postId}`)
   btn.toggleClass("clicked");
   if (btn.hasClass("clicked")) {
     if (otherbtn.hasClass("clicked")) {
@@ -21,7 +24,8 @@ function likePost(postId) {
       type: "POST",
       url: `/posts/${postId}/like`,
       data: {},
-      success: function () {
+      success: function (data) {
+        rating.html(data.toString());
         console.log("Post liked successfully");
       },
       error: function () {
@@ -33,7 +37,8 @@ function likePost(postId) {
       type: "POST",
       url: `/posts/${postId}/like`,
       data: { reverse: true },
-      success: function () {
+      success: function (data) {
+        rating.html(data.toString());
         console.log("Post unliked successfully");
       },
       error: function () {
@@ -46,6 +51,7 @@ function likePost(postId) {
 function dislikePost(postId) {
   const btn = $(`#dislike_button-${postId}`);
   const otherbtn = $(`#like_button-${postId}`);
+  const rating = $(`#rating-${postId}`)
   btn.toggleClass("clicked");
   if (btn.hasClass("clicked")) {
     if (otherbtn.hasClass("clicked")) {
@@ -55,19 +61,18 @@ function dislikePost(postId) {
           url: `/posts/${postId}/like`,
           data: { reverse: true },
           success: function () {
-            console.log("Post unliked successfully");
           },
           error: function () {
             alert("Failed to unlike the post");
-          }.bind(this),
+          },
         });
       }
     $.ajax({
       type: "POST",
       url: `/posts/${postId}/dislike`,
       data: {},
-      success: function () {
-        console.log("Post disliked successfully");
+      success: function (data) {
+        rating.html(data.toString());
       },
       error: function () {
         alert("Failed to dislike the post");
@@ -78,8 +83,8 @@ function dislikePost(postId) {
       type: "POST",
       url: `/posts/${postId}/dislike`,
       data: { reverse: true },
-      success: function () {
-        console.log("Post undisliked successfully");
+      success: function (data) {
+        rating.html(data.toString());
       },
       error: function () {
         alert("Failed to undislike the post");
@@ -97,7 +102,6 @@ function favoritePost(postId) {
       url: `/posts/${postId}/favorite`,
       data: {},
       success: function () {
-        console.log("Post favorited successfully");
       },
       error: function () {
         alert("Failed to favorite the post");
@@ -109,7 +113,6 @@ function favoritePost(postId) {
       url: `/posts/${postId}/favorite`,
       data: { reverse: true },
       success: function () {
-        console.log("Post unfavorited successfully");
       },
       error: function () {
         alert("Failed to unfavorite the post");

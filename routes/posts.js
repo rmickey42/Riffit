@@ -258,7 +258,7 @@ router.route("/:id/like").post(async (req, res) => {
   try {
     const post = await postData.postLike(postId, req.session.user._id, !reverse);
     req.session.user = await userData.getUserById(req.session.user._id);
-    return res.json({success: true});
+    return res.json(post.rating);
   } catch (e) {
     console.dir(e)
     return res.status(400).json({ error: e });
@@ -280,7 +280,7 @@ router.route("/:id/dislike").post(async (req, res) => {
   try {
     const post = await postData.postDislike(postId, req.session.user._id, !reverse);
     req.session.user = await userData.getUserById(req.session.user._id);
-    return res.json({success: true});
+    return res.json(post.rating);
   } catch (e) {
     return res.status(400).json({ error: e });
   }
@@ -301,7 +301,7 @@ router.route("/:id/favorite").post(async (req, res) => {
   try {
     const post = await postData.postFavorite(postId, req.session.user._id, !reverse);
     req.session.user = await userData.getUserById(req.session.user._id);
-    return res.json({success: true});
+    return res.json(post.favorites);
   } catch (e) {
     return res.status(400).json({ error: e });
   }

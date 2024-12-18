@@ -21,12 +21,14 @@
 {{#if session}}
     <div class="post_controls">
         <img src="/public/img/like.png" alt="Like" id="like_button-{{post._id}}" class="like_button" onclick="likePost('{{post._id}}')"
-            {{#inList value=post._id list=session.likedPosts}}class="clicked"{{/inList}} />
+             />
+        <p id="rating-{{post._id}}" class="rating">{{post.rating}}</p>
         <img src="/public/img/dislike.png" alt="Dislike" id="dislike_button-{{post._id}}" class="dislike_button" onclick="dislikePost('{{post._id}}')" 
-            {{#inList value=post._id list=session.dislikedPosts}}class="clicked"{{/inList}} />
-        <img src="/public/img/favorite.png" alt="Favorite" id="favorite_button-{{post._id}}" class="favorite_button" onclick="favoritePost('{{post._id}}')" 
-            {{#inList value=post._id list=session.favoritePosts}}class="clicked"{{/inList}} />
+            />
+        
         <img src="/public/img/comment.png" alt="Comments" class="show_comments_button" onclick="showCommentsView('{{post._id}}', '{{session._id}}')" />
+        <img src="/public/img/favorite.png" alt="Favorite" id="favorite_button-{{post._id}}" class="favorite_button" onclick="favoritePost('{{post._id}}')" 
+            />
     </div>
     <div id="commentsView-{{post._id}}" class="commentsView">
         <h4>Comments</h4>
@@ -49,3 +51,15 @@
         <input type="submit" class="edit_button" value="Edit">
     </form>
 {{/if}}
+
+{{#inList value=post._id list=session.likedPosts}}<script>
+    $('#like_button-{{post._id}}').addClass('clicked');
+</script>{{/inList}}
+
+{{#inList value=post._id list=session.dislikedPosts}}<script>
+    $('#dislike_button-{{post._id}}').addClass('clicked');
+</script>{{/inList}}
+
+{{#inList value=post._id list=session.favoritePosts}}<script>
+    $('#favorite_button-{{post._id}}').addClass('clicked');
+</script>{{/inList}}
