@@ -1,4 +1,4 @@
-# CS 546 Final Project
+# CS 546 Final Project: RiffIt
 
 ### Authors
 Ryan Mickey, Anthony Rizzuto, Alan Atrach, Evan Kupsch
@@ -12,6 +12,17 @@ Ryan Mickey, Anthony Rizzuto, Alan Atrach, Evan Kupsch
 
 ## Notes:
 We did not implement a game, as discussed with Prof. Hill.
+
+## Extra Features
+
+1. Added sharing links for different platforms
+2. Users have the ability to download files
+
+### Extra Features Not Mentioned In Proposal
+
+1. Users have the ability to reset profile picture and password
+
+
 
 ##
 
