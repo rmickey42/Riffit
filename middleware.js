@@ -161,11 +161,7 @@ const constructorMethod = (app) => {
 
   app.use("/", (req, res, next) => {
     if (req.path === "/") {
-      if (req.authenticationStatus === "Authenticated") {
-        return res.redirect("/users/me");
-      } else {
-        return res.redirect("/login");
-      }
+      return res.redirect("/home");
     }
     next();
   });

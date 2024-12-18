@@ -42,33 +42,37 @@ const exportedMethods = {
     tags_lst = validation.checkStringArray(tags_lst, "Tags");
     page = validation.checkNum(page, "page");
 
+    let search;
+    if (tags_lst.length > 0) search = { tags: { $all: tags_lst } }  
+    else search = {};
+
     const postCollection = await posts();
     let postList = [];
     page=page-1
     if (sorting === "newest") {
       postList = await postCollection
-        .find({ tags: { $all: tags_lst } })
+        .find(search)
         .sort({ _id: -1 })
         .skip(page * 10)
         .limit(10)
         .toArray();
     } else if (sorting === "oldest") {
       postList = await postCollection
-        .find({ tags: { $all: tags_lst } })
+        .find(search)
         .sort({ _id: 1 })
         .skip(page * 10)
         .limit(10)
         .toArray();
     } else if (sorting === "most_popular") {
       postList = await postCollection
-        .find({ tags: { $all: tags_lst } })
+        .find(search)
         .sort({ rating: -1 })
         .skip(page * 10)
         .limit(10)
         .toArray();
     } else if (sorting === "least_popular") {
       postList = await postCollection
-        .find({ tags: { $all: tags_lst } })
+        .find(search)
         .sort({ rating: 1 })
         .skip(page * 10)
         .limit(10)

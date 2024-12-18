@@ -11,13 +11,18 @@ router
   }).post(async (req, res) => {
     let tags = validation.checkTags(req.body.tags);
     let sorting = req.body.sorting;
+    let page = req.body.page;
 
     if (!sorting) {
       sorting = "newest";
     }
 
     try {
-      const posts = await postData.getPostsByTags(tags, 1, sorting);
+      if (!page) {
+        page = 1;
+      }else page = parseInt(page);
+      
+      const posts = await postData.getPostsByTags(tags, page, sorting);
       if (posts.length === 0) {
         return res.status(404).render("search", { session: req.session.user,  Title: "Search", error: "No Results" });
       } else {

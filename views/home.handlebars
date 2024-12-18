@@ -1,0 +1,15 @@
+<main>
+    <h1>Riffit</h1>
+
+    <h2>Most liked posts</h2>
+
+    {{#if posts}}
+  <ul>
+    {{#each posts}}
+    <li class = "post-item">
+      {{> post post=this session=../session}}
+    </li>
+    {{/each}}
+  </ul>
+  {{/if}}
+</main>
