@@ -10,6 +10,12 @@ Ryan Mickey, Anthony Rizzuto, Alan Atrach, Evan Kupsch
 3. Start server: **npm start**
 4. Server listening on **http://localhost/**
 
+Passwords require _at least_ 1 capital letter, _at least_ 1 symbol, and _at least_ 1 number.
+
+Audio Files must be **MP3** less than 1 MB
+
+Profile Pictures can either be a **JPEG** or **PNG**.
+
 ## Notes:
 We did not implement a game, as discussed with Prof. Hill.
 
