@@ -40,19 +40,4 @@
         <p><strong>Instruments:</strong> {{#each user.instruments}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}</p>
         <p><strong>Genres:</strong> {{#each user.genres}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}</p>
     </section>
-
-    <section class="posts">
-        <h2>Posts</h2>
-        {{#if user.posts.length}}
-        <ul>
-            {{#each user.posts}}
-            <li>
-                {{> post session=session post=this profileOwner="true"}}
-            </li>
-            {{/each}}
-        </ul>
-        {{else}}
-        <p>You haven't made any posts.</p>
-        {{/if}}
-    </section>
 </main>
