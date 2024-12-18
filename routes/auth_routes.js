@@ -91,7 +91,7 @@ router
 
       req.session.user = signInAttempt;
 
-      console.log("Login Successful!");
+     
 
         return res.redirect("/users/me");
     } catch (e) {
