@@ -20,7 +20,7 @@ const exportedMethods = {
   checkTags(tags) {
     tags = this.checkStringArray(tags, "tags");
     tags.forEach((tag, i) => {
-      tag = this.checkString(tag, `Tag ${i}`);
+      tag = this.checkString(tag, `Tag ${i}`).toLowerCase();
       if (tag.length > 15) throw `Tag ${i} is too long`;
       if (tag.length < 2) throw `Tag ${i} is too short`;
       tags[i] = tag;
