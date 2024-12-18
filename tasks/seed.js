@@ -14,14 +14,14 @@ const main = async () => {
   const user4 = await userData.addUser("bassmaster", "BassGuitar321!");
 
   // add audio
-  const audioId1 = await audioData.addAudioDirect(fs.readFileSync(path.resolve('public/riffs/riff1.mp3')));
-  const audioId2 = await audioData.addAudioDirect(fs.readFileSync(path.resolve('public/riffs/riff2.mp3')));
-  const audioId3 = await audioData.addAudioDirect(fs.readFileSync(path.resolve('public/riffs/riff3.mp3')));
-  const audioId4 = await audioData.addAudioDirect(fs.readFileSync(path.resolve('public/riffs/riff4.mp3')));
-  const audioId5 = await audioData.addAudioDirect(fs.readFileSync(path.resolve('public/riffs/BassThing.mp3')));
-  const audioId6 = await audioData.addAudioDirect(fs.readFileSync(path.resolve('public/riffs/HendrixyThing.mp3')));
-  const audioId7 = await audioData.addAudioDirect(fs.readFileSync(path.resolve('public/riffs/IronMaidenThing.mp3')));
-  const audioId8 = await audioData.addAudioDirect(fs.readFileSync(path.resolve('public/riffs/SRVThing.mp3')));
+  const audioId1 = await audioData.addAudioDirect(fs.readFileSync(path.resolve('tasks/riffs/riff1.mp3')));
+  const audioId2 = await audioData.addAudioDirect(fs.readFileSync(path.resolve('tasks/riffs/riff2.mp3')));
+  const audioId3 = await audioData.addAudioDirect(fs.readFileSync(path.resolve('tasks/riffs/riff3.mp3')));
+  const audioId4 = await audioData.addAudioDirect(fs.readFileSync(path.resolve('tasks/riffs/riff4.mp3')));
+  const audioId5 = await audioData.addAudioDirect(fs.readFileSync(path.resolve('tasks/riffs/BassThing.mp3')));
+  const audioId6 = await audioData.addAudioDirect(fs.readFileSync(path.resolve('tasks/riffs/HendrixyThing.mp3')));
+  const audioId7 = await audioData.addAudioDirect(fs.readFileSync(path.resolve('tasks/riffs/IronMaidenThing.mp3')));
+  const audioId8 = await audioData.addAudioDirect(fs.readFileSync(path.resolve('tasks/riffs/SRVThing.mp3')));
 
   const blank_tab = "e|---------------------------------------------------------------|\nB|---------------------------------------------------------------|\nG|---------------------------------------------------------------|\nD|---------------------------------------------------------------|\nA|---------------------------------------------------------------|\nE|---------------------------------------------------------------|";
 
@@ -160,12 +160,15 @@ const main = async () => {
   await postData.postLike(post2._id, user1._id);
   await postData.postLike(post3._id, user3._id);
   await postData.postLike(post4._id, user4._id);
+  await postData.postLike(post5._id, user4._id);
+  await postData.postLike(post7._id, user1._id);
+  await postData.postLike(post7._id, user2._id);
 
   // Add dislikes
   await postData.postDislike(post5._id, user1._id);
-  await postData.postDislike(post6._id, user2._id);
-  await postData.postDislike(post7._id, user3._id);
-  await postData.postDislike(post8._id, user4._id);
+  await postData.postDislike(post6._id, user3._id);
+  await postData.postDislike(post6._id, user4._id);
+
 
   // Add favorites
   await postData.postFavorite(post1._id, user1._id);
