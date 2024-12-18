@@ -136,7 +136,7 @@ const exportedMethods = {
 
   async addPost(title, userId, content, notation, key, instrument, tags) {
     title = validation.checkString(title, "Title");
-    content = validation.checkString(content, "Content");
+    content = validation.checkId(content, "Content");
     userId = validation.checkId(userId, "User ID");
     notation = validation.checkString(notation, "Notation");
     key = validation.checkString(key, "Key");

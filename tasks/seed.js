@@ -14,10 +14,14 @@ const main = async () => {
   const user4 = await userData.addUser("bassmaster", "BassGuitar321!");
 
   // add audio
-  const audioId1 = await audioData.addAudioDirect(fs.readFileSync(path.resolve('public/riff1.mp3')));
-  const audioId2 = await audioData.addAudioDirect(fs.readFileSync(path.resolve('public/riff2.mp3')));
-  const audioId3 = await audioData.addAudioDirect(fs.readFileSync(path.resolve('public/riff3.mp3')));
-  const audioId4 = await audioData.addAudioDirect(fs.readFileSync(path.resolve('public/riff4.mp3')));
+  const audioId1 = await audioData.addAudioDirect(fs.readFileSync(path.resolve('public/riffs/riff1.mp3')));
+  const audioId2 = await audioData.addAudioDirect(fs.readFileSync(path.resolve('public/riffs/riff2.mp3')));
+  const audioId3 = await audioData.addAudioDirect(fs.readFileSync(path.resolve('public/riffs/riff3.mp3')));
+  const audioId4 = await audioData.addAudioDirect(fs.readFileSync(path.resolve('public/riffs/riff4.mp3')));
+  const audioId5 = await audioData.addAudioDirect(fs.readFileSync(path.resolve('public/riffs/BassThing.mp3')));
+  const audioId6 = await audioData.addAudioDirect(fs.readFileSync(path.resolve('public/riffs/HendrixyThing.mp3')));
+  const audioId7 = await audioData.addAudioDirect(fs.readFileSync(path.resolve('public/riffs/IronMaidenThing.mp3')));
+  const audioId8 = await audioData.addAudioDirect(fs.readFileSync(path.resolve('public/riffs/SRVThing.mp3')));
 
   const blank_tab = "e|---------------------------------------------------------------|\nB|---------------------------------------------------------------|\nG|---------------------------------------------------------------|\nD|---------------------------------------------------------------|\nA|---------------------------------------------------------------|\nE|---------------------------------------------------------------|";
 
@@ -62,6 +66,46 @@ const main = async () => {
     ["jazz", "slow", "trumpet"]
   );
 
+  const post5 = await postData.addPost(
+    "Funk Overload",
+    user4._id,
+    audioId5,
+    "N/A",
+    "E minor",
+    "Bass",
+    ["bass", "funk", "fast", "blues"]
+  );
+
+  const post6 = await postData.addPost(
+    "Hendrix Style Resolution",
+    user1._id,
+    audioId6,
+    "N/A",
+    "A major",
+    "Guitar",
+    ["hendrix", "stratocaster", "guitar", "slow", "rock"]
+  );
+
+  const post7 = await postData.addPost(
+    "Iron Maiden - The Trooper",
+    user2._id,
+    audioId7,
+    "N/A",
+    "E minor",
+    "Guitar",
+    ["metal", "rock", "guitar", "overdrive", "heavy"]
+  );
+
+  const post8 = await postData.addPost(
+    "SRV Trill",
+    user1._id,
+    audioId8,
+    "N/A",
+    "E minor",
+    "Guitar",
+    ["country", "blues", "pentatonic", "srv", "rock"]
+  );
+
   // Create comments
   const comment1 = await commentData.addComment(
     "Great post!",
@@ -91,6 +135,24 @@ const main = async () => {
     "Awesome playing",
     user1._id,
     post4._id
+  );
+
+  const comment6 = await commentData.addComment(
+    "Professor Hill Would like this one",
+    user1._id,
+    post7._id
+  );
+
+  const comment7 = await commentData.addComment(
+    "Interesting, not my cup of tea though",
+    user3._id,
+    post6._id
+  );
+
+  const comment8 = await commentData.addComment(
+    "Needs more bass",
+    user4._id,
+    post6._id
   );
 
   console.log("Database seeded successfully");
