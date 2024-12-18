@@ -19,6 +19,8 @@ Profile Pictures can either be a **JPEG** or **PNG**.
 ## Notes:
 We did not implement a game, as discussed with Prof. Hill.
 
+There is a guest feature, where you can search and view posts and accounts without being logged in. If you are a guest, you cannot interact (like/dislike/favorite/share) with them.
+
 ## Extra Features
 
 1. Added sharing links for different platforms
